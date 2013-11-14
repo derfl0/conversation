@@ -1,0 +1,6 @@
+pluginname=Conversations
+pluginclassname=Conversations
+origin=intelec
+version=0.1
+description=Transforms the boring messageinput into cool conversations
+studipMinVersion=1.11

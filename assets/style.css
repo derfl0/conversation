@@ -1,0 +1,85 @@
+.fullheight {
+    height:300px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+.conversations {
+    width: 300px; 
+    float: left;
+    height: 100%;
+    background-color: rgb(222, 226, 232);
+    border-style: dashed;
+    border-width: 0px;
+    border-right-width: 1px;
+    margin-right: 10px;
+}
+
+.conversation {
+    padding: 10px; 
+}
+
+.conversation:hover {
+    background-color: rgb(40, 73, 124);
+    color: #ffffff;
+}
+
+.conversation_active {
+    padding: 10px; 
+    background-color: #7890bc;
+}
+
+.conversation_active:hover {
+    background-color: rgb(40, 73, 124);
+    color: #ffffff;
+}
+
+.talk {
+    position: relative;
+    height: 100%;
+    margin-left: 310px;
+}
+
+.messages {
+    overflow-y: auto;
+    height: 100%;
+    position:relative;
+}
+
+.bottom {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 100px;
+}
+
+.sender {
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    display:block;/*reset from inline*/
+    width:100%;
+    height: 100%;
+    margin:0;/*remove defaults*/
+    padding:4px;
+    border:1px none #333;
+    background-color: rgb(222, 226, 232);
+    overflow-y:auto;/*resets IE*/
+    overflow-x:hidden;/*resets IE*/
+}
+
+.sender:focus {
+    border-style:solid;
+}
+
+#allConversations {
+    overflow-y: auto;
+    height: 500px;
+}
+
+.conversationheader {
+   color: rgb(40, 73, 124);
+}
+
+.conversationtext {
+   color: black;
+}
