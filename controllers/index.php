@@ -15,9 +15,6 @@ class IndexController extends StudipController {
         } else {
             $this->set_layout($GLOBALS['template_factory']->open('layouts/base'));
         }
-
-
-        $this->path = dirname($this->dispatcher->trails_uri) . "/index/";
     }
 
     public function index_action() {
@@ -25,7 +22,35 @@ class IndexController extends StudipController {
         $this->quicksearch = $this->createQuickSearch();
     }
 
-    public function loadconversations_action($since = null) {
+    public function send_action() {
+        if ($msg = Request::get('message')) {
+            if (!$conversation_id = Request::get('conversation')) {
+                $newConversation = Request::get('username') ? Conversation::withUser(Request::get('username')) : null;
+                if ($newConversation) {
+                    $conversation_id = $newConversation->conversation_id;
+                    $result['conversation'][] = $newConversation->decode();
+                }
+            }
+            if ($conversation_id) {
+                $newMessage = ConversationMessage::insert($conversation_id, $msg);
+                $result['messages'][] = $newMessage->decode();
+            }
+        }
+        echo json_encode($result);
+        $this->render_nothing();
+    }
+
+    public function loadConversations_action() {
+        foreach (Conversation::findByUser_id($GLOBALS['user']->id) as $conv) {
+            $result['conversation'] = $conv->decode();
+        }
+        echo json_encode($result);
+        $this->render_nothing();
+    }
+
+    /////////////////////OLDIES BUT GOLDIES!
+
+    public function loadAconversations_action($since = null) {
         foreach (Conversation::findByUser_id($GLOBALS['user']->id) as $conv) {
             if (!$since || $conv->update->chdate >= $since) {
                 $result[$conv->conversation_id] = array('name' => $conv->name, 'chdate' => $conv->update->chdate);
@@ -89,19 +114,6 @@ class IndexController extends StudipController {
 //$stmt->execute(array(":me" => $GLOBALS['user']->id, ":other" => $id));
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
             echo $result['message'] . "<br>";
-        }
-        $this->render_nothing();
-    }
-
-    public function send_action() {
-        echo "benis";
-        die;
-        if ($msg = Request::get('message')) {
-            $conversation_id = Request::get('conversation')
-                    ? : $username = Request::get('username') ? Conversation::withUser($username)->id : null;
-            if ($conversation_id) {
-                echo json_encode(ConversationMessage::insert($conversation_id, $msg));
-            }
         }
         $this->render_nothing();
     }

@@ -3,10 +3,15 @@ var username = '';
 var displayUsername = '';
 
 function newConversation() {
-    displayUsername = $('#user_2').val();
+    displayUsername = $('#user_1').val();
     $('#username').html(displayUsername);
-        username = $('#user_2_realvalue').val();
-    alert(username);
+    username = $('#user_1_realvalue').val();
+}
+
+function workJSON(json) {
+    t();
+    //alert(json['conversations']);
+    //alert(json['messages']);
 }
 
 function sendMessage() {
@@ -16,23 +21,24 @@ function sendMessage() {
         type: "POST",
         url: urlSend,
         data: {conversation: conversation_id, message: message, username: username},
-        //dataType: "json"
+        dataType: "json"
     }).done(function(msg) {
-        alert(msg);
-        
+        workJSON(msg);
+
     });
 }
 
-$(document).ready(function() {
-    $("#user_2").keyup(function(e) {
+function setUserSearch() {
+    $("#user_1").keyup(function(e) {
         e = e || event;
         if (e.keyCode === 13) {
-            //
             newConversation();
         }
         return true;
     });
+}
 
+function setMessageSender() {
     $("#message").keyup(function(e) {
         e = e || event;
         if (e.keyCode === 13 && e.ctrlKey) {
@@ -40,5 +46,13 @@ $(document).ready(function() {
         }
         return true;
     });
+}
 
+$(document).ready(function() {
+    setUserSearch();
+    setMessageSender();
 });
+
+function t() {
+    alert('benis');
+}

@@ -8,5 +8,5 @@
 <?= \Studip\Button::create(_('Senden')) ?>
 
 <script>
-    var urlSend = '<?= $controller->url_for('send') ?>';
+    var urlSend = '<?= $controller->url_for('index/send') ?>';
 </script>

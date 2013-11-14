@@ -23,6 +23,18 @@ class ConversationMessage extends SimpleORMap {
         $conversation->author_id = $GLOBALS['user']->id;
         $conversation->text = $message;
         $conversation->store();
+        return $conversation;
+    }
+    
+    public function decode() {
+        $user = new User($this->author_id);
+        return array(
+            'id' => $this->message_id,
+            'conversation' => $this->conversation_id,
+            'author' => $user->username,
+            'text' => $this->text,
+            'date' => $this->mkdate
+        );
     }
 
 }
