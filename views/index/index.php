@@ -9,4 +9,6 @@
 
 <script>
     var urlSend = '<?= $controller->url_for('index/send') ?>';
+    var urlLoadConversations = '<?= $controller->url_for('index/loadConversations') ?>';
+    var urlLoadMessages = '<?= $controller->url_for('index/loadMessages') ?>';
 </script>

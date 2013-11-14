@@ -28,12 +28,12 @@ class IndexController extends StudipController {
                 $newConversation = Request::get('username') ? Conversation::withUser(Request::get('username')) : null;
                 if ($newConversation) {
                     $conversation_id = $newConversation->conversation_id;
-                    $result['conversation'][] = $newConversation->decode();
+                    $newConversation->decode($result);
                 }
             }
             if ($conversation_id) {
                 $newMessage = ConversationMessage::insert($conversation_id, $msg);
-                $result['messages'][] = $newMessage->decode();
+                $newMessage->decode($result);
             }
         }
         echo json_encode($result);
@@ -42,7 +42,17 @@ class IndexController extends StudipController {
 
     public function loadConversations_action() {
         foreach (Conversation::findByUser_id($GLOBALS['user']->id) as $conv) {
-            $result['conversation'] = $conv->decode();
+            $conv->decode($result);
+        }
+        echo json_encode($result);
+        $this->render_nothing();
+    }
+
+    public function loadMessages_action() {
+        echo Request::get('conversation');
+        foreach (ConversationMessage::findByConversation_id(Request::get('conversation')) as $msg) {
+            echo "benis";
+            $msg->decode($result);
         }
         echo json_encode($result);
         $this->render_nothing();
@@ -141,7 +151,7 @@ class IndexController extends StudipController {
 
         // Fügt Einträge zur Infobox hinzu
         $this->addToInfobox(_('Neues Gespräch'), $this->createQuickSearch(), 'icons/16/blue/star.png');
-        $this->addToInfobox(_('Gespräche'), '<div id="talks">' . _('Keine Gespräche') . '</div>');
+        $this->addToInfobox(_('Gespräche'), '<div id="talks"><div id="no_talks">' . _('Keine Gespräche') . '</div></div>');
     }
 
     private function checkConversation2($id) {

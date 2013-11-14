@@ -25,7 +25,7 @@ class Conversation extends SimpleORMap {
     }
 
     public static function withUser($user) {
-        $sql = "SELECT b.* FROM conversations a JOIN conversations b USING (conversation_id) WHERE a.user_id = ? and b.user_id = ? LIMIT 1";
+        $sql = "SELECT a.* FROM conversations a JOIN conversations b USING (conversation_id) WHERE a.user_id = ? and b.user_id = ? LIMIT 1";
         $stmt = DBManager::get()->prepare($sql);
         $stmt->execute(array($GLOBALS['user']->id, User::findByUsername($user)->id));
         if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
@@ -52,12 +52,15 @@ class Conversation extends SimpleORMap {
         return $usersConv;
     }
     
-    public function decode() {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'date' => $this->update->chdate
+    public function decode(&$into) {
+
+        $obj = array(
+            'id' => $this->conversation_id,
+            'date' => $this->update->chdate,
+            'name' => utf8_encode($this->name),
+            
         );
+        $into['conversations'][] = $obj;
     }
 
     /*

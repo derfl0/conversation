@@ -26,15 +26,16 @@ class ConversationMessage extends SimpleORMap {
         return $conversation;
     }
     
-    public function decode() {
+    public function decode(&$into) {
         $user = new User($this->author_id);
-        return array(
+        $obj = array(
             'id' => $this->message_id,
             'conversation' => $this->conversation_id,
             'author' => $user->username,
             'text' => $this->text,
             'date' => $this->mkdate
         );
+        $into['messages'][] = $obj;
     }
 
 }

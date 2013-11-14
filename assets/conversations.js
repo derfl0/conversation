@@ -8,10 +8,64 @@ function newConversation() {
     username = $('#user_1_realvalue').val();
 }
 
-function workJSON(json) {
+function loadMessages() {
     t();
-    //alert(json['conversations']);
-    //alert(json['messages']);
+    $.ajax({
+        type: "POST",
+        url: urlLoadMessages,
+        data: {conversation: conversation_id},
+        //dataType: "json"
+    }).done(function(msg) {
+        t();
+        workJSON(msg);
+    });
+}
+
+function workJSON(json) {
+    var conversations = json['conversations'];
+    $.each(conversations, function() {
+        workConversation(this);
+    });
+    /*var messages = json['messages'];
+    $.each(messages, function() {
+        workMessage(this);
+        t();
+    });*/
+
+}
+
+function workConversation(conv) {
+    $('#no_talks').hide();
+    if ($("div [data-conversation_id='" + conv['id'] + "']").length > 0) {
+
+    } else {
+        $('#talks').append('<div class="new_conv" data-conversation_id="' + conv['id'] + '">' + conv['name'] + '</div>');
+    }
+}
+
+function workMessage(msg) {
+    //alert(JSON.stringify(msg));
+}
+
+function applyConversation() {
+    $('.new_conv').click(function() {
+        conversation_id = $(this).attr('data-conversation_id');
+        $('#username').html($(this).html());
+        //loadMessages();
+    });
+    $('.new_conv').removeClass('new_conv');
+}
+
+function loadConversations() {
+    $.ajax({
+        type: "POST",
+        url: urlLoadConversations,
+        data: {},
+        dataType: "json"
+    }).done(function(msg) {
+        workJSON(msg);
+        applyConversation();
+    });
 }
 
 function sendMessage() {
@@ -24,7 +78,6 @@ function sendMessage() {
         dataType: "json"
     }).done(function(msg) {
         workJSON(msg);
-
     });
 }
 
@@ -51,8 +104,13 @@ function setMessageSender() {
 $(document).ready(function() {
     setUserSearch();
     setMessageSender();
+    loadConversations();
 });
 
 function t() {
     alert('benis');
+}
+
+function d(test) {
+    alert(JSON.stringify(test));
 }
