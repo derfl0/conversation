@@ -49,9 +49,7 @@ class IndexController extends StudipController {
     }
 
     public function loadMessages_action() {
-        echo Request::get('conversation');
         foreach (ConversationMessage::findByConversation_id(Request::get('conversation')) as $msg) {
-            echo "benis";
             $msg->decode($result);
         }
         echo json_encode($result);

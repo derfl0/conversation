@@ -9,28 +9,29 @@ function newConversation() {
 }
 
 function loadMessages() {
-    t();
     $.ajax({
         type: "POST",
         url: urlLoadMessages,
         data: {conversation: conversation_id},
-        //dataType: "json"
+        dataType: "json"
     }).done(function(msg) {
-        t();
         workJSON(msg);
     });
 }
 
 function workJSON(json) {
     var conversations = json['conversations'];
-    $.each(conversations, function() {
-        workConversation(this);
-    });
-    /*var messages = json['messages'];
-    $.each(messages, function() {
-        workMessage(this);
-        t();
-    });*/
+    if (conversations) {
+        $.each(conversations, function() {
+            workConversation(this);
+        });
+    }
+    var messages = json['messages'];
+    if (messages) {
+        $.each(messages, function() {
+            workMessage(this);
+        });
+    }
 
 }
 
@@ -44,14 +45,18 @@ function workConversation(conv) {
 }
 
 function workMessage(msg) {
-    //alert(JSON.stringify(msg));
+    if ($("div [data-message_id='" + msg['id'] + "']").length > 0) {
+
+    } else {
+        $('#conversation').append('<div class="arrow_box" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
+    }
 }
 
 function applyConversation() {
     $('.new_conv').click(function() {
         conversation_id = $(this).attr('data-conversation_id');
         $('#username').html($(this).html());
-        //loadMessages();
+        loadMessages();
     });
     $('.new_conv').removeClass('new_conv');
 }

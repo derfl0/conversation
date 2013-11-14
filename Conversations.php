@@ -33,11 +33,8 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     }
 
     function perform($unconsumed_path) {
-        PageLayout::addStylesheet($this->getPluginURL() . "/style.css");
-        PageLayout::addScript($this->getPluginURL() . "/jquery.scrollTo-1.4.3.1-min.js");
+        PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
-
-
         $this->setupAutoload();
         $dispatcher = new Trails_Dispatcher(
                 $this->getPluginPath(), rtrim(PluginEngine::getLink($this, array(), null), '/'), 'index'
