@@ -46,7 +46,11 @@ function workConversation(conv) {
 
 function workMessage(msg) {
     if ($("div [data-message_id='" + msg['id'] + "']").length <= 0) {
-        $("div [data-id='" + conversation_id + "']").append('<div class="message" data-from="'+msg['author']+'" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
+        if (msg['author'] === myId) {
+            $("div [data-id='" + msg['conversation'] + "']").append('<div class="message mine" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
+        } else {
+            $("div [data-id='" + msg['conversation'] + "']").append('<div class="message other" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
+        }
     }
 }
 
@@ -61,10 +65,9 @@ function applyConversation() {
 }
 
 function startConversation() {
-    
     $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
     if ($("div [data-id='" + conversation_id + "']").length <= 0) {
-     $('#conversation').append('<div class="conversationdisplay" data-id="'+conversation_id+'"></div>');
+        $('#conversation').append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
     } else {
         $("div [data-id='" + conversation_id + "']").show(200);
     }

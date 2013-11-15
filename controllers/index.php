@@ -44,6 +44,21 @@ class IndexController extends StudipController {
         foreach (Conversation::findByUser_id($GLOBALS['user']->id) as $conv) {
             $conv->decode($result);
         }
+        $_SESSION['conversations']['last_update'] = time();
+        echo json_encode($result);
+        $this->render_nothing();
+    }
+    
+    public function getUpdates() {
+        if ($updated = Conversation::updates($_SESSION['conversations']['last_update'])) {
+            foreach ($updated as $updatedConv) {
+                $updatedConv->decode($result);
+                $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
+                foreach(ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update'])) as $message) {
+                    $message->decode($result);
+                }
+            }
+        }
         echo json_encode($result);
         $this->render_nothing();
     }

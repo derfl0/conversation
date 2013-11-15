@@ -40,9 +40,9 @@ class Conversation extends SimpleORMap {
         $new->store();
         $other = User::findByUsername($user);
         $usersConv = Conversation::create(array(
-            'conversation_id' => $new->id,
-            'user_id' => $GLOBALS['user']->id,
-            'name' => $other->getFullName()
+                    'conversation_id' => $new->id,
+                    'user_id' => $GLOBALS['user']->id,
+                    'name' => $other->getFullName()
         ));
         Conversation::create(array(
             'conversation_id' => $new->id,
@@ -51,16 +51,25 @@ class Conversation extends SimpleORMap {
         ));
         return $usersConv;
     }
-    
+
     public function decode(&$into) {
 
         $obj = array(
             'id' => $this->conversation_id,
             'date' => $this->update->chdate,
             'name' => utf8_encode($this->name),
-            
         );
         $into['conversations'][] = $obj;
+    }
+
+    public static function updates($since = 0) {
+        $sql = "SELECT c.* FROM conversations c JOIN conversations_update USING (conversation_id) WHERE user_id = ? and chdate > ?";
+        $stmt = DBManager::get()->prepare($sql);
+        $stmt->execute(array($GLOBALS['user']->id, $since));
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $return[] = self::import($result);
+        }
+        return $return;
     }
 
     /*
