@@ -45,10 +45,8 @@ function workConversation(conv) {
 }
 
 function workMessage(msg) {
-    if ($("div [data-message_id='" + msg['id'] + "']").length > 0) {
-
-    } else {
-        $('#conversation').append('<div class="arrow_box" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
+    if ($("div [data-message_id='" + msg['id'] + "']").length <= 0) {
+        $("div [data-id='" + conversation_id + "']").append('<div class="message" data-from="'+msg['author']+'" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
     }
 }
 
@@ -56,9 +54,20 @@ function applyConversation() {
     $('.new_conv').click(function() {
         conversation_id = $(this).attr('data-conversation_id');
         $('#username').html($(this).html());
+        startConversation();
         loadMessages();
     });
     $('.new_conv').removeClass('new_conv');
+}
+
+function startConversation() {
+    
+    $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
+    if ($("div [data-id='" + conversation_id + "']").length <= 0) {
+     $('#conversation').append('<div class="conversationdisplay" data-id="'+conversation_id+'"></div>');
+    } else {
+        $("div [data-id='" + conversation_id + "']").show(200);
+    }
 }
 
 function loadConversations() {
