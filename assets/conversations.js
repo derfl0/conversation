@@ -34,17 +34,19 @@ function loadMessages() {
 }
 
 function workJSON(json) {
-    var conversations = json['conversations'];
-    if (conversations) {
-        $.each(conversations, function() {
-            workConversation(this);
-        });
-    }
-    var messages = json['messages'];
-    if (messages) {
-        $.each(messages, function() {
-            workMessage(this);
-        });
+    if (json !== null) {
+        var conversations = json['conversations'];
+        if (conversations) {
+            $.each(conversations, function() {
+                workConversation(this);
+            });
+        }
+        var messages = json['messages'];
+        if (messages) {
+            $.each(messages, function() {
+                workMessage(this);
+            });
+        }
     }
 }
 
@@ -66,7 +68,7 @@ function workMessage(msg) {
         } else {
             $("div [data-id='" + msg['conversation'] + "']").append('<div class="message other" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
         }
-        $("#conversation").animate({ scrollTop: $("#conversation").height() }, "slow");
+        $("#conversation").animate({scrollTop: $("#conversation").height()}, "slow");
     }
 }
 
