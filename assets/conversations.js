@@ -1,6 +1,7 @@
 var conversation_id = null;
 var username = '';
 var displayUsername = '';
+var reloadTimer = 1000;
 
 function newConversation() {
     displayUsername = $('#user_1').val();
@@ -46,7 +47,7 @@ function workConversation(conv) {
 
 function workMessage(msg) {
     if ($("div [data-message_id='" + msg['id'] + "']").length <= 0) {
-        if (msg['author'] === myId) {
+        if (msg['author'] == myId) {
             $("div [data-id='" + msg['conversation'] + "']").append('<div class="message mine" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
         } else {
             $("div [data-id='" + msg['conversation'] + "']").append('<div class="message other" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
@@ -98,6 +99,17 @@ function sendMessage() {
     });
 }
 
+function update() {
+    $.ajax({
+        type: "POST",
+        url: urlUpdate,
+        data: {},
+        dataType: "json"
+    }).done(function(msg) {
+        workJSON(msg);
+    });
+}
+
 function setUserSearch() {
     $("#user_1").keyup(function(e) {
         e = e || event;
@@ -122,6 +134,7 @@ $(document).ready(function() {
     setUserSearch();
     setMessageSender();
     loadConversations();
+    setInterval(update, reloadTimer);
 });
 
 function t() {

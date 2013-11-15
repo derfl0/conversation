@@ -8,5 +8,6 @@
     var urlSend = '<?= $controller->url_for('index/send') ?>';
     var urlLoadConversations = '<?= $controller->url_for('index/loadConversations') ?>';
     var urlLoadMessages = '<?= $controller->url_for('index/loadMessages') ?>';
-    var myId = '<?= $GLOBALS['user']->id ?>';
+    var urlUpdate = '<?= $controller->url_for('index/update') ?>';
+    var myId = '<?= $GLOBALS['user']->username ?>';
 </script>

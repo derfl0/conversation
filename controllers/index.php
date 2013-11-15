@@ -33,6 +33,7 @@ class IndexController extends StudipController {
             }
             if ($conversation_id) {
                 $newMessage = ConversationMessage::insert($conversation_id, $msg);
+                DBManager::get()->query("UPDATE conversations_update SET chdate = '".time()."' WHERE conversation_id = $conversation_id");
                 $newMessage->decode($result);
             }
         }
@@ -49,7 +50,7 @@ class IndexController extends StudipController {
         $this->render_nothing();
     }
     
-    public function getUpdates() {
+    public function update_action() {
         if ($updated = Conversation::updates($_SESSION['conversations']['last_update'])) {
             foreach ($updated as $updatedConv) {
                 $updatedConv->decode($result);
