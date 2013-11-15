@@ -162,10 +162,20 @@ class IndexController extends StudipController {
 
     private function setInfoBox() {
         $this->setInfoBoxImage('infobox/studygroup.jpg');
-
-        // Fügt Einträge zur Infobox hinzu
+        
         $this->addToInfobox(_('Neues Gespräch'), $this->createQuickSearch(), 'icons/16/blue/star.png');
-        $this->addToInfobox(_('Gespräche'), '<div id="talks"><div id="no_talks">' . _('Keine Gespräche') . '</div></div>');
+        if ($convs = Conversation::findByUser_id($GLOBALS['user']->id)) {
+            $this->hasConversations = true;
+           foreach ($convs as $conv) {
+               if (!$this->messages) {
+                   
+               }
+               $conversations .= "<div class='new_conv conversation' data-conversation_id='$conv->conversation_id'>$conv->name</div>";
+           }
+        } else {
+             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
+        }
+        $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
     }
 
     private function checkConversation2($id) {

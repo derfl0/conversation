@@ -2,11 +2,22 @@ var conversation_id = null;
 var username = '';
 var displayUsername = '';
 var reloadTimer = 1000;
+var fullheight = 385;
+
+$(window).resize(recalcSize);
+
+function recalcSize() {
+    $("#conversation").height($(window).height() - fullheight);
+}
 
 function newConversation() {
     displayUsername = $('#user_1').val();
+    $('#user_1').val('');
     $('#username').html(displayUsername);
     username = $('#user_1_realvalue').val();
+    $('#user_1_realvalue').val('');
+    conversation_id = null;
+    $("div .conversationdisplay").hide(200);
 }
 
 function loadMessages() {
@@ -33,15 +44,16 @@ function workJSON(json) {
             workMessage(this);
         });
     }
-
 }
 
 function workConversation(conv) {
     $('#no_talks').hide();
-    if ($("div [data-conversation_id='" + conv['id'] + "']").length > 0) {
-
-    } else {
+    if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
         $('#talks').append('<div class="new_conv" data-conversation_id="' + conv['id'] + '">' + conv['name'] + '</div>');
+        applyConversation();
+        if (!conversation_id) {
+            $("div [data-conversation_id='" + conv['id'] + "']").click();
+        }
     }
 }
 
@@ -52,6 +64,7 @@ function workMessage(msg) {
         } else {
             $("div [data-id='" + msg['conversation'] + "']").append('<div class="message other" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
         }
+        $("#conversation").animate({ scrollTop: $("#conversation").height() }, "slow");
     }
 }
 
@@ -133,7 +146,9 @@ function setMessageSender() {
 $(document).ready(function() {
     setUserSearch();
     setMessageSender();
-    loadConversations();
+    applyConversation();
+    $('.conversation:first').click();
+    recalcSize();
     setInterval(update, reloadTimer);
 });
 
