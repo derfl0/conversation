@@ -1,5 +1,5 @@
 <div id="debug" style="background-color: #c4c4c4; position: fixed;"></div>
-<h1 <?= $hasConversations ? "" : "style='display: none;'" ?>><?= _('Gespräch mit') ?> <span id="username"></span></h1>
+<h1 id="head" <?= $hasConversations ? "" : "style='display: none;'" ?>><?= _('Gespräch mit') ?> <span id="username"></span></h1>
 <div id="conversation"></div>
 <textarea  <?= $hasConversations ? "" : "style='display: none;'" ?> id="message" placeholder="<?= _('Neue Nachricht') ?>"></textarea>
 <div class="enterbutton" style="display: none">

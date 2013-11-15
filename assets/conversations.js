@@ -2,7 +2,7 @@ var conversation_id = null;
 var username = '';
 var displayUsername = '';
 var reloadTimer = 1000;
-var fullheight = 385;
+var fullheight = 420;
 
 $(window).resize(recalcSize);
 
@@ -18,6 +18,8 @@ function newConversation() {
     $('#user_1_realvalue').val('');
     conversation_id = null;
     $("div .conversationdisplay").hide(200);
+    $('#message').show();
+    $('#head').show();
 }
 
 function loadMessages() {
