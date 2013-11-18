@@ -25,7 +25,10 @@ class IndexController extends StudipController {
     public function send_action() {
         if ($msg = Request::get('message')) {
             if (!$conversation_id = Request::get('conversation')) {
-                $newConversation = Request::get('username') ? Conversation::withUser(Request::get('username')) : null;
+                if (Request::get('username')) {
+                    $user = User::findByUsername(Request::get('username'));
+                    $newConversation = $user ? Conversation::withUser($user->id) : null;
+                }
                 if ($newConversation) {
                     $conversation_id = $newConversation->conversation_id;
                     $newConversation->decode($result);

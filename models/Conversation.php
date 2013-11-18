@@ -24,30 +24,34 @@ class Conversation extends SimpleORMap {
         parent::__construct($id);
     }
 
-    public static function withUser($user) {
+    public static function withUser($user, $other = null) {
         $sql = "SELECT a.* FROM conversations a JOIN conversations b USING (conversation_id) WHERE a.user_id = ? and b.user_id = ? LIMIT 1";
         $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute(array($GLOBALS['user']->id, User::findByUsername($user)->id));
+        if (!$other) {
+            $other = $GLOBALS['user']->id;
+        }
+        $stmt->execute(array($other, $user));
         if ($result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
             return self::import($result[0]);
         } else {
-            return self::createWithUser($user);
+            return self::createWithUser($user, $other);
         }
     }
 
-    public static function createWithUser($user) {
+    public static function createWithUser($user, $self) {
         $new = new ConversationUpdate();
         $new->store();
-        $other = User::findByUsername($user);
+        $other = new User($user);
+        $myself = new User($self);
         $usersConv = Conversation::create(array(
                     'conversation_id' => $new->id,
-                    'user_id' => $GLOBALS['user']->id,
+                    'user_id' => $self,
                     'name' => $other->getFullName()
         ));
         Conversation::create(array(
             'conversation_id' => $new->id,
-            'user_id' => $other->id,
-            'name' => $GLOBALS['user']->getFullName()
+            'user_id' => $user,
+            'name' => $myself->getFullName()
         ));
         return $usersConv;
     }

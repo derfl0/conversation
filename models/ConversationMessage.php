@@ -16,11 +16,14 @@ class ConversationMessage extends SimpleORMap {
         $this->db_table = 'conversation_messages';
         parent::__construct($id);
     }
-
-    public static function insert($conv, $message) {
+    
+    public static function insert($conv, $message, $author = null) {
+        if (!$author) {
+            $author = $GLOBALS['user']->id;
+        }
         $conversation = new self();
         $conversation->conversation_id = $conv;
-        $conversation->author_id = $GLOBALS['user']->id;
+        $conversation->author_id = $author;
         $conversation->text = $message;
         $conversation->store();
         return $conversation;
@@ -31,8 +34,8 @@ class ConversationMessage extends SimpleORMap {
         $obj = array(
             'id' => $this->message_id,
             'conversation' => $this->conversation_id,
-            'author' => $user->username,
-            'text' => $this->text,
+            'author' => utf8_encode($user->username),
+            'text' => utf8_encode(nl2br(htmlReady($this->text))),
             'date' => $this->mkdate
         );
         $into['messages'][] = $obj;
