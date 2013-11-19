@@ -11,6 +11,8 @@
  * @author intelec
  */
 class Conversation extends SimpleORMap {
+    
+    public $date;
 
     public function __construct($id = null) {
         $this->db_table = 'conversations';
@@ -21,7 +23,9 @@ class Conversation extends SimpleORMap {
             'class_name' => 'ConversationUpdate',
             'foreign_key' => 'conversation_id'
         );
+        $this->additional_fields['timestamp'] = true;
         parent::__construct($id);
+        $this->timestamp = 123;
     }
 
     public static function withUser($user, $other = null) {
@@ -67,39 +71,16 @@ class Conversation extends SimpleORMap {
     }
 
     public static function updates($since = 0) {
-        $sql = "SELECT c.* FROM conversations c JOIN conversations_update USING (conversation_id) WHERE user_id = ? and chdate > ? ORDER BY chdate DESC";
+        $sql = "SELECT c.*, u.chdate as date FROM conversations c JOIN conversations_update u USING (conversation_id) WHERE user_id = ? and chdate > ? ORDER BY chdate DESC";
         $stmt = DBManager::get()->prepare($sql);
         $stmt->execute(array($GLOBALS['user']->id, $since));
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $return[] = self::import($result);
+            $new = self::import($result);
+            $new->date = $result['date'];
+            $return[] = $new;
         }
         return $return;
     }
-
-    /*
-      public static function findByUsers($users) {
-      foreach (Conversation::findByUser_id($GLOBALS['user']->id) as $conversation) {
-      if (count($conversation->users) == count($users)) {
-      $correct = TRUE;
-      foreach ($users as $user) {
-      if (!$conversation->users->findOneBy('user_id', $user)) {
-      $correct = FALSE;
-      break;
-      }
-      }
-      if ($correct) {
-      return $conversation;
-      }
-      }
-      }
-      $newConversation = new Conversation();
-      $newConversation->store();
-      $users[] = $GLOBALS['user']->id;
-      foreach ($users as $user) {
-      ConversationUser::create(array($newConversation->id, $user));
-      }
-      return $newConversation;
-      } */
 }
 
 ?>

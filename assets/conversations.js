@@ -1,13 +1,13 @@
 var conversation_id = null;
 var username = '';
 var displayUsername = '';
-var reloadTimer = 1000;
+var reloadTimer = 3000;
 var fullheight = 420;
 
 $(window).resize(recalcSize);
 
 function recalcSize() {
-    $("#conversation").height($(window).height() - fullheight);
+    $(".scroll").height($(window).height() - fullheight);
 }
 
 function newConversation() {
@@ -43,9 +43,14 @@ function workJSON(json) {
         }
         var messages = json['messages'];
         if (messages) {
+            var elem = $(".scroll");
+            var scrolling = elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight() + 10;
             $.each(messages, function() {
                 workMessage(this);
             });
+            if (scrolling) {
+                elem.animate({scrollTop: elem.outerHeight()});
+            }
         }
     }
 }
@@ -53,19 +58,20 @@ function workJSON(json) {
 function workConversation(conv) {
     $('#no_talks').hide();
     if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
-        $('#talks').append('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '">' + conv['name'] + '</div>');
+        $('#talks').append('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
         applyConversation();
         if (!conversation_id) {
             $("div [data-conversation_id='" + conv['id'] + "']").click();
         }
     }
+    updateDate(conv['id'], conv['date']);
 }
 
 function workMessage(msg) {
     if ($("div [data-message_id='" + msg['id'] + "']").length <= 0) {
         var date = new Date(msg['date'] * 1000);
         // check if the date is the first time displayed
-        if ($(".conversationdisplay:visible div:contains('"+ date.toLocaleDateString()+"')").length <= 0) {
+        if ($(".conversationdisplay:visible div:contains('" + date.toLocaleDateString() + "')").length <= 0) {
             var dateclass = "first";
         } else {
             var dateclass = "second";
@@ -77,12 +83,23 @@ function workMessage(msg) {
             var classtype = "other";
         }
         var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">';
-        output += '<div class="message_header date '+dateclass+'">' + date.toLocaleDateString() + '</div>';
+        output += '<div class="message_header date ' + dateclass + '">' + date.toLocaleDateString() + '</div>';
         output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
         output += '<div class="text">' + msg['text'] + '</div>';
         output += '</div>';
         $("div [data-id='" + msg['conversation'] + "']").append(output);
-        $("#conversation").animate({scrollTop: $("#conversation").height()}, "slow");
+        updateDate(msg['conversation'], msg['date']);
+    }
+}
+
+function updateDate(conversation, date) {
+    var div = $("div [data-conversation_id='" + conversation + "']");
+    if (div.attr('data-date') < date) {
+        div.attr('data-date', date);
+        if (conversation_id !== conversation) {
+        div.addClass('newMessage');
+        } 
+        $('div.conversation').not(div).first().before(div);
     }
 }
 
@@ -92,6 +109,7 @@ function applyConversation() {
         $('#username').html($(this).html());
         startConversation();
         loadMessages();
+        $(this).removeClass('newMessage');
     });
     $('.new_conv').removeClass('new_conv');
 }

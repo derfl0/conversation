@@ -1,18 +1,26 @@
 #conversation {
     height: 0px;
-    overflow-y:auto;
+
     padding-bottom: 2px;
     margin: 0 auto;
-max-width: 900px;
+    max-width: 900px;
 
+}
+.scroll {
+    overflow-y:auto;
+    margin-bottom: 6px;
 }
 
 .conversation {
-    
+
+}
+
+.newMessage {
+    color:red;
 }
 
 .conversation:hover {
-    
+
     cursor:pointer;
     font-weight: bold;
 }
