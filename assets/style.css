@@ -2,6 +2,19 @@
     height: 0px;
     overflow-y:auto;
     padding-bottom: 2px;
+    margin: 0 auto;
+max-width: 900px;
+
+}
+
+.conversation {
+    
+}
+
+.conversation:hover {
+    
+    cursor:pointer;
+    font-weight: bold;
 }
 
 #message {
@@ -13,26 +26,50 @@
     height: 60px;
 }
 
-.message {
+.message_header {
+    font-size: smaller;
+}
+
+.date {
+    text-align: center;
+}
+
+.time {
+    padding-top: 4px;
+}
+
+.second {
+    display: none;
+}
+
+.mine .time {
+    float: left;
+}
+
+.other .time {
+    float: right;
+}
+
+.text {
     -moz-border-radius: 8px;
     border-radius: 8px;
     padding: 4px;
     margin: 5px;
 }
 
-.mine {
+.mine .text{
     background-image: -webkit-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
     background-image: -moz-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
     background-image: -o-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
     background-image: linear-gradient(#dae9fa 0%, #90b6e5 100%);
-    margin-left: 5%;
+    margin-left: 15%;
     text-align: right;
 }
 
-.other {
+.other .text{
     background-image: -webkit-linear-gradient(#dff9de 0%, #b3e3b1 100%); 
     background-image: -moz-linear-gradient(#dff9de 0%, #b3e3b1 100%); 
     background-image: -o-linear-gradient(#dff9de 0%, #b3e3b1 100%); 
     background-image: linear-gradient(#dff9de 0%, #b3e3b1 100%);
-    margin-right: 5%;
+    margin-right: 15%;
 }

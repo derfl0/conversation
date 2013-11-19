@@ -53,7 +53,7 @@ function workJSON(json) {
 function workConversation(conv) {
     $('#no_talks').hide();
     if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
-        $('#talks').append('<div class="new_conv" data-conversation_id="' + conv['id'] + '">' + conv['name'] + '</div>');
+        $('#talks').append('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '">' + conv['name'] + '</div>');
         applyConversation();
         if (!conversation_id) {
             $("div [data-conversation_id='" + conv['id'] + "']").click();
@@ -63,11 +63,25 @@ function workConversation(conv) {
 
 function workMessage(msg) {
     if ($("div [data-message_id='" + msg['id'] + "']").length <= 0) {
-        if (msg['author'] == myId) {
-            $("div [data-id='" + msg['conversation'] + "']").append('<div class="message mine" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
+        var date = new Date(msg['date'] * 1000);
+        // check if the date is the first time displayed
+        if ($(".conversationdisplay:visible div:contains('"+ date.toLocaleDateString()+"')").length <= 0) {
+            var dateclass = "first";
         } else {
-            $("div [data-id='" + msg['conversation'] + "']").append('<div class="message other" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">' + msg['text'] + '</div>');
+            var dateclass = "second";
         }
+        // check if it is a message from me or from another
+        if (msg['author'] === myId) {
+            var classtype = "mine";
+        } else {
+            var classtype = "other";
+        }
+        var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">';
+        output += '<div class="message_header date '+dateclass+'">' + date.toLocaleDateString() + '</div>';
+        output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
+        output += '<div class="text">' + msg['text'] + '</div>';
+        output += '</div>';
+        $("div [data-id='" + msg['conversation'] + "']").append(output);
         $("#conversation").animate({scrollTop: $("#conversation").height()}, "slow");
     }
 }
@@ -155,11 +169,3 @@ $(document).ready(function() {
     recalcSize();
     setInterval(update, reloadTimer);
 });
-
-function t() {
-    alert('benis');
-}
-
-function d(test) {
-    alert(JSON.stringify(test));
-}

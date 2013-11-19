@@ -20,6 +20,7 @@ class IndexController extends StudipController {
     public function index_action() {
         $this->setInfoBox();
         $this->quicksearch = $this->createQuickSearch();
+        $_SESSION['conversations']['last_update'] = time();
     }
 
     public function send_action() {
@@ -35,7 +36,7 @@ class IndexController extends StudipController {
                 }
             }
             if ($conversation_id) {
-                $newMessage = ConversationMessage::insert($conversation_id, $msg);
+                $newMessage = ConversationMessage::insert($conversation_id, utf8_decode($msg));
                 DBManager::get()->query("UPDATE conversations_update SET chdate = '".time()."' WHERE conversation_id = $conversation_id");
                 $newMessage->decode($result);
             }
@@ -44,14 +45,14 @@ class IndexController extends StudipController {
         $this->render_nothing();
     }
 
-    public function loadConversations_action() {
+   /* public function loadConversations_action() {
         foreach (Conversation::findByUser_id($GLOBALS['user']->id) as $conv) {
             $conv->decode($result);
         }
         $_SESSION['conversations']['last_update'] = time();
         echo json_encode($result);
         $this->render_nothing();
-    }
+    }*/
     
     public function update_action() {
         if ($updated = Conversation::updates($_SESSION['conversations']['last_update'])) {
@@ -76,7 +77,7 @@ class IndexController extends StudipController {
     }
 
     /////////////////////OLDIES BUT GOLDIES!
-
+/*
     public function loadAconversations_action($since = null) {
         foreach (Conversation::findByUser_id($GLOBALS['user']->id) as $conv) {
             if (!$since || $conv->update->chdate >= $since) {
@@ -156,7 +157,7 @@ class IndexController extends StudipController {
             return array('conversation' => json_encode($conversation), 'message' => json_encode($message));
         }
     }
-
+*/
     private function createQuickSearch() {
         $quicksearch = QuickSearch::get("user", new StandardSearch("username"))
                 ->setInputStyle("width: 200px");
@@ -167,7 +168,7 @@ class IndexController extends StudipController {
         $this->setInfoBoxImage('infobox/studygroup.jpg');
         
         $this->addToInfobox(_('Neues Gespräch'), $this->createQuickSearch(), 'icons/16/blue/star.png');
-        if ($convs = Conversation::findByUser_id($GLOBALS['user']->id)) {
+        if ($convs = Conversation::updates()) {
             $this->hasConversations = true;
            foreach ($convs as $conv) {
                if (!$this->messages) {
@@ -181,11 +182,11 @@ class IndexController extends StudipController {
         $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
     }
 
-    private function checkConversation2($id) {
+ /*   private function checkConversation2($id) {
         if (!$GLOBALS['perm']->have_perm('root') && !ConversationUser::countBySql('conversation_id = ? AND user_id = ?', array($id, $GLOBALS['user']->id))) {
             throw Exception('Access denied', 0, 0);
         }
-    }
+    }*/
 
     private function checkConversation($id) {
         
