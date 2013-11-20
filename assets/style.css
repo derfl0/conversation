@@ -65,6 +65,11 @@
     margin: 5px;
 }
 
+.text img {
+    max-width:200px;
+    max-height:200px;
+}
+
 .mine .text{
     background-image: -webkit-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
     background-image: -moz-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
@@ -93,7 +98,7 @@
     margin:0px 10px 5px 5px;
     vertical-align:top;
 }
- 
+
 .progressBar div {
     height: 100%;
     color: #fff;
@@ -115,18 +120,18 @@
 }
 .filename
 {
-display:inline-block;
-vertical-align:top;
-width:250px;
+    display:inline-block;
+    vertical-align:top;
+    width:250px;
 }
 .filesize
 {
-display:inline-block;
-vertical-align:top;
-color:#30693D;
-width:100px;
-margin-left:10px;
-margin-right:5px;
+    display:inline-block;
+    vertical-align:top;
+    color:#30693D;
+    width:100px;
+    margin-left:10px;
+    margin-right:5px;
 }
 .abort{
     background-color:#A8352F;
@@ -138,4 +143,4 @@ margin-right:5px;
     padding:4px 15px;
     cursor:pointer;
     vertical-align:top
-    }
+}

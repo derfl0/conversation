@@ -46,6 +46,7 @@ class IndexController extends StudipController {
                                 "filename" => $_FILES['file']['name'],
                                 "user_id" => $GLOBALS['user']->id,
                                 "seminar_id" => $GLOBALS['user']->id,
+                                "description" => $_FILES['file']["type"],
                                 "filesize" => $_FILES['file']['size']
                     ));
                     $fileid = $new->id;

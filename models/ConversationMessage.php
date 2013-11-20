@@ -16,7 +16,7 @@ class ConversationMessage extends SimpleORMap {
         $this->db_table = 'conversation_messages';
         parent::__construct($id);
     }
-    
+
     public static function insert($conv, $message, $file = null, $author = null) {
         if (!$author) {
             $author = $GLOBALS['user']->id;
@@ -29,16 +29,20 @@ class ConversationMessage extends SimpleORMap {
         $conversation->store();
         return $conversation;
     }
-    
+
     public function decode(&$into) {
         $user = new User($this->author_id);
-        
+
         // if we have a file we need to fetch the data 
         if ($this->file) {
             $doc = new StudipDocument($this->file);
-            $filelink = "<a href='".GetDownloadLink($this->file, $doc->filename)."'>".$doc->filename.Assets::img('/images/icons/48/grey/file.png')."</a>";
+            if (strpos($doc->description, "image") !== false) {
+                $filelink = "<a href='".GetDownloadLink($this->file, $doc->filename, 0,"force_download")."'><img src='".GetDownloadLink($this->file, $doc->filename)."' /></a>";
+            } else {
+                $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'>" . $doc->filename . Assets::img('/images/icons/48/grey/file.png') . "</a>";
+            }
         }
-        
+
         $obj = array(
             'id' => $this->message_id,
             'conversation' => $this->conversation_id,
