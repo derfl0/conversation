@@ -47,7 +47,7 @@ class ConversationMessage extends SimpleORMap {
             'id' => $this->message_id,
             'conversation' => $this->conversation_id,
             'author' => utf8_encode($user->username),
-            'text' => utf8_encode(nl2br(htmlReady($this->text))),
+            'text' => utf8_encode(nl2br(formatReady($this->text))),
             'file' => $filelink,
             'date' => $this->mkdate
         );
