@@ -4,3 +4,5 @@ origin=intelec
 version=0.8beta
 description=Additional conversation feature
 studipMinVersion=2.0
+dbscheme=db/install.sql
+uninstalldbscheme=db/uninstall.sql

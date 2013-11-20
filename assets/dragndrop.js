@@ -139,7 +139,7 @@ $(document).ready(function()
     {
         e.stopPropagation();
         e.preventDefault();
-        obj.css('border', '2px dotted #0B85A1');
+        //obj.css('border', '2px dotted #0B85A1');
     });
     $(document).on('drop', function(e)
     {
