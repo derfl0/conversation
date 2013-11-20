@@ -24,8 +24,8 @@ class IndexController extends StudipController {
     }
 
     public function send_action() {
-        if ($_FILES['file'] || $msg = Request::get('message') ) {
-            
+        if ($_FILES['file'] || $msg = Request::get('message')) {
+
             // parse us some conversation id
             if (!$conversation_id = Request::get('conversation')) {
                 if (Request::get('username')) {
@@ -37,7 +37,7 @@ class IndexController extends StudipController {
                     $newConversation->decode($result);
                 }
             }
-            
+
             // could we really find a conversation?
             if ($conversation_id) {
                 // if we got a file upload it
@@ -45,6 +45,7 @@ class IndexController extends StudipController {
                     $new = StudipDocument::createWithFile($_FILES['file']['tmp_name'], array(
                                 "filename" => $_FILES['file']['name'],
                                 "user_id" => $GLOBALS['user']->id,
+                                "seminar_id" => $GLOBALS['user']->id,
                                 "filesize" => $_FILES['file']['size']
                     ));
                     $fileid = $new->id;

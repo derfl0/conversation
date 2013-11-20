@@ -16,4 +16,3 @@
     
     var myId = '<?= $GLOBALS['user']->username ?>';
 </script>
-<div id="dragandrophandler"></div>

@@ -43,15 +43,23 @@ function workJSON(json) {
         }
         var messages = json['messages'];
         if (messages) {
-            var elem = $(".scroll");
-            var scrolling = elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight() + 10;
+            scrollScreen(false);
             $.each(messages, function() {
                 workMessage(this);
             });
-            if (scrolling) {
-                elem.animate({scrollTop: elem.outerHeight()});
-            }
+            scrollScreen(true);
         }
+    }
+}
+
+function scrollScreen(action) {
+    var elem = $(".scroll");
+    if (action) {
+        if (scrolling) {
+            elem.animate({scrollTop: elem[0].scrollHeight});
+        }
+    } else {
+        scrolling = elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight() + 10;
     }
 }
 

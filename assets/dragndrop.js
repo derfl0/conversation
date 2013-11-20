@@ -1,74 +1,78 @@
-function sendFileToServer(formData,status)
+function sendFileToServer(formData, status)
 {
-    var extraData ={}; //Extra Data.
-    var jqXHR=$.ajax({
-            xhr: function() {
+    var extraData = {}; //Extra Data.
+    var jqXHR = $.ajax({
+        xhr: function() {
             var xhrobj = $.ajaxSettings.xhr();
             if (xhrobj.upload) {
-                    xhrobj.upload.addEventListener('progress', function(event) {
-                        var percent = 0;
-                        var position = event.loaded || event.position;
-                        var total = event.total;
-                        if (event.lengthComputable) {
-                            percent = Math.ceil(position / total * 100);
-                        }
-                        //Set progress
-                        status.setProgress(percent);
-                    }, false);
-                }
+                xhrobj.upload.addEventListener('progress', function(event) {
+                    var percent = 0;
+                    var position = event.loaded || event.position;
+                    var total = event.total;
+                    if (event.lengthComputable) {
+                        percent = Math.ceil(position / total * 100);
+                    }
+                    //Set progress
+                    status.setProgress(percent);
+                }, false);
+            }
             return xhrobj;
         },
-    url: urlSend,
-    type: "POST",
-    contentType:false,
-    processData: false,
+        url: urlSend,
+        type: "POST",
+        contentType: false,
+        processData: false,
         cache: false,
         data: formData,
-        success: function(data){
+        dataType: "json",
+        success: function(data) {
             status.setProgress(100);
- 
-            $("#status1").append("File upload Done<br>");         
+            //status.hide();
+            status.finish();
+            workJSON(data);
+            //$("#status1").append("File upload Done<br>");         
         }
-    }); 
- 
+    });
+
     status.setAbort(jqXHR);
 }
- 
-var rowCount=0;
+
+var rowCount = 0;
 function createStatusbar(obj)
 {
-     rowCount++;
-     var row="odd";
-     if(rowCount %2 ==0) row ="even";
-     this.statusbar = $("<div class='statusbar "+row+"'></div>");
-     this.filename = $("<div class='filename'></div>").appendTo(this.statusbar);
-     this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
-     this.progressBar = $("<div class='progressBar'><div></div></div>").appendTo(this.statusbar);
-     this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
-     obj.after(this.statusbar);
- 
-    this.setFileNameSize = function(name,size)
+    rowCount++;
+    var row = "odd";
+    if (rowCount % 2 == 0)
+        row = "even";
+    this.statusbar = $("<div class='text mine statusbar " + row + "'></div>");
+    this.filename = $("<div class='filename'></div>").appendTo(this.statusbar);
+    this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
+    this.progressBar = $("<div class='progressBar'><div></div></div>").appendTo(this.statusbar);
+    this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
+    obj.append(this.statusbar);
+
+    this.setFileNameSize = function(name, size)
     {
-        var sizeStr="";
-        var sizeKB = size/1024;
-        if(parseInt(sizeKB) > 1024)
+        var sizeStr = "";
+        var sizeKB = size / 1024;
+        if (parseInt(sizeKB) > 1024)
         {
-            var sizeMB = sizeKB/1024;
-            sizeStr = sizeMB.toFixed(2)+" MB";
+            var sizeMB = sizeKB / 1024;
+            sizeStr = sizeMB.toFixed(2) + " MB";
         }
         else
         {
-            sizeStr = sizeKB.toFixed(2)+" KB";
+            sizeStr = sizeKB.toFixed(2) + " KB";
         }
- 
+
         this.filename.html(name);
         this.size.html(sizeStr);
     }
     this.setProgress = function(progress)
-    {       
-        var progressBarWidth =progress*this.progressBar.width()/ 100;  
-        this.progressBar.find('div').animate({ width: progressBarWidth }, 10).html(progress + "% ");
-        if(parseInt(progress) >= 100)
+    {
+        var progressBarWidth = progress * this.progressBar.width() / 100;
+        this.progressBar.find('div').animate({width: progressBarWidth}, 10).html(progress + "% ");
+        if (parseInt(progress) >= 100)
         {
             this.abort.hide();
         }
@@ -82,31 +86,35 @@ function createStatusbar(obj)
             sb.hide();
         });
     }
+    this.finish = function() {
+        this.statusbar.hide('slow');
+    }
 }
-function handleFileUpload(files,obj)
+function handleFileUpload(files, obj)
 {
-   for (var i = 0; i < files.length; i++) 
-   {
+    for (var i = 0; i < files.length; i++)
+    {
         var fd = new FormData();
         fd.append('file', files[i]);
+        scrollScreen(false);
+        var status = new createStatusbar($(".conversationdisplay:visible")); //Using this we can set progress.
+        status.setFileNameSize(files[i].name,files[i].size);
         fd.append('conversation', conversation_id);
         fd.append('username', username);
- 
-        var status = new createStatusbar(obj); //Using this we can set progress.
-        status.setFileNameSize(files[i].name,files[i].size);
-        sendFileToServer(fd,status);
- 
-   }
+        scrollScreen(true);
+        sendFileToServer(fd, status);
+
+    }
 }
 
 $(document).ready(function()
 {
-    var obj = $("#dragandrophandler");
+    var obj = $(".scroll");
     obj.on('dragenter', function(e)
     {
         e.stopPropagation();
         e.preventDefault();
-        $(this).css('border', '2px solid #0B85A1');
+        //$(this).css('border', '2px solid #0B85A1');
     });
     obj.on('dragover', function(e)
     {
@@ -115,7 +123,7 @@ $(document).ready(function()
     });
     obj.on('drop', function(e)
     {
-        $(this).css('border', '2px dotted #0B85A1');
+        //$(this).css('border', '2px dotted #0B85A1');
         e.preventDefault();
         var files = e.originalEvent.dataTransfer.files;
 
