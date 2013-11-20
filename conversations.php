@@ -28,7 +28,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     function __construct() {
         parent::__construct();
         $navigation = Navigation::getItem('/messaging');
-        $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/index'));
+        $conversation_navi = new AutoNavigation(_('Gespräche (beta)'), PluginEngine::getUrl('Conversations/index'));
         $navigation->addSubNavigation('conversations', $conversation_navi);
 
         if ($GLOBALS['perm']->have_perm('root')) {
