@@ -18,6 +18,8 @@ class IndexController extends StudipController {
     }
 
     public function index_action() {
+        $_SESSION['conversations']['online'] = array();
+        $_SESSION['conversations']['conversations'] = array();
         $this->setInfoBox();
         $this->quicksearch = $this->createQuickSearch();
         $_SESSION['conversations']['last_update'] = time();
@@ -60,23 +62,37 @@ class IndexController extends StudipController {
         $this->render_nothing();
     }
 
+    /**
+     * Loads the latest messages out of the database
+     */
     public function update_action() {
         if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
             foreach ($updated as $updatedConv) {
+
+                $this->activateConversation($updatedConv);
+
                 $updatedConv->decode($result);
                 $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
-                foreach (ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update'])) as $message) {
+                $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
+                $messages = SimpleORMapCollection::createFromArray($messages);
+                foreach ($messages->orderBy('mkdate ASC') as $message) {
                     $message->decode($result);
                 }
             }
             $_SESSION['conversations']['last_update'] = time();
         }
+        
+        // update online users
+        $result['online'] = $this->online();
+        
         echo json_encode($result);
         $this->render_nothing();
     }
 
     public function loadMessages_action() {
-        foreach (ConversationMessage::findByConversation_id(Request::get('conversation')) as $msg) {
+        $messages = ConversationMessage::findByConversation_id(Request::get('conversation'));
+        $messages = SimpleORMapCollection::createFromArray($messages);
+        foreach ($messages->orderBy('mkdate ASC') as $msg) {
             $msg->decode($result);
         }
         echo json_encode($result);
@@ -96,6 +112,7 @@ class IndexController extends StudipController {
         if ($convs = Conversation::updates()) {
             $this->hasConversations = true;
             foreach ($convs as $conv) {
+                $this->activateConversation($conv);
                 if (!$this->messages) {
                     
                 }
@@ -105,6 +122,28 @@ class IndexController extends StudipController {
             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
         }
         $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
+    }
+    
+        private function online() {
+        foreach (get_users_online() as $online) {
+            //if we have a conversation with the user activate id!
+            if ($_SESSION['conversations']['online'][$online['user_id']]) {
+                $result[$_SESSION['conversations']['online'][$online['user_id']]] = true;
+            }
+        }
+        return array_keys($result);
+    }
+
+    private function activateConversation($conversation) {
+        //activate the conversation for the user
+        $_SESSION['conversations']['conversations'][] = $conversation->conversation_id;
+
+        //select other users that may activate online status on this conversation
+        $others = DBManager::get()->prepare("SELECT user_id FROM conversations WHERE user_id != ? AND conversation_id = ?");
+        $others->execute(array($GLOBALS['user']->id, $conversation->conversation_id));
+        while ($user = $others->fetch(PDO::FETCH_COLUMN)) {
+            $_SESSION['conversations']['online'][$user] = $conversation->conversation_id;
+        }
     }
 
     // customized #url_for for plugins

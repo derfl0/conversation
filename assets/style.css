@@ -11,18 +11,19 @@
     margin-bottom: 6px;
 }
 
-.conversation {
-
-}
-
 .newMessage {
     color:red;
 }
 
-.conversation:hover {
+.online:after
+{ 
+content:" (online)";
+color: #74b962;
+}
 
+.conversation:hover {
     cursor:pointer;
-    font-weight: bold;
+    background-color: #899ab9;
 }
 
 #message {

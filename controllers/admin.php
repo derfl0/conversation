@@ -33,19 +33,31 @@ class AdminController extends StudipController {
         DBManager::get()->query("TRUNCATE TABLE conversations_update");
         DBManager::get()->query("TRUNCATE TABLE conversation_messages");
         $stmt = DBManager::get()->query($sql);
-        $data = DBManager::get()->prepare("SELECT autor_id, user_id, message, message.mkdate FROM message JOIN message_user USING (message_id) WHERE message_id = ? AND autor_id != user_id");
+        $data = DBManager::get()->prepare("SELECT message_id, autor_id, user_id, message, message.mkdate FROM message JOIN message_user USING (message_id) WHERE message_id = ? AND autor_id != user_id");
         while ($result = $stmt->fetch(PDO::FETCH_COLUMN)) {
             //echo "$result<br>";
             $data->execute(array($result));
             $new = $data->fetch(PDO::FETCH_ASSOC);
-            if ($new['autor_id'] != '____%system%____' 
-                    && $new['user_id'] != '____%system%____' 
-                    && $new['user_id'] != null
-                    && $new['autor_id'] != null
-                    && $new['message'] != ''
-                    && $new['message'] != null) {
-            ConversationMessage::insert($this->getConversation($new['autor_id'], $new['user_id']), $new['message'] ? : "", null, $new['autor_id']);
-            } 
+            if ($new['autor_id'] != '____%system%____' && $new['user_id'] != '____%system%____' && $new['user_id'] != null && $new['autor_id'] != null && $new['message'] != '' && $new['message'] != null) {
+                $conversation = new ConversationMessage();
+                $conversation->conversation_id = $this->getConversation($new['autor_id'], $new['user_id']);
+                $conversation->author_id = $new['autor_id'];
+                $conversation->text = $new['message'];
+                $conversation->file = null;
+                $conversation->chdate = 0;
+                $conversation->mkdate = $new['mkdate'];
+                $conversation->store();
+                foreach (StudipDocument::findByRange_id($new['message_id']) as $doc) {
+                    $conversation = new ConversationMessage();
+                    $conversation->conversation_id = $this->getConversation($new['autor_id'], $new['user_id']);
+                    $conversation->author_id = $new['autor_id'];
+                    $conversation->text = "";
+                    $conversation->file = $doc->id;
+                    $conversation->chdate = 0;
+                    $conversation->mkdate = $new['mkdate'];
+                    $conversation->store();
+                }
+            }
         }
     }
 

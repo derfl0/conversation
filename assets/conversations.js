@@ -49,6 +49,13 @@ function workJSON(json) {
             });
             scrollScreen(true);
         }
+                var online = json['online'];
+        if (online) {
+            $('.conversation').removeClass('online');
+            $.each(online, function() {
+                $('.conversation[data-conversation_id="'+this+'"]').addClass('online');
+            });
+        }
     }
 }
 
