@@ -1,3 +1,4 @@
+
 <div id="debug" style="background-color: #c4c4c4; position: fixed;"></div>
 <h1 id="head" <?= $hasConversations ? "" : "style='display: none;'" ?>><?= _('Gespräch mit') ?> <span id="username"></span></h1>
 <div class="scroll">
@@ -12,5 +13,7 @@
     var urlLoadConversations = '<?= $controller->url_for('index/loadConversations') ?>';
     var urlLoadMessages = '<?= $controller->url_for('index/loadMessages') ?>';
     var urlUpdate = '<?= $controller->url_for('index/update') ?>';
+    
     var myId = '<?= $GLOBALS['user']->username ?>';
 </script>
+<div id="dragandrophandler"></div>

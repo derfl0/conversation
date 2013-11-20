@@ -44,7 +44,7 @@ class AdminController extends StudipController {
                     && $new['autor_id'] != null
                     && $new['message'] != ''
                     && $new['message'] != null) {
-            ConversationMessage::insert($this->getConversation($new['autor_id'], $new['user_id']), $new['message'] ? : "", $new['autor_id']);
+            ConversationMessage::insert($this->getConversation($new['autor_id'], $new['user_id']), $new['message'] ? : "", null, $new['autor_id']);
             } 
         }
     }

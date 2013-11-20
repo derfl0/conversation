@@ -24,7 +24,9 @@ class IndexController extends StudipController {
     }
 
     public function send_action() {
-        if ($msg = Request::get('message')) {
+        if ($_FILES['file'] || $msg = Request::get('message') ) {
+            
+            // parse us some conversation id
             if (!$conversation_id = Request::get('conversation')) {
                 if (Request::get('username')) {
                     $user = User::findByUsername(Request::get('username'));
@@ -35,9 +37,20 @@ class IndexController extends StudipController {
                     $newConversation->decode($result);
                 }
             }
+            
+            // could we really find a conversation?
             if ($conversation_id) {
-                $newMessage = ConversationMessage::insert($conversation_id, utf8_decode($msg));
-                DBManager::get()->query("UPDATE conversations_update SET chdate = '".time()."' WHERE conversation_id = $conversation_id");
+                // if we got a file upload it
+                if ($_FILES['file']) {
+                    $new = StudipDocument::createWithFile($_FILES['file']['tmp_name'], array(
+                                "filename" => $_FILES['file']['name'],
+                                "user_id" => $GLOBALS['user']->id,
+                                "filesize" => $_FILES['file']['size']
+                    ));
+                    $fileid = $new->id;
+                }
+                $newMessage = ConversationMessage::insert($conversation_id, utf8_decode($msg), $fileid);
+                DBManager::get()->query("UPDATE conversations_update SET chdate = '" . time() . "' WHERE conversation_id = $conversation_id");
                 $newMessage->decode($result);
             }
         }
@@ -50,7 +63,7 @@ class IndexController extends StudipController {
             foreach ($updated as $updatedConv) {
                 $updatedConv->decode($result);
                 $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
-                foreach(ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update'])) as $message) {
+                foreach (ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update'])) as $message) {
                     $message->decode($result);
                 }
             }
@@ -76,18 +89,18 @@ class IndexController extends StudipController {
 
     private function setInfoBox() {
         $this->setInfoBoxImage('infobox/studygroup.jpg');
-        
+
         $this->addToInfobox(_('Neues Gespräch'), $this->createQuickSearch(), 'icons/16/blue/star.png');
         if ($convs = Conversation::updates()) {
             $this->hasConversations = true;
-           foreach ($convs as $conv) {
-               if (!$this->messages) {
-                   
-               }
-               $conversations .= "<div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>$conv->name</div>";
-           }
+            foreach ($convs as $conv) {
+                if (!$this->messages) {
+                    
+                }
+                $conversations .= "<div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>$conv->name</div>";
+            }
         } else {
-             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
+            $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
         }
         $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
     }

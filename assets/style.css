@@ -1,3 +1,16 @@
+#dragandrophandler
+{
+    position: fixed;
+    height: 200px;
+    border:2px dotted #0B85A1;
+width:400px;
+color:#92AAB0;
+text-align:left;vertical-align:middle;
+padding:10px 10px 10 10px;
+margin-bottom:10px;
+font-size:200%;
+}
+
 #conversation {
     height: 0px;
 

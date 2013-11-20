@@ -85,7 +85,13 @@ function workMessage(msg) {
         var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">';
         output += '<div class="message_header date ' + dateclass + '">' + date.toLocaleDateString() + '</div>';
         output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
-        output += '<div class="text">' + msg['text'] + '</div>';
+        output += '<div class="text">';
+        if (msg['file']) {
+            output += msg['file'];
+        } else {
+            output += msg['text'];
+        }
+        output += '</div>';
         output += '</div>';
         $("div [data-id='" + msg['conversation'] + "']").append(output);
         updateDate(msg['conversation'], msg['date']);
@@ -97,8 +103,8 @@ function updateDate(conversation, date) {
     if (div.attr('data-date') < date) {
         div.attr('data-date', date);
         if (conversation_id !== conversation) {
-        div.addClass('newMessage');
-        } 
+            div.addClass('newMessage');
+        }
         $('div.conversation').not(div).first().before(div);
     }
 }
