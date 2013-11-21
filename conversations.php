@@ -23,12 +23,16 @@ class Conversations extends StudipPlugin implements SystemPlugin {
 
     function __construct() {
         parent::__construct();
-        $navigation = Navigation::getItem('/messaging');
-        $conversation_navi = new AutoNavigation(_('Gespräche (beta)'), PluginEngine::getUrl('Conversations/index'));
-        $navigation->addSubNavigation('conversations', $conversation_navi);
+        if (!Request::isXhr()) {
+            $navigation = Navigation::getItem('/messaging');
+            $conversation_navi = new AutoNavigation(_('Gespräche (beta)'), PluginEngine::getUrl('Conversations/index'));
+            $navigation->addSubNavigation('conversations', $conversation_navi);
 
-        if ($GLOBALS['perm']->have_perm('root')) {
-            Navigation::addItem('/admin/config/conversations', new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/admin')));
+            if ($GLOBALS['perm']->have_perm('root')) {
+                Navigation::addItem('/admin/config/conversations', new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/admin')));
+            }
+        } else {
+            $this->update();
         }
     }
 
@@ -54,6 +58,33 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         }
     }
 
-}
+    private function update() {
+        $this->setupAutoload();
+        if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
+            foreach ($updated as $updatedConv) {
+                $updatedConv->activate();
+                $updatedConv->decode($result);
+                $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
+                $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
+                $messages = SimpleORMapCollection::createFromArray($messages);
+                foreach ($messages->orderBy('mkdate ASC') as $message) {
+                    $message->decode($result);
+                }
+                // update online users
+                foreach (get_users_online() as $online) {
+                    //if we have a conversation with the user activate id!
+                    if ($_SESSION['conversations']['online'][$online['user_id']]) {
+                        $result[$_SESSION['conversations']['online'][$online['user_id']]] = true;
+                    }
+                }
+                $result['online'] = array_keys($result);
+            }
+            // update the send of the last update
+            $_SESSION['conversations']['last_update'] = time();
 
+            UpdateInformation::setInformation("conversations.update", $result);
+        }
+    }
+
+}
 ?>

@@ -3,9 +3,7 @@ var username = '';
 var displayUsername = '';
 var reloadTimer = 3000;
 var fullheight = 420;
-
 $(window).resize(recalcSize);
-
 function recalcSize() {
     $(".scroll").height($(window).height() - fullheight);
 }
@@ -32,6 +30,13 @@ function loadMessages() {
         workJSON(msg);
     });
 }
+
+STUDIP.conversations = {
+    update: function(json) {
+        workJSON(json);
+    }
+}
+
 
 function workJSON(json) {
     if (json !== null) {
@@ -91,7 +96,7 @@ function workMessage(msg) {
         } else {
             var dateclass = "second";
         }
-        // check if it is a message from me or from another
+// check if it is a message from me or from another
         if (msg['author'] === myId) {
             var classtype = "mine";
         } else {
@@ -178,7 +183,9 @@ function update() {
     }).done(function(msg) {
         workJSON(msg);
     }).always(function() {
-        setTimeout(function() { update(); }, reloadTimer);
+        setTimeout(function() {
+            update();
+        }, reloadTimer);
     });
 }
 
@@ -208,5 +215,5 @@ $(document).ready(function() {
     applyConversation();
     $('.conversation:first').click();
     recalcSize();
-    update();
+    //update();
 });
