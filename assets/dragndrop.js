@@ -48,7 +48,7 @@ function createStatusbar(obj)
     this.filename = $("<div class='filename'></div>").appendTo(this.statusbar);
     this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
     this.progressBar = $("<div class='progressBar'><div></div></div>").appendTo(this.statusbar);
-    this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
+    this.abort = $("<div class='abort'>Abbrechen</div>").appendTo(this.statusbar);
     obj.append(this.statusbar);
 
     this.setFileNameSize = function(name, size)
@@ -70,8 +70,8 @@ function createStatusbar(obj)
     }
     this.setProgress = function(progress)
     {
-        var progressBarWidth = progress * this.progressBar.width() / 100;
-        this.progressBar.find('div').animate({width: progressBarWidth}, 10).html(progress + "% ");
+        var progressBarWidth = progress * (this.progressBar.width() / 100);
+        this.progressBar.find('div').width(progressBarWidth).html(progress + "%");
         if (parseInt(progress) >= 100)
         {
             this.abort.hide();
@@ -139,7 +139,7 @@ $(document).ready(function()
     {
         e.stopPropagation();
         e.preventDefault();
-        obj.css('border', '2px dotted #0B85A1');
+        //obj.css('border', '2px dotted #0B85A1');
     });
     $(document).on('drop', function(e)
     {
