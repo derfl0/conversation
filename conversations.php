@@ -20,10 +20,6 @@ require_once 'bootstrap.php';
  * @category    Stud.IP
  */
 class Conversations extends StudipPlugin implements SystemPlugin {
-    /*
-     *  Ein Systemplugin wird auf JEDER Seite geladen (Konstruiert) deshalb
-     * erzeugen wir hier den Navigationspunkt
-     */
 
     function __construct() {
         parent::__construct();

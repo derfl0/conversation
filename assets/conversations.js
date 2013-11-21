@@ -49,11 +49,11 @@ function workJSON(json) {
             });
             scrollScreen(true);
         }
-                var online = json['online'];
+        var online = json['online'];
         if (online) {
             $('.conversation').removeClass('online');
             $.each(online, function() {
-                $('.conversation[data-conversation_id="'+this+'"]').addClass('online');
+                $('.conversation[data-conversation_id="' + this + '"]').addClass('online');
             });
         }
     }
@@ -177,6 +177,8 @@ function update() {
         dataType: "json"
     }).done(function(msg) {
         workJSON(msg);
+    }).always(function() {
+        setTimeout(function() { update(); }, reloadTimer);
     });
 }
 
@@ -206,5 +208,5 @@ $(document).ready(function() {
     applyConversation();
     $('.conversation:first').click();
     recalcSize();
-    setInterval(update, reloadTimer);
+    update();
 });
