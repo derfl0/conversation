@@ -81,6 +81,12 @@ class Conversation extends SimpleORMap {
         }
         return $return;
     }
+    
+    public static function getOtherUser($conversation_id) {
+        $others = DBManager::get()->prepare("SELECT user_id FROM conversations WHERE user_id != ? AND conversation_id = ?");
+        $others->execute(array($GLOBALS['user']->id, $conversation_id));
+        return $others->fetchAll(PDO::FETCH_COLUMN);
+    }
 }
 
 ?>

@@ -27,6 +27,13 @@ class ConversationMessage extends SimpleORMap {
         $conversation->text = $message;
         $conversation->file = $file;
         $conversation->store();
+        PersonalNotifications::add(
+                Conversation::getOtherUser($conv), 
+                PluginEngine::getUrl('conversations/index'), 
+                $GLOBALS['user']->getFullName()." "._('hat dir eine Nachricht geschrieben'), 
+                PluginEngine::getUrl('conversations/index'),
+                Avatar::getAvatar($GLOBALS['user']->id)->getURL(Avatar::MEDIUM)
+                );
         return $conversation;
     }
 
