@@ -10,7 +10,7 @@ class IndexController extends StudipController {
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);
 
-        if (Request::isXhr()) {
+        if (UpdateInformation::isCollecting()) {
             $this->set_layout(null);
         } else {
             $this->set_layout($GLOBALS['template_factory']->open('layouts/base'));
