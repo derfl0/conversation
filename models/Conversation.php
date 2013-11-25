@@ -11,7 +11,7 @@
  * @author intelec
  */
 class Conversation extends SimpleORMap {
-    
+
     public $date;
 
     public function __construct($id = null) {
@@ -81,12 +81,25 @@ class Conversation extends SimpleORMap {
         }
         return $return;
     }
-    
+
     public static function getOtherUser($conversation_id) {
         $others = DBManager::get()->prepare("SELECT user_id FROM conversations WHERE user_id != ? AND conversation_id = ?");
         $others->execute(array($GLOBALS['user']->id, $conversation_id));
         return $others->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    public function activate() {
+        //activate the conversation for the user
+        $_SESSION['conversations']['conversations'][] = $this->conversation_id;
+
+        //select other users that may activate online status on this conversation
+        $others = DBManager::get()->prepare("SELECT user_id FROM conversations WHERE user_id != ? AND conversation_id = ?");
+        $others->execute(array($GLOBALS['user']->id, $this->conversation_id));
+        while ($user = $others->fetch(PDO::FETCH_COLUMN)) {
+            $_SESSION['conversations']['online'][$user] = $this->conversation_id;
+        }
+    }
+
 }
 
 ?>

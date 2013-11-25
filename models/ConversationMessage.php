@@ -25,7 +25,7 @@ class ConversationMessage extends SimpleORMap {
                 Conversation::getOtherUser($conv), 
                 PluginEngine::getUrl('conversations/index'), 
                 $GLOBALS['user']->getFullName()." "._('hat dir eine Nachricht geschrieben'), 
-                PluginEngine::getUrl('conversations/index'),
+                "conversation",
                 Avatar::getAvatar($GLOBALS['user']->id)->getURL(Avatar::MEDIUM)
                 );
         return $conversation;

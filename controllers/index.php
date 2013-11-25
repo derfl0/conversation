@@ -4,9 +4,14 @@ require_once 'app/controllers/studip_controller.php';
 
 class IndexController extends StudipController {
 
+    const KEEP_ALIVE = false;
+    const TIMEOUT = 15; // seconds to timeout
+    const RELOAD = 800000; // microseconds to reload
+
     /**
      * Diese Methode wird bei jedem Pfad aufgerufen
      */
+
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);
 
@@ -66,25 +71,28 @@ class IndexController extends StudipController {
      * Loads the latest messages out of the database
      */
     public function update_action() {
-        if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
-            foreach ($updated as $updatedConv) {
-
-                $this->activateConversation($updatedConv);
-
-                $updatedConv->decode($result);
-                $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
-                $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
-                $messages = SimpleORMapCollection::createFromArray($messages);
-                foreach ($messages->orderBy('mkdate ASC') as $message) {
-                    $message->decode($result);
+        if (self::KEEP_ALIVE) {
+            $result = $this->keepAliveUpdate();
+        } else {
+            if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
+                foreach ($updated as $updatedConv) {
+                    $this->activateConversation($updatedConv);
+                    $updatedConv->decode($result);
+                    $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
+                    $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
+                    $messages = SimpleORMapCollection::createFromArray($messages);
+                    foreach ($messages->orderBy('mkdate ASC') as $message) {
+                        $message->decode($result);
+                    }
                 }
             }
-            $_SESSION['conversations']['last_update'] = time();
         }
-        
+
+        // update the send of the last update
+        $_SESSION['conversations']['last_update'] = time();
+
         // update online users
         $result['online'] = $this->online();
-        
         echo json_encode($result);
         $this->render_nothing();
     }
@@ -123,16 +131,6 @@ class IndexController extends StudipController {
         }
         $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
     }
-    
-        private function online() {
-        foreach (get_users_online() as $online) {
-            //if we have a conversation with the user activate id!
-            if ($_SESSION['conversations']['online'][$online['user_id']]) {
-                $result[$_SESSION['conversations']['online'][$online['user_id']]] = true;
-            }
-        }
-        return array_keys($result);
-    }
 
     private function activateConversation($conversation) {
         //activate the conversation for the user
@@ -144,6 +142,29 @@ class IndexController extends StudipController {
         while ($user = $others->fetch(PDO::FETCH_COLUMN)) {
             $_SESSION['conversations']['online'][$user] = $conversation->conversation_id;
         }
+    }
+
+    private function keepAliveUpdate() {
+        $start = time();
+        while (time() - $start < self::TIMEOUT) {
+            if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
+                foreach ($updated as $updatedConv) {
+
+                    $this->activateConversation($updatedConv);
+
+                    $updatedConv->decode($result);
+                    $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
+                    $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
+                    $messages = SimpleORMapCollection::createFromArray($messages);
+                    foreach ($messages->orderBy('mkdate ASC') as $message) {
+                        $message->decode($result);
+                    }
+                }
+                break;
+            }
+            usleep(self::RELOAD);
+        }
+        return $result;
     }
 
     // customized #url_for for plugins
@@ -164,5 +185,4 @@ class IndexController extends StudipController {
     }
 
 }
-
 ?>

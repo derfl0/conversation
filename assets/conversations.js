@@ -3,9 +3,7 @@ var username = '';
 var displayUsername = '';
 var reloadTimer = 3000;
 var fullheight = 420;
-
 $(window).resize(recalcSize);
-
 function recalcSize() {
     $(".scroll").height($(window).height() - fullheight);
 }
@@ -33,6 +31,13 @@ function loadMessages() {
     });
 }
 
+STUDIP.conversations = {
+    update: function(json) {
+        workJSON(json);
+    }
+}
+
+
 function workJSON(json) {
     if (json !== null) {
         var conversations = json['conversations'];
@@ -49,11 +54,11 @@ function workJSON(json) {
             });
             scrollScreen(true);
         }
-                var online = json['online'];
+        var online = json['online'];
         if (online) {
             $('.conversation').removeClass('online');
             $.each(online, function() {
-                $('.conversation[data-conversation_id="'+this+'"]').addClass('online');
+                $('.conversation[data-conversation_id="' + this + '"]').addClass('online');
             });
         }
     }
@@ -91,7 +96,7 @@ function workMessage(msg) {
         } else {
             var dateclass = "second";
         }
-        // check if it is a message from me or from another
+// check if it is a message from me or from another
         if (msg['author'] === myId) {
             var classtype = "mine";
         } else {
@@ -177,6 +182,10 @@ function update() {
         dataType: "json"
     }).done(function(msg) {
         workJSON(msg);
+    }).always(function() {
+        setTimeout(function() {
+            update();
+        }, reloadTimer);
     });
 }
 
@@ -206,5 +215,5 @@ $(document).ready(function() {
     applyConversation();
     $('.conversation:first').click();
     recalcSize();
-    setInterval(update, reloadTimer);
+    //update();
 });
