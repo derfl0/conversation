@@ -131,13 +131,19 @@ function updateDate(conversation, date) {
 
 function applyConversation() {
     $('.new_conv').click(function() {
-        conversation_id = $(this).attr('data-conversation_id');
-        $('#username').html($(this).html());
-        startConversation();
-        loadMessages();
-        $(this).removeClass('newMessage');
+        clickConversation($(this));
     });
     $('.new_conv').removeClass('new_conv');
+}
+
+function clickConversation(obj) {
+            conversation_id = obj.attr('data-conversation_id');
+        $('#username').html(obj.html());
+        startConversation();
+        loadMessages();
+        obj.removeClass('newMessage');
+        $('.conversation').removeClass('clicked');
+        obj.addClass('clicked');
 }
 
 function startConversation() {

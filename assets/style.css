@@ -4,7 +4,10 @@
     padding-bottom: 2px;
     margin: 0 auto;
     max-width: 900px;
+}
 
+.conversation {
+    padding-left: 4px;
 }
 .scroll {
     overflow-y:auto;
@@ -152,4 +155,11 @@ color: #74b962;
 
 .enterbutton {
     float:right;
+}
+
+.clicked {
+    border-left-style: solid;
+    border-left-width: 2px;
+    padding-left: 2px;
+    border-color: #0ba1b5;
 }
