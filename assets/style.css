@@ -27,6 +27,10 @@ color: #74b962;
 }
 
 #message {
+    padding-right: 150px;
+}
+
+#message_input{
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -144,4 +148,8 @@ color: #74b962;
     padding:4px 15px;
     cursor:pointer;
     vertical-align:top
+}
+
+.enterbutton {
+    float:right;
 }

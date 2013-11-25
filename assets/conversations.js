@@ -16,8 +16,7 @@ function newConversation() {
     $('#user_1_realvalue').val('');
     conversation_id = null;
     $("div .conversationdisplay").hide(200);
-    $('#message').show();
-    $('#head').show();
+    $('#main').show();
 }
 
 function loadMessages() {
@@ -42,6 +41,7 @@ function workJSON(json) {
     if (json !== null) {
         var conversations = json['conversations'];
         if (conversations) {
+            $('#main').show();
             $.each(conversations, function() {
                 workConversation(this);
             });
@@ -162,8 +162,8 @@ function loadConversations() {
 }
 
 function sendMessage() {
-    var message = $('#message').val();
-    $('#message').val('');
+    var message = $('#message_input').val();
+    $('#message_input').val('');
     $.ajax({
         type: "POST",
         url: urlSend,
@@ -200,12 +200,17 @@ function setUserSearch() {
 }
 
 function setMessageSender() {
-    $("#message").keyup(function(e) {
+    $("#message_input").keyup(function(e) {
         e = e || event;
-        if (e.keyCode === 13 && e.ctrlKey) {
+        if (e.keyCode === 13) {
+            if ($('#sendWithEnter').prop('checked') !== e.ctrlKey ) {
             sendMessage();
+            }
         }
         return true;
+    });
+    $(".button[name='send']").click(function(){
+        sendMessage();
     });
 }
 
