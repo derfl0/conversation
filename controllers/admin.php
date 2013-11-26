@@ -27,8 +27,8 @@ class AdminController extends StudipController {
             $this->work("SELECT DISTINCT message_id FROM message_user u WHERE user_id != '____%system%____' AND user_id != '' GROUP BY message_id HAVING COUNT(2)");
         }
         if (Request::submitted('purge')) {
-            $this->work("DELETE FROM conversation_messages WHERE chdate = 0");
-            $this->work("DELETE del,del2 FROM conversations del JOIN conversations_update del2 USING (conversation_id) LEFT JOIN conversation_messages USING (conversation_id) WHERE conversation_messages.conversation_id IS NULL");
+            DBManager::get()->query("DELETE FROM conversation_messages WHERE chdate = 0");
+            DBManager::get()->query("DELETE del,del2 FROM conversations del JOIN conversations_update del2 USING (conversation_id) LEFT JOIN conversation_messages USING (conversation_id) WHERE conversation_messages.conversation_id IS NULL");
         }
     }
 
