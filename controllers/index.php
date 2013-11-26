@@ -110,7 +110,7 @@ class IndexController extends StudipController {
     private function createQuickSearch() {
         $quicksearch = QuickSearch::get("user", new StandardSearch("username"))
                 ->setInputStyle("width: 200px");
-        //$quicksearch->fireJSFunctionOnSelect('newConversation');
+        $quicksearch->fireJSFunctionOnSelect('newConversation');
         return $quicksearch->render();
     }
 
@@ -130,7 +130,6 @@ class IndexController extends StudipController {
         } else {
             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
         }
-        $this->addToInfobox(_('Suche'), "<div id='new_talks' style='display:none;'></div>");
         $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
     }
 

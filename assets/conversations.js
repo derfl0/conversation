@@ -8,14 +8,11 @@ function recalcSize() {
     $(".scroll").height($(window).height() - fullheight);
 }
 
-function newConversation() {
-    displayUsername = $('#user_1').val();
-    $('#user_1').val('');
-    $('#username').html(displayUsername);
-    username = $('#user_1_realvalue').val();
-    $('#user_1_realvalue').val('');
-    conversation_id = null;
+function newConversation(paticipant, realname) {
     $("div .conversationdisplay").hide(200);
+    $('#username').html(realname);
+    conversation_id = null;
+    username = paticipant;
     $('#main').show();
 }
 
@@ -179,6 +176,7 @@ function loadConversations() {
 function sendMessage() {
     var message = $('#message_input').val();
     $('#message_input').val('');
+    $("#user_1").val('');
     $.ajax({
         type: "POST",
         url: urlSend,
@@ -205,12 +203,8 @@ function update() {
 }
 
 function setUserSearch() {
-    $("#user_1").keyup(function(e) {
-        e = e || event;
-        if (e.keyCode === 13) {
-            newConversation();
-        }
-        return true;
+    $("#user_1").click(function() {
+        $(this).val('');
     });
 }
 
