@@ -16,8 +16,7 @@ function newConversation() {
     $('#user_1_realvalue').val('');
     conversation_id = null;
     $("div .conversationdisplay").hide(200);
-    $('#message').show();
-    $('#head').show();
+    $('#main').show();
 }
 
 function loadMessages() {
@@ -42,6 +41,7 @@ function workJSON(json) {
     if (json !== null) {
         var conversations = json['conversations'];
         if (conversations) {
+            $('#main').show();
             $.each(conversations, function() {
                 workConversation(this);
             });
@@ -131,13 +131,19 @@ function updateDate(conversation, date) {
 
 function applyConversation() {
     $('.new_conv').click(function() {
-        conversation_id = $(this).attr('data-conversation_id');
-        $('#username').html($(this).html());
-        startConversation();
-        loadMessages();
-        $(this).removeClass('newMessage');
+        clickConversation($(this));
     });
     $('.new_conv').removeClass('new_conv');
+}
+
+function clickConversation(obj) {
+            conversation_id = obj.attr('data-conversation_id');
+        $('#username').html(obj.html());
+        startConversation();
+        loadMessages();
+        obj.removeClass('newMessage');
+        $('.conversation').removeClass('clicked');
+        obj.addClass('clicked');
 }
 
 function startConversation() {
@@ -162,8 +168,8 @@ function loadConversations() {
 }
 
 function sendMessage() {
-    var message = $('#message').val();
-    $('#message').val('');
+    var message = $('#message_input').val();
+    $('#message_input').val('');
     $.ajax({
         type: "POST",
         url: urlSend,
@@ -200,12 +206,17 @@ function setUserSearch() {
 }
 
 function setMessageSender() {
-    $("#message").keyup(function(e) {
+    $("#message_input").keyup(function(e) {
         e = e || event;
-        if (e.keyCode === 13 && e.ctrlKey) {
+        if (e.keyCode === 13) {
+            if ($('#sendWithEnter').prop('checked') !== e.ctrlKey ) {
             sendMessage();
+            }
         }
         return true;
+    });
+    $(".button[name='send']").click(function(){
+        sendMessage();
     });
 }
 
