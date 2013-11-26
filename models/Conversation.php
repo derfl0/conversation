@@ -57,6 +57,7 @@ class Conversation extends SimpleORMap {
             'user_id' => $user,
             'name' => $myself->getFullName()
         ));
+        $usersConv->migrate($user);
         return $usersConv;
     }
 
@@ -97,6 +98,28 @@ class Conversation extends SimpleORMap {
         $others->execute(array($GLOBALS['user']->id, $this->conversation_id));
         while ($user = $others->fetch(PDO::FETCH_COLUMN)) {
             $_SESSION['conversations']['online'][$user] = $this->conversation_id;
+        }
+    }
+
+    public function migrate($other) {
+        $stmt = DBManager::get()->prepare("SELECT m.* FROM message
+            JOIN message m USING (message_id)
+            JOIN message_user u USING (message_id)
+            JOIN message_user u2 USING (message_id)
+            LEFT JOIN message_user u3 ON (u3.message_id = u.message_id AND u3.user_id != u.user_id AND u3.user_id != u2.user_id)
+            WHERE u.user_id = ?
+            AND u2.user_id = ?
+            AND u3.user_id IS NULL");
+        $stmt->execute(array($this->user_id, $other));
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $conversation = new ConversationMessage();
+            $conversation->conversation_id = $this->conversation_id;
+            $conversation->author_id = $result['autor_id'];
+            $conversation->text = $result['message'];
+            $conversation->file = null;
+            $conversation->chdate = 0;
+            $conversation->mkdate = $result['mkdate'];
+            $conversation->store();
         }
     }
 

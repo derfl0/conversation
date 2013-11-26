@@ -102,7 +102,7 @@ function workMessage(msg) {
         } else {
             var classtype = "other";
         }
-        var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '">';
+        var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '" data-date="' + msg['date'] + '">';
         output += '<div class="message_header date ' + dateclass + '">' + date.toLocaleDateString() + '</div>';
         output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
         output += '<div class="text">';
@@ -113,7 +113,16 @@ function workMessage(msg) {
         }
         output += '</div>';
         output += '</div>';
-        $("div [data-id='" + msg['conversation'] + "']").append(output);
+
+        //select messageboxes
+        var olderMessages = $(".conversationdisplay:visible .message").filter(function( index ) {
+    return $( this ).attr( "data-date" ) > msg['date'];
+  });
+        if (olderMessages.length > 0) {
+            olderMessages.first().before(output);
+        } else {
+            $("div [data-id='" + msg['conversation'] + "']").append(output);
+        }
         updateDate(msg['conversation'], msg['date']);
     }
 }
@@ -137,13 +146,13 @@ function applyConversation() {
 }
 
 function clickConversation(obj) {
-            conversation_id = obj.attr('data-conversation_id');
-        $('#username').html(obj.html());
-        startConversation();
-        loadMessages();
-        obj.removeClass('newMessage');
-        $('.conversation').removeClass('clicked');
-        obj.addClass('clicked');
+    conversation_id = obj.attr('data-conversation_id');
+    $('#username').html(obj.html());
+    startConversation();
+    loadMessages();
+    obj.removeClass('newMessage');
+    $('.conversation').removeClass('clicked');
+    obj.addClass('clicked');
 }
 
 function startConversation() {
@@ -209,13 +218,13 @@ function setMessageSender() {
     $("#message_input").keyup(function(e) {
         e = e || event;
         if (e.keyCode === 13) {
-            if ($('#sendWithEnter').prop('checked') !== e.ctrlKey ) {
-            sendMessage();
+            if ($('#sendWithEnter').prop('checked') !== e.ctrlKey) {
+                sendMessage();
             }
         }
         return true;
     });
-    $(".button[name='send']").click(function(){
+    $(".button[name='send']").click(function() {
         sendMessage();
     });
 }
