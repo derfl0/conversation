@@ -69,6 +69,9 @@ color: #74b962;
 .text img {
     max-width:200px;
     max-height:200px;
+    border-radius: 6px;
+    margin: 4px;
+    box-shadow:2px 2px 2px 2px #666;
 }
 
 .mine .text{
