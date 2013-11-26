@@ -117,7 +117,7 @@ class IndexController extends StudipController {
     private function setInfoBox() {
         $this->setInfoBoxImage('infobox/studygroup.jpg');
 
-        $this->addToInfobox(_('Neues Gespräch'), $this->createQuickSearch(), 'icons/16/blue/star.png');
+        $this->addToInfobox(_('Suche'), $this->createQuickSearch(), 'icons/16/blue/search.png');
         if ($convs = Conversation::updates()) {
             $this->hasConversations = true;
             foreach ($convs as $conv) {
@@ -130,6 +130,7 @@ class IndexController extends StudipController {
         } else {
             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
         }
+        $this->addToInfobox(_('Suche'), "<div id='new_talks' style='display:none;'></div>");
         $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
     }
 
