@@ -78,7 +78,7 @@ function scrollScreen(action) {
 function workConversation(conv) {
     $('#no_talks').hide();
     if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
-        $('#talks').append('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
+        $('#talks').prepend('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
         applyConversation();
         if (!conversation_id) {
             $("div [data-conversation_id='" + conv['id'] + "']").click();
