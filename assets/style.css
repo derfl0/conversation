@@ -15,18 +15,18 @@
 }
 
 .newMessage {
-    color:red;
+    color: #ffbd33;
 }
 
 .online:after
 { 
-content:" (online)";
+content:" &bull;";
 color: #74b962;
 }
 
 .conversation:hover {
     cursor:pointer;
-    background-color: #899ab9;
+    background-color: #a9b6cb;
 }
 
 #message {
@@ -73,7 +73,7 @@ color: #74b962;
     margin: 5px;
 }
 
-.text img {
+.text img.file {
     max-width:200px;
     max-height:200px;
     border-radius: 6px;
@@ -82,19 +82,19 @@ color: #74b962;
 }
 
 .mine .text{
-    background-image: -webkit-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
-    background-image: -moz-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
-    background-image: -o-linear-gradient(#dae9fa 0%, #90b6e5 100%); 
-    background-image: linear-gradient(#dae9fa 0%, #90b6e5 100%);
+        background-image: -webkit-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
+    background-image: -moz-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
+    background-image: -o-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
+    background-image: linear-gradient(#b8c2d5 0%, #a1aec7 100%);
     margin-left: 15%;
     text-align: right;
 }
 
 .other .text{
-    background-image: -webkit-linear-gradient(#dff9de 0%, #b3e3b1 100%); 
-    background-image: -moz-linear-gradient(#dff9de 0%, #b3e3b1 100%); 
-    background-image: -o-linear-gradient(#dff9de 0%, #b3e3b1 100%); 
-    background-image: linear-gradient(#dff9de 0%, #b3e3b1 100%);
+    background-image: -webkit-linear-gradient(#e1e4e5 0%, #c3c8cc 100%); 
+    background-image: -moz-linear-gradient(#e1e4e5 0%, #c3c8cc 100%); 
+    background-image: -o-linear-gradient(#e1e4e5 0%, #c3c8cc 100%); 
+    background-image: linear-gradient(#e1e4e5 0%, #c3c8cc 100%);
     margin-right: 15%;
 }
 
@@ -164,5 +164,5 @@ color: #74b962;
     border-left-style: solid;
     border-left-width: 2px;
     padding-left: 2px;
-    border-color: #0ba1b5;
+    border-color: #536d96;
 }

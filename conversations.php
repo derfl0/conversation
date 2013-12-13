@@ -25,7 +25,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         parent::__construct();
         if (!Request::isXhr()) {
             $navigation = Navigation::getItem('/messaging');
-            $conversation_navi = new AutoNavigation(_('Gespräche (beta)'), PluginEngine::getUrl('Conversations/index'));
+            $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/index'));
             $navigation->addSubNavigation('conversations', $conversation_navi);
 
             // since we dont need to migrate all messages we dont need an admin menu anymore
@@ -82,9 +82,8 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             }
             // update the send of the last update
             $_SESSION['conversations']['last_update'] = time();
-
-            UpdateInformation::setInformation("conversations.update", $result);
         }
+        UpdateInformation::setInformation("conversations.update", $result);
     }
 
 }

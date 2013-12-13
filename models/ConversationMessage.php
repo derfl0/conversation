@@ -37,12 +37,15 @@ class ConversationMessage extends SimpleORMap {
         // if we have a file we need to fetch the data 
         if ($this->file) {
             $doc = new StudipDocument($this->file);
+            /* Videotag not really supported :-/
+             * 
+             * 
             if (strpos($doc->description, "video") !== false) {
                 $filelink = '<video width="320" height="240" controls>
   <source src="'.GetDownloadLink($this->file, $doc->filename).'" type="'.$doc->description.'">
 </video>';
-            } else if (strpos($doc->description, "image") !== false) {
-                $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'><img src='" . GetDownloadLink($this->file, $doc->filename) . "' /></a>";
+            } else*/ if (strpos($doc->description, "image") !== false) {
+                $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'><img class='file' src='" . GetDownloadLink($this->file, $doc->filename) . "' /></a>";
             } else {
                 $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'>" . $doc->filename . Assets::img('/images/icons/48/grey/file.png') . "</a>";
             }

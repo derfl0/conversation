@@ -122,9 +122,12 @@ class IndexController extends StudipController {
             $this->hasConversations = true;
             foreach ($convs as $conv) {
                 $this->activateConversation($conv);
+                
+                // ist das Kunst oder kann das weg?
                 if (!$this->messages) {
                     
                 }
+                
                 $conversations .= "<div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>$conv->name</div>";
             }
         } else {

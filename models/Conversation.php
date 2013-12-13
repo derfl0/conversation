@@ -123,6 +123,16 @@ class Conversation extends SimpleORMap {
         }
     }
 
+    public static function getOnlineConversations() {
+        foreach (get_users_online() as $online) {
+            //if we have a conversation with the user activate id!
+            if ($_SESSION['conversations']['online'][$online['user_id']]) {
+                $result[$_SESSION['conversations']['online'][$online['user_id']]] = true;
+            }
+        }
+        return array_keys($result);
+    }
+
 }
 
 ?>
