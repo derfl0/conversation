@@ -20,6 +20,9 @@ require_once 'bootstrap.php';
  * @category    Stud.IP
  */
 class Conversations extends StudipPlugin implements SystemPlugin {
+    
+    //Delay between onlinechecks
+    const ONLINE_CHECK_DELAY = 20;
 
     function __construct() {
         parent::__construct();
@@ -71,17 +74,13 @@ class Conversations extends StudipPlugin implements SystemPlugin {
                 foreach ($messages->orderBy('mkdate ASC') as $message) {
                     $message->decode($result);
                 }
-                // update online users
-                foreach (get_users_online() as $online) {
-                    //if we have a conversation with the user activate id!
-                    if ($_SESSION['conversations']['online'][$online['user_id']]) {
-                        $result[$_SESSION['conversations']['online'][$online['user_id']]] = true;
-                    }
-                }
-                $result['online'] = array_keys($result);
             }
             // update the send of the last update
             $_SESSION['conversations']['last_update'] = time();
+        }
+        if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
+            $_SESSION['conversations']['last_onlinecheck'] = time();
+            $result['online'] = Conversation::getOnlineConversations();
         }
         UpdateInformation::setInformation("conversations.update", $result);
     }

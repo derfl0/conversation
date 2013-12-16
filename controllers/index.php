@@ -28,6 +28,8 @@ class IndexController extends StudipController {
         $this->setInfoBox();
         $this->quicksearch = $this->createQuickSearch();
         $_SESSION['conversations']['last_update'] = time();
+        $_SESSION['conversations']['last_onlinecheck'] = 0;
+        Conversation::getOnlineConversations();
     }
 
     public function send_action() {
@@ -154,7 +156,6 @@ class IndexController extends StudipController {
         while (time() - $start < self::TIMEOUT) {
             if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
                 foreach ($updated as $updatedConv) {
-
                     $this->activateConversation($updatedConv);
 
                     $updatedConv->decode($result);

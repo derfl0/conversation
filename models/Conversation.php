@@ -124,10 +124,17 @@ class Conversation extends SimpleORMap {
     }
 
     public static function getOnlineConversations() {
-        foreach (get_users_online() as $online) {
+        
+        //stop complexity if we have started a conversation we are allowed to see the user
+        $sql = "SELECT user_id FROM user_online WHERE last_lifesign > ?";
+        $stmt = DBManager::get()->prepare($sql);
+        $stmt->execute(array(time() - 300));
+        
+        while ($online = $stmt->fetch(PDO::FETCH_COLUMN)) {
+            
             //if we have a conversation with the user activate id!
-            if ($_SESSION['conversations']['online'][$online['user_id']]) {
-                $result[$_SESSION['conversations']['online'][$online['user_id']]] = true;
+            if ($_SESSION['conversations']['online'][$online]) {
+                $result[$_SESSION['conversations']['online'][$online]] = true;
             }
         }
         return array_keys($result);
