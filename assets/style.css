@@ -20,7 +20,7 @@
 
 .online:after
 { 
-content:" &bull;";
+content:" \2022";
 color: #74b962;
 }
 
@@ -48,11 +48,13 @@ color: #74b962;
 
 .date {
     text-align: center;
+    color: #879198;
     border-bottom: #e1e4e5 solid thin;
 }
 
 .time {
     padding-top: 4px;
+    color: #a5adb2;
 }
 
 .second {
