@@ -19,6 +19,6 @@
     var urlLoadConversations = '<?= $controller->url_for('index/loadConversations') ?>';
     var urlLoadMessages = '<?= $controller->url_for('index/loadMessages') ?>';
     var urlUpdate = '<?= $controller->url_for('index/update') ?>';
-
+    var urlLoadUsername = '<?= $controller->url_for('index/nameFromUsername') ?>';
     var myId = '<?= $GLOBALS['user']->username ?>';
 </script>

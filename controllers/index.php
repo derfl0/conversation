@@ -108,6 +108,11 @@ class IndexController extends StudipController {
         echo json_encode($result);
         $this->render_nothing();
     }
+    
+    public function nameFromUsername_action() {
+        echo utf8_encode(User::findByUsername(utf8_decode(Request::get('username')))->getFullName());
+        $this->render_nothing();
+    }
 
     private function createQuickSearch() {
         $quicksearch = QuickSearch::get("user", new StandardSearch("username"))
