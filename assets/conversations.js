@@ -101,7 +101,8 @@ function workMessage(msg) {
         }
         var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '" data-date="' + msg['date'] + '">';
         output += '<div class="message_header date ' + dateclass + '">' + date.toLocaleDateString() + '</div>';
-        output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
+        //output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
+        output += '<div class="message_header time">' + date.getHours() + ":" + date.getMinutes() + '</div>';
         output += '<div class="text">';
         if (msg['file']) {
             output += msg['file'];

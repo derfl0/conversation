@@ -119,6 +119,7 @@ class IndexController extends StudipController {
 
         $this->addToInfobox(_('Suche'), $this->createQuickSearch(), 'icons/16/blue/search.png');
         if ($convs = Conversation::updates()) {
+            
             $this->hasConversations = true;
             foreach ($convs as $conv) {
                 $this->activateConversation($conv);
