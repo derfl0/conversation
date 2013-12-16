@@ -3,7 +3,7 @@
 
     padding-bottom: 2px;
     margin: 0 auto;
-    max-width: 900px;
+    max-width: 700px;
 }
 
 .conversation {
@@ -48,6 +48,7 @@ color: #74b962;
 
 .date {
     text-align: center;
+    border-bottom: #e1e4e5 solid thin;
 }
 
 .time {
@@ -66,7 +67,7 @@ color: #74b962;
     float: right;
 }
 
-.text {
+.text p {
     -moz-border-radius: 8px;
     border-radius: 8px;
     padding: 4px;
@@ -82,19 +83,32 @@ color: #74b962;
 }
 
 .mine .text{
-        background-image: -webkit-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
-    background-image: -moz-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
-    background-image: -o-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
-    background-image: linear-gradient(#b8c2d5 0%, #a1aec7 100%);
     margin-left: 15%;
+    text-align: right;
 }
 
 .other .text{
+    margin-right: 15%;
+}
+
+.mine .text p{
+    background-image: -webkit-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
+    background-image: -moz-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
+    background-image: -o-linear-gradient(#b8c2d5 0%, #a1aec7 100%); 
+    background-image: linear-gradient(#b8c2d5 0%, #a1aec7 100%);
+}
+
+.other .text p{
     background-image: -webkit-linear-gradient(#e1e4e5 0%, #c3c8cc 100%); 
     background-image: -moz-linear-gradient(#e1e4e5 0%, #c3c8cc 100%); 
     background-image: -o-linear-gradient(#e1e4e5 0%, #c3c8cc 100%); 
     background-image: linear-gradient(#e1e4e5 0%, #c3c8cc 100%);
-    margin-right: 15%;
+}
+
+.text p {
+    display: inline-block;
+    text-align: left;
+    
 }
 
 /* FILEUPLOAD */

@@ -103,13 +103,13 @@ function workMessage(msg) {
         output += '<div class="message_header date ' + dateclass + '">' + date.toLocaleDateString() + '</div>';
         //output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
         output += '<div class="message_header time">' + date.getHours() + ":" + date.getMinutes() + '</div>';
-        output += '<div class="text">';
+        output += '<div class="text"><p>';
         if (msg['file']) {
             output += msg['file'];
         } else {
             output += msg['text'];
         }
-        output += '</div>';
+        output += '</p></div>';
         output += '</div>';
 
         //select messageboxes
