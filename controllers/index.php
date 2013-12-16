@@ -4,6 +4,7 @@ require_once 'app/controllers/studip_controller.php';
 
 class IndexController extends StudipController {
 
+    const MESSAGES_LOAD = 50; //how many messages should be loaded on first open and on backscroll
     const KEEP_ALIVE = false;
     const TIMEOUT = 15; // seconds to timeout
     const RELOAD = 800000; // microseconds to reload
@@ -100,7 +101,11 @@ class IndexController extends StudipController {
     }
 
     public function loadMessages_action() {
-        $messages = ConversationMessage::findByConversation_id(Request::get('conversation'));
+        if ($last = Request::get('lastMessage')) {
+            $where = 'WHERE id < '.$last;
+        }
+        $messages = ConversationMessage::findBySQL('conversation_id = ? ORDER BY mkdate DESC '.$where.' LIMIT ?', array(Request::get('conversation'), self::MESSAGES_LOAD));
+        //$messages = ConversationMessage::findByConversation_id(Request::get('conversation'));
         $messages = SimpleORMapCollection::createFromArray($messages);
         foreach ($messages->orderBy('mkdate ASC') as $msg) {
             $msg->decode($result);

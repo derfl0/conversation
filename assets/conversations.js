@@ -16,8 +16,8 @@ function newConversation(paticipant, realname) {
         url: urlLoadUsername,
         data: {username: paticipant}
     }).done(function(msg) {
-       $('#username').html(msg);
-       $('#user_1').val('');
+        $('#username').html(msg);
+        $('#user_1').val('');
     });
     conversation_id = null;
     username = paticipant;
@@ -121,9 +121,9 @@ function workMessage(msg) {
         output += '</div>';
 
         //select messageboxes
-        var olderMessages = $(".conversationdisplay:visible .message").filter(function( index ) {
-    return $( this ).attr( "data-date" ) > msg['date'];
-  });
+        var olderMessages = $(".conversationdisplay:visible .message").filter(function(index) {
+            return $(this).attr("data-date") > msg['date'];
+        });
         if (olderMessages.length > 0) {
             olderMessages.first().before(output);
         } else {
@@ -232,6 +232,16 @@ function setMessageSender() {
     });
 }
 
+/**
+ * Function to call loading old messages if we reach the top
+ * @returns {undefined}
+ */
+function scrollOldMessages() {
+    $(window).scroll(function() {
+        $("#debug").html('OMG YOU SCROLLED°!!!!!');
+    });
+}
+
 $(document).ready(function() {
     setUserSearch();
     setMessageSender();
@@ -239,4 +249,5 @@ $(document).ready(function() {
     $('.conversation:first').click();
     recalcSize();
     //update();
+    scrollOldMessages();
 });
