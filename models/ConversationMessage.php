@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Description of ConversationMessage
  *
@@ -22,12 +23,8 @@ class ConversationMessage extends SimpleORMap {
         $conversation->file = $file;
         $conversation->store();
         PersonalNotifications::add(
-                Conversation::getOtherUser($conv), 
-                PluginEngine::getUrl('conversations/index'), 
-                $GLOBALS['user']->getFullName()." "._('hat dir eine Nachricht geschrieben'), 
-                "conversation",
-                Avatar::getAvatar($GLOBALS['user']->id)->getURL(Avatar::MEDIUM)
-                );
+                Conversation::getOtherUser($conv), PluginEngine::getUrl('conversations/index'), $GLOBALS['user']->getFullName() . " " . _('hat dir eine Nachricht geschrieben'), "conversation", Avatar::getAvatar($GLOBALS['user']->id)->getURL(Avatar::MEDIUM)
+        );
         return $conversation;
     }
 
@@ -40,25 +37,35 @@ class ConversationMessage extends SimpleORMap {
             /* Videotag not really supported :-/
              * 
              * 
-            if (strpos($doc->description, "video") !== false) {
-                $filelink = '<video width="320" height="240" controls>
-  <source src="'.GetDownloadLink($this->file, $doc->filename).'" type="'.$doc->description.'">
-</video>';
-            } else*/ if (strpos($doc->description, "image") !== false) {
+              if (strpos($doc->description, "video") !== false) {
+              $filelink = '<video width="320" height="240" controls>
+              <source src="'.GetDownloadLink($this->file, $doc->filename).'" type="'.$doc->description.'">
+              </video>';
+              } else */ if (strpos($doc->description, "image") !== false) {
                 $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'><img class='file' src='" . GetDownloadLink($this->file, $doc->filename) . "' /></a>";
             } else {
                 $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'>" . $doc->filename . Assets::img('/images/icons/48/grey/file.png') . "</a>";
             }
         }
-
-        $obj = array(
-            'id' => $this->message_id,
-            'conversation' => $this->conversation_id,
-            'author' => utf8_encode($user->username),
-            'text' => utf8_encode(nl2br(formatReady($this->text))),
-            'file' => $filelink,
-            'date' => $this->mkdate
-        );
+        if (UpdateInformation::isCollecting()) {
+            $obj = array(
+                'id' => $this->message_id,
+                'conversation' => $this->conversation_id,
+                'author' => $user->username,
+                'text' => nl2br(formatReady($this->text)),
+                'file' => $filelink,
+                'date' => $this->mkdate
+            );
+        } else {
+            $obj = array(
+                'id' => $this->message_id,
+                'conversation' => $this->conversation_id,
+                'author' => utf8_encode($user->username),
+                'text' => utf8_encode(nl2br(formatReady($this->text))),
+                'file' => $filelink,
+                'date' => $this->mkdate
+            );
+        }
         $into['messages'][] = $obj;
     }
 
