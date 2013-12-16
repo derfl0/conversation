@@ -125,6 +125,8 @@ class Conversation extends SimpleORMap {
 
     public static function getOnlineConversations() {
         
+        $result = array();
+        
         //stop complexity if we have started a conversation we are allowed to see the user
         $sql = "SELECT user_id FROM user_online WHERE last_lifesign > ?";
         $stmt = DBManager::get()->prepare($sql);
