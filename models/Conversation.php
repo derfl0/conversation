@@ -109,7 +109,8 @@ class Conversation extends SimpleORMap {
             LEFT JOIN message_user u3 ON (u3.message_id = u.message_id AND u3.user_id != u.user_id AND u3.user_id != u2.user_id)
             WHERE u.user_id = ?
             AND u2.user_id = ?
-            AND u3.user_id IS NULL");
+            AND u3.user_id IS NULL
+            ORDER BY message.mkdate ASC");
         $stmt->execute(array($this->user_id, $other));
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $conversation = new ConversationMessage();

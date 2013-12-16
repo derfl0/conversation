@@ -24,20 +24,29 @@ function newConversation(paticipant, realname) {
     $('#main').show();
 }
 
-function loadMessages() {
+function loadMessages(last) {
     $.ajax({
         type: "POST",
         url: urlLoadMessages,
-        data: {conversation: conversation_id},
+        data: {conversation: conversation_id,
+            lastMessage: last},
         dataType: "json"
     }).done(function(msg) {
+        var scrollTop = $('.scroll').scrollTop();
+        var height = $('.scroll')[0].scrollHeight;
         workJSON(msg);
+        $('.scroll').scrollTop($('.scroll')[0].scrollHeight - height + scrollTop);
+        if (msg && msg['messages'] && msg['messages'].length > 1) {
+            scrollOldMessages();
+        }
     });
 }
 
 STUDIP.conversations = {
     update: function(json) {
+        scrollScreen(false);
         workJSON(json);
+        scrollScreen(true);
     }
 }
 
@@ -53,11 +62,9 @@ function workJSON(json) {
         }
         var messages = json['messages'];
         if (messages) {
-            scrollScreen(false);
             $.each(messages, function() {
                 workMessage(this);
             });
-            scrollScreen(true);
         }
         var online = json['online'];
         if (online) {
@@ -170,6 +177,10 @@ function startConversation() {
     }
 }
 
+function currentConversation() {
+    return $("div .conversationdisplay[data-id='" + conversation_id + "']");
+}
+
 function loadConversations() {
     $.ajax({
         type: "POST",
@@ -192,7 +203,9 @@ function sendMessage() {
         data: {conversation: conversation_id, message: message, username: username},
         dataType: "json"
     }).done(function(msg) {
+        scrollScreen(false);
         workJSON(msg);
+        scrollScreen(true);
     });
 }
 
@@ -237,8 +250,11 @@ function setMessageSender() {
  * @returns {undefined}
  */
 function scrollOldMessages() {
-    $(window).scroll(function() {
-        $("#debug").html('OMG YOU SCROLLED°!!!!!');
+    $('.scroll').scroll(function() {
+        if ($(this).scrollTop() < 500) {
+            $(this).unbind('scroll');
+            loadMessages(currentConversation().find('.message:first').attr('data-message_id'));
+        }
     });
 }
 
@@ -248,6 +264,4 @@ $(document).ready(function() {
     applyConversation();
     $('.conversation:first').click();
     recalcSize();
-    //update();
-    scrollOldMessages();
 });

@@ -4,7 +4,7 @@ require_once 'app/controllers/studip_controller.php';
 
 class IndexController extends StudipController {
 
-    const MESSAGES_LOAD = 50; //how many messages should be loaded on first open and on backscroll
+    const MESSAGES_LOAD = 25; //how many messages should be loaded on first open and on backscroll
 
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);
@@ -73,9 +73,9 @@ class IndexController extends StudipController {
      */
     public function loadMessages_action() {
         if ($last = Request::get('lastMessage')) {
-            $where = 'WHERE id < ' . $last;
+            $where = "AND message_id < '$last'";
         }
-        $messages = ConversationMessage::findBySQL('conversation_id = ? ORDER BY mkdate DESC ' . $where . ' LIMIT ?', array(Request::get('conversation'), self::MESSAGES_LOAD));
+        $messages = ConversationMessage::findBySQL('conversation_id = ? ' . $where . ' ORDER BY message_id ASC LIMIT ?', array(Request::get('conversation'), self::MESSAGES_LOAD));
         $messages = SimpleORMapCollection::createFromArray($messages);
         foreach ($messages->orderBy('mkdate ASC') as $msg) {
             $msg->decode($result);
