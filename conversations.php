@@ -20,23 +20,23 @@ require_once 'bootstrap.php';
  * @category    Stud.IP
  */
 class Conversations extends StudipPlugin implements SystemPlugin {
-    
+
     //Delay between onlinechecks
     const ONLINE_CHECK_DELAY = 20;
 
     function __construct() {
         parent::__construct();
-        if (!Request::isXhr()) {
+        if (UpdateInformation::isCollecting()) {
+            $this->update();
+        } else {
             $navigation = Navigation::getItem('/messaging');
             $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('conversations/index'));
             $navigation->addSubNavigation('conversations', $conversation_navi);
 
             // since we dont need to migrate all messages we dont need an admin menu anymore
-            /*if ($GLOBALS['perm']->have_perm('root')) {
-                Navigation::addItem('/admin/config/conversations', new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/admin')));
-            }*/
-        } else {
-            $this->update();
+            /* if ($GLOBALS['perm']->have_perm('root')) {
+              Navigation::addItem('/admin/config/conversations', new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/admin')));
+              } */
         }
     }
 
@@ -57,33 +57,36 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             StudipAutoloader::addAutoloadPath(__DIR__ . '/models');
         } else {
             spl_autoload_register(function ($class) {
-                        include_once __DIR__ . $class . '.php';
-                    });
+                include_once __DIR__ . $class . '.php';
+            });
         }
     }
 
     private function update() {
-        $this->setupAutoload();
-        if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
-            foreach ($updated as $updatedConv) {
-                $updatedConv->activate();
-                $updatedConv->decode($result);
-                $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
-                $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
-                $messages = SimpleORMapCollection::createFromArray($messages);
-                foreach ($messages->orderBy('mkdate ASC') as $message) {
-                    $message->decode($result);
+        if (stripos(Request::get("page"), "plugins.php/conversations") !== false) {
+            $this->setupAutoload();
+            if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
+                foreach ($updated as $updatedConv) {
+                    $updatedConv->activate();
+                    $updatedConv->decode($result);
+                    $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
+                    $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
+                    $messages = SimpleORMapCollection::createFromArray($messages);
+                    foreach ($messages->orderBy('mkdate ASC') as $message) {
+                        $message->decode($result);
+                    }
                 }
+                // update the send of the last update
+                $_SESSION['conversations']['last_update'] = time();
             }
-            // update the send of the last update
-            $_SESSION['conversations']['last_update'] = time();
+            if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
+                $_SESSION['conversations']['last_onlinecheck'] = time();
+                $result['online'] = Conversation::getOnlineConversations();
+            }
+            UpdateInformation::setInformation("conversations.update", $result);
         }
-        if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
-            $_SESSION['conversations']['last_onlinecheck'] = time();
-            $result['online'] = Conversation::getOnlineConversations();
-        }
-        UpdateInformation::setInformation("conversations.update", $result);
     }
 
 }
+
 ?>
