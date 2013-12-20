@@ -65,6 +65,7 @@ function workJSON(json) {
             $.each(messages, function() {
                 workMessage(this);
             });
+            updateDateClass();
         }
         var online = json['online'];
         if (online) {
@@ -140,6 +141,17 @@ function workMessage(msg) {
     }
 }
 
+function updateDateClass() {
+    currentConversation().find('.first').removeClass('first');
+    var oldDateString;
+    $.each(currentConversation().find('.date'), function() {
+        if ($(this).html() !== oldDateString) {
+        $(this).addClass('first');
+        oldDateString = $(this).html();
+        } 
+    });
+}
+
 function updateDate(conversation, date) {
     var div = $("div [data-conversation_id='" + conversation + "']");
     if (div.attr('data-date') < date) {
@@ -166,6 +178,7 @@ function clickConversation(obj) {
     obj.removeClass('newMessage');
     $('.conversation').removeClass('clicked');
     obj.addClass('clicked');
+    updateDateClass();
 }
 
 function startConversation() {

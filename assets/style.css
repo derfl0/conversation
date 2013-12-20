@@ -50,6 +50,7 @@ color: #74b962;
     text-align: center;
     color: #879198;
     border-bottom: #e1e4e5 solid thin;
+    display: none;
 }
 
 .time {
@@ -57,8 +58,8 @@ color: #74b962;
     color: #a5adb2;
 }
 
-.second {
-    display: none;
+.first {
+    display: inherit;
 }
 
 .mine .time {
