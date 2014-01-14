@@ -35,6 +35,8 @@ function loadMessages(last) {
         var scrollTop = $('.scroll').scrollTop();
         var height = $('.scroll')[0].scrollHeight;
         workJSON(msg);
+
+        // adjust scrolling to get it back to the original position
         $('.scroll').animate({
             scrollTop: ($('.scroll')[0].scrollHeight - height + scrollTop)
         }, 0, function() {
@@ -169,29 +171,47 @@ function updateDate(conversation, date) {
 
 function applyConversation() {
     $('.new_conv').click(function() {
+        
+        //we loaded manually so dont auto scrollback
+        $('.scroll').unbind('scroll');
         clickConversation($(this));
     });
     $('.new_conv').removeClass('new_conv');
 }
 
 function clickConversation(obj) {
+    //save scroll top to div
+    currentConversation().attr('data-scroll', $('.scroll').scrollTop());
+
     conversation_id = obj.attr('data-conversation_id');
     $('#username').html(obj.html());
-    startConversation();
-    loadMessages();
+    if (startConversation()) {
+        loadMessages();
+    } else {
+        $('.scroll').animate({scrollTop: currentConversation().attr('data-scroll')}, 100, function() {
+            scrollOldMessages();
+        });
+    }
     obj.removeClass('newMessage');
     $('.conversation').removeClass('clicked');
     obj.addClass('clicked');
     updateDateClass();
 }
 
+/**
+ * Starts a conversation with the global conversation_id
+ * 
+ * @returns boolean true if it is a new conversation, false if an old one
+ */
 function startConversation() {
     $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
     if ($("div [data-id='" + conversation_id + "']").length <= 0) {
         $('#conversation').append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
+        return true;
     } else {
         $("div [data-id='" + conversation_id + "']").show(200);
     }
+    return false;
 }
 
 function currentConversation() {
