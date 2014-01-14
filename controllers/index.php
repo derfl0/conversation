@@ -47,7 +47,7 @@ class IndexController extends StudipController {
             }
 
             // could we really find a conversation?
-            if ($conversation_id) {
+            if ($conversation_id && trim($msg) != "") {
                 // if we got a file upload it
                 if ($_FILES['file']) {
                     $new = StudipDocument::createWithFile($_FILES['file']['tmp_name'], array(
@@ -75,7 +75,7 @@ class IndexController extends StudipController {
         if ($last = Request::get('lastMessage')) {
             $where = "AND message_id < '$last'";
         }
-        $messages = ConversationMessage::findBySQL('conversation_id = ? ' . $where . ' ORDER BY message_id ASC LIMIT ?', array(Request::get('conversation'), self::MESSAGES_LOAD));
+        $messages = ConversationMessage::findBySQL('conversation_id = ? ' . $where . ' ORDER BY message_id DESC LIMIT ?', array(Request::get('conversation'), self::MESSAGES_LOAD));
         $messages = SimpleORMapCollection::createFromArray($messages);
         foreach ($messages->orderBy('mkdate ASC') as $msg) {
             $msg->decode($result);
