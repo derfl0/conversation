@@ -109,7 +109,7 @@ function handleFileUpload(files, obj)
 
 $(document).ready(function()
 {
-    var obj = $(".scroll");
+    var obj = $("#main");
     obj.on('dragenter', function(e)
     {
         e.stopPropagation();
