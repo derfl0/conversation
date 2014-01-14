@@ -35,10 +35,14 @@ function loadMessages(last) {
         var scrollTop = $('.scroll').scrollTop();
         var height = $('.scroll')[0].scrollHeight;
         workJSON(msg);
-        $('.scroll').scrollTop($('.scroll')[0].scrollHeight - height + scrollTop);
-        if (msg && msg['messages'] && msg['messages'].length > 1) {
-            scrollOldMessages();
-        }
+        $('.scroll').animate({
+            scrollTop: ($('.scroll')[0].scrollHeight - height + scrollTop)
+        }, 0, function() {
+            if (msg && msg['messages'] && msg['messages'].length > 1) {
+                scrollOldMessages();
+            }
+        });
+
     });
 }
 
@@ -146,9 +150,9 @@ function updateDateClass() {
     var oldDateString;
     $.each(currentConversation().find('.date'), function() {
         if ($(this).html() !== oldDateString) {
-        $(this).addClass('first');
-        oldDateString = $(this).html();
-        } 
+            $(this).addClass('first');
+            oldDateString = $(this).html();
+        }
     });
 }
 

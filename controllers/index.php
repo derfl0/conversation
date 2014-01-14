@@ -4,7 +4,7 @@ require_once 'app/controllers/studip_controller.php';
 
 class IndexController extends StudipController {
 
-    const MESSAGES_LOAD = 25; //how many messages should be loaded on first open and on backscroll
+    const MESSAGES_LOAD = 50; //how many messages should be loaded on first open and on backscroll
 
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);
