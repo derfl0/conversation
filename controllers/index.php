@@ -32,7 +32,7 @@ class IndexController extends StudipController {
      * Ajaxaction to send a message
      */
     public function send_action() {
-        if ($_FILES['file'] || $msg = Request::get('message')) {
+        if ($_FILES['file'] || ($msg = Request::get('message')) && trim($msg) != "" ) {
 
             // parse us some conversation id
             if (!$conversation_id = Request::get('conversation')) {
@@ -47,7 +47,7 @@ class IndexController extends StudipController {
             }
 
             // could we really find a conversation?
-            if ($conversation_id && trim($msg) != "") {
+            if ($conversation_id) {
                 // if we got a file upload it
                 if ($_FILES['file']) {
                     $new = StudipDocument::createWithFile($_FILES['file']['tmp_name'], array(
