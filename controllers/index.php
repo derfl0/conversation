@@ -27,7 +27,7 @@ class IndexController extends StudipController {
         $_SESSION['conversations']['last_onlinecheck'] = 0;
         $this->setInfoBox();
     }
-
+    
     /**
      * Ajaxaction to send a message
      */

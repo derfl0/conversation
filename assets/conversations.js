@@ -2,6 +2,7 @@ var conversation_id = null;
 var username = '';
 var displayUsername = '';
 var fullheight = 420;
+var conversations = new Array();
 $(window).resize(recalcSize);
 function recalcSize() {
     $(".scroll").height($(window).height() - fullheight);
@@ -203,6 +204,7 @@ function clickConversation(obj) {
  * @returns boolean true if it is a new conversation, false if an old one
  */
 function startConversation() {
+    conversations[conversation_id] = new Conversation(conversation_id);
     $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
     if ($("div [data-id='" + conversation_id + "']").length <= 0) {
         $('#conversation').append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');

@@ -1,9 +1,8 @@
-<div id="debug" style="background-color: #c4c4c4; position: fixed;"></div>
 <div id="main" <?= $hasConversations ? "" : "style='display: none;'" ?>>
     <h1 id="head"><?= _('Gespräch mit') ?> <span id="username"></span></h1>
     <div class="scroll">
         <div id="conversation"></div>
-    </div>
+        </div>
     <div class="message_footer">
         <div class="enterbutton">           
             <label>Senden mit Enter <input type="checkbox" id="sendWithEnter" CHECKED /></label><br>

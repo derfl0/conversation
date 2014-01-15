@@ -1,3 +1,14 @@
+#main {
+    height: 100%;
+    position: relative;
+}
+
+.message_footer {
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+}
+
 #conversation {
     height: 0px;
 
