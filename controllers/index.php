@@ -19,7 +19,7 @@ class IndexController extends StudipController {
      * Actual interface
      */
     public function index_action() {
-        
+
         //clear session savings
         $_SESSION['conversations']['online'] = array();
         $_SESSION['conversations']['conversations'] = array();
@@ -69,6 +69,23 @@ class IndexController extends StudipController {
     }
 
     /**
+     * Create group action
+     */
+    public function newgroup_action() {
+        if (Request::submitted('create') && $groupname = trim(Request::get('groupname')) && $members = Request::getArray('groupuser')) {
+            $groupmembers = User::findAndMapMany('username', $members);
+            echo "<pre>";
+            var_dump($groupmembers);
+            die;
+        }
+        Navigation::activateItem('messaging/conversations');
+        $quicksearch = QuickSearch::get("user", new StandardSearch("username"))
+                ->setInputStyle("width: 300px");
+        $quicksearch->fireJSFunctionOnSelect('addMember');
+        $this->quicksearch = $quicksearch->render();
+    }
+
+    /**
      * Loading old messages from the database
      */
     public function loadMessages_action() {
@@ -108,7 +125,8 @@ class IndexController extends StudipController {
      */
     private function setInfoBox() {
         $this->setInfoBoxImage('infobox/studygroup.jpg');
-        $this->addToInfobox(_('Suche'), $this->createQuickSearch(), 'icons/16/blue/search.png');
+        $this->addToInfobox(_('Neues Gespr?ch'), $this->createQuickSearch(), 'icons/16/black/search.png');
+        $this->addToInfobox(_('Neues Gespr?ch'), '<a title="Neue Gruppe anlegen" href="' . $this->url_for('index/newgroup') . '" rel="lightbox2">' . _('Neue Gruppe') . '</a>', 'icons/16/black/group2.png');
         if ($convs = Conversation::updates()) {
             $this->hasConversations = true;
             foreach ($convs as $conv) {
@@ -116,9 +134,9 @@ class IndexController extends StudipController {
                 $conversations .= "<div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>$conv->name</div>";
             }
         } else {
-            $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
+            $conversations = '<div id="no_talks">' . _('Keine Gespr?che') . '</div>';
         }
-        $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
+        $this->addToInfobox(_('Gespr?che'), "<div id='talks'>$conversations</div>");
     }
 
     /**
