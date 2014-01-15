@@ -1,7 +1,6 @@
 var conversation_id = null;
 var username = '';
 var displayUsername = '';
-var reloadTimer = 3000;
 var fullheight = 420;
 $(window).resize(recalcSize);
 function recalcSize() {
@@ -246,27 +245,18 @@ function sendMessage() {
     });
 }
 
-function update() {
-    $.ajax({
-        type: "POST",
-        url: urlUpdate,
-        data: {},
-        dataType: "json"
-    }).done(function(msg) {
-        workJSON(msg);
-    }).always(function() {
-        setTimeout(function() {
-            update();
-        }, reloadTimer);
-    });
-}
-
+/**
+ * Clear usersearch on click
+ */
 function setUserSearch() {
     $("#user_1").click(function() {
         $(this).val('');
     });
 }
 
+/**
+ * Activate active message sending
+ */
 function setMessageSender() {
     $("#message_input").keyup(function(e) {
         e = e || event;
@@ -295,6 +285,9 @@ function scrollOldMessages() {
     });
 }
 
+/**
+ * Things we actually need to do after loading
+ */
 $(document).ready(function() {
     setUserSearch();
     setMessageSender();
