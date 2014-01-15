@@ -32,11 +32,6 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             $navigation = Navigation::getItem('/messaging');
             $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('conversations/index'));
             $navigation->addSubNavigation('conversations', $conversation_navi);
-
-            // since we dont need to migrate all messages we dont need an admin menu anymore
-            /* if ($GLOBALS['perm']->have_perm('root')) {
-              Navigation::addItem('/admin/config/conversations', new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/admin')));
-              } */
         }
     }
 
