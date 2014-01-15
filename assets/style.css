@@ -20,8 +20,8 @@
 
 .online:after
 { 
-content:" \2022";
-color: #74b962;
+    content:" \2022";
+    color: #74b962;
 }
 
 .conversation:hover {
@@ -111,7 +111,7 @@ color: #74b962;
 .text p {
     display: inline-block;
     text-align: left;
-    
+
 }
 
 /* FILEUPLOAD */
@@ -181,4 +181,8 @@ color: #74b962;
     border-left-width: 2px;
     padding-left: 2px;
     border-color: #536d96;
+}
+
+p:empty {
+    display: none;
 }
