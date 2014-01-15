@@ -271,7 +271,7 @@ function setMessageSender() {
     $("#message_input").keyup(function(e) {
         e = e || event;
         if (e.keyCode === 13) {
-            if ($('#sendWithEnter').prop('checked') !== e.ctrlKey) {
+            if ($('#sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey) ) {
                 sendMessage();
             }
         }
