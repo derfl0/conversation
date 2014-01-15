@@ -16,7 +16,6 @@
 </div>
 <script>
     var urlSend = '<?= $controller->url_for('index/send') ?>';
-    var urlLoadConversations = '<?= $controller->url_for('index/loadConversations') ?>';
     var urlLoadMessages = '<?= $controller->url_for('index/loadMessages') ?>';
     var urlLoadUsername = '<?= $controller->url_for('index/nameFromUsername') ?>';
     var myId = '<?= $GLOBALS['user']->username ?>';

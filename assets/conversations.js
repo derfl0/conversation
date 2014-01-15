@@ -217,18 +217,6 @@ function currentConversation() {
     return $("div .conversationdisplay[data-id='" + conversation_id + "']");
 }
 
-function loadConversations() {
-    $.ajax({
-        type: "POST",
-        url: urlLoadConversations,
-        data: {},
-        dataType: "json"
-    }).done(function(msg) {
-        workJSON(msg);
-        applyConversation();
-    });
-}
-
 function sendMessage() {
     var message = $('#message_input').val();
     $('#message_input').val('');
