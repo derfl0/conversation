@@ -2,10 +2,6 @@ var conversation_id = null;
 var username = '';
 var displayUsername = '';
 var fullheight = 420;
-$(window).resize(recalcSize);
-function recalcSize() {
-    $(".scroll").height($(window).height() - fullheight);
-}
 
 function newConversation(paticipant, realname) {
     $("div .conversationdisplay").hide(200);
@@ -48,6 +44,14 @@ function loadMessages(last) {
 }
 
 STUDIP.conversations = {
+    startup: function() {
+        $(window).resize(STUDIP.conversations.recalcSize);
+        STUDIP.conversations.recalcSize();
+        setUserSearch();
+        setMessageSender();
+        applyConversation();
+        $('.conversation:first').click();
+    },
     update: function(json) {
         scrollScreen(false);
         workJSON(json);
@@ -58,6 +62,9 @@ STUDIP.conversations = {
     },
     currentConversation: function() {
         return STUDIP.conversations.conversation(conversation_id);
+    },
+    recalcSize: function() {
+        $(".scroll").height($(window).height() - fullheight);
     }
 }
 
@@ -70,6 +77,35 @@ STUDIP.conversations.message = {
             return "mine";
         }
         return "other";
+    },
+    work: function(msg) {
+        if (!STUDIP.conversations.message.exists(msg['id'])) {
+            var date = new Date(msg['date'] * 1000);
+            var classtype = STUDIP.conversations.message.getAuthorType(msg['author']);
+            var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '" data-date="' + msg['date'] + '">';
+            output += '<div class="message_header date">' + date.toLocaleDateString() + '</div>';
+            //output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
+            output += '<div class="message_header time">' + date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2) + '</div>';
+            output += '<div class="text"><p>';
+            if (msg['file']) {
+                output += msg['file'];
+            } else {
+                output += msg['text'];
+            }
+            output += '</p></div>';
+            output += '</div>';
+
+            //select messageboxes
+            var olderMessages = $(".conversationdisplay[data-id='" + msg['conversation'] + "'] .message").filter(function(index) {
+                return $(this).attr("data-date") > msg['date'];
+            });
+            if (olderMessages.length > 0) {
+                olderMessages.first().before(output);
+            } else {
+                $("div.conversationdisplay[data-id='" + msg['conversation'] + "']").append(output);
+            }
+            updateDate(msg['conversation'], msg['date']);
+        }
     }
 }
 
@@ -86,7 +122,7 @@ function workJSON(json) {
         var messages = json['messages'];
         if (messages) {
             $.each(messages, function() {
-                workMessage(this);
+                STUDIP.conversations.message.work(this);
             });
             updateDateClass();
         }
@@ -121,36 +157,6 @@ function workConversation(conv) {
         }
     }
     updateDate(conv['id'], conv['date']);
-}
-
-function workMessage(msg) {
-    if (!STUDIP.conversations.message.exists(msg['id'])) {
-        var date = new Date(msg['date'] * 1000);
-        var classtype = STUDIP.conversations.message.getAuthorType(msg['author']);
-        var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '" data-date="' + msg['date'] + '">';
-        output += '<div class="message_header date">' + date.toLocaleDateString() + '</div>';
-        //output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
-        output += '<div class="message_header time">' + date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2) + '</div>';
-        output += '<div class="text"><p>';
-        if (msg['file']) {
-            output += msg['file'];
-        } else {
-            output += msg['text'];
-        }
-        output += '</p></div>';
-        output += '</div>';
-
-        //select messageboxes
-        var olderMessages = $(".conversationdisplay[data-id='" + msg['conversation'] + "'] .message").filter(function(index) {
-            return $(this).attr("data-date") > msg['date'];
-        });
-        if (olderMessages.length > 0) {
-            olderMessages.first().before(output);
-        } else {
-            $("div.conversationdisplay[data-id='" + msg['conversation'] + "']").append(output);
-        }
-        updateDate(msg['conversation'], msg['date']);
-    }
 }
 
 function updateDateClass() {
@@ -284,9 +290,5 @@ function scrollOldMessages() {
  * Things we actually need to do after loading
  */
 $(document).ready(function() {
-    setUserSearch();
-    setMessageSender();
-    applyConversation();
-    $('.conversation:first').click();
-    recalcSize();
+    STUDIP.conversations.startup();
 });
