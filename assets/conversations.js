@@ -47,8 +47,10 @@ STUDIP.conversations = {
     startup: function() {
         $(window).resize(STUDIP.conversations.recalcSize);
         STUDIP.conversations.recalcSize();
-        setUserSearch();
-        setMessageSender();
+        $("#user_1").click(function() {
+            $(this).val('');
+        });
+        STUDIP.conversations.setMessageSender();
         applyConversation();
         $('.conversation:first').click();
     },
@@ -65,6 +67,20 @@ STUDIP.conversations = {
     },
     recalcSize: function() {
         $(".scroll").height($(window).height() - fullheight);
+    },
+    setMessageSender: function() {
+        $("#message_input").keyup(function(e) {
+            e = e || event;
+            if (e.keyCode === 13) {
+                if ($('#sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
+                    sendMessage();
+                }
+            }
+            return true;
+        });
+        $(".button[name='send']").click(function() {
+            sendMessage();
+        });
     }
 }
 
@@ -243,33 +259,6 @@ function sendMessage() {
         scrollScreen(false);
         workJSON(msg);
         scrollScreen(true);
-    });
-}
-
-/**
- * Clear usersearch on click
- */
-function setUserSearch() {
-    $("#user_1").click(function() {
-        $(this).val('');
-    });
-}
-
-/**
- * Activate active message sending
- */
-function setMessageSender() {
-    $("#message_input").keyup(function(e) {
-        e = e || event;
-        if (e.keyCode === 13) {
-            if ($('#sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
-                sendMessage();
-            }
-        }
-        return true;
-    });
-    $(".button[name='send']").click(function() {
-        sendMessage();
     });
 }
 
