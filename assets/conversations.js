@@ -52,6 +52,18 @@ STUDIP.conversations = {
         scrollScreen(false);
         workJSON(json);
         scrollScreen(true);
+    },
+    conversation: function(id){
+        return $("div.conversationdisplay[data-id='" + id + "']");
+    },
+    currentConversation: function() {
+        return STUDIP.conversations.conversation(conversation_id);
+    }
+}
+
+STUDIP.conversations.message = {
+    exists: function(id) {
+        return $("div[data-message_id='" + id + "']").length > 0;
     }
 }
 
@@ -106,7 +118,7 @@ function workConversation(conv) {
 }
 
 function workMessage(msg) {
-    if ($("div [data-message_id='" + msg['id'] + "']").length <= 0) {
+    if (!STUDIP.conversations.message.exists(msg['id'])) {
         var date = new Date(msg['date'] * 1000);
         // check if the date is the first time displayed
         if ($(".conversationdisplay:visible div:contains('" + date.toLocaleDateString() + "')").length <= 0) {
