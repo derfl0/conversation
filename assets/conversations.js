@@ -53,7 +53,7 @@ STUDIP.conversations = {
         workJSON(json);
         scrollScreen(true);
     },
-    conversation: function(id){
+    conversation: function(id) {
         return $("div.conversationdisplay[data-id='" + id + "']");
     },
     currentConversation: function() {
@@ -64,6 +64,12 @@ STUDIP.conversations = {
 STUDIP.conversations.message = {
     exists: function(id) {
         return $("div[data-message_id='" + id + "']").length > 0;
+    },
+    getAuthorType: function(author) {
+        if (author === myId) {
+            return "mine";
+        }
+        return "other";
     }
 }
 
@@ -120,20 +126,9 @@ function workConversation(conv) {
 function workMessage(msg) {
     if (!STUDIP.conversations.message.exists(msg['id'])) {
         var date = new Date(msg['date'] * 1000);
-        // check if the date is the first time displayed
-        if ($(".conversationdisplay:visible div:contains('" + date.toLocaleDateString() + "')").length <= 0) {
-            var dateclass = "first";
-        } else {
-            var dateclass = "second";
-        }
-// check if it is a message from me or from another
-        if (msg['author'] === myId) {
-            var classtype = "mine";
-        } else {
-            var classtype = "other";
-        }
+        var classtype = STUDIP.conversations.message.getAuthorType(msg['author']);
         var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '" data-date="' + msg['date'] + '">';
-        output += '<div class="message_header date ' + dateclass + '">' + date.toLocaleDateString() + '</div>';
+        output += '<div class="message_header date">' + date.toLocaleDateString() + '</div>';
         //output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
         output += '<div class="message_header time">' + date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2) + '</div>';
         output += '<div class="text"><p>';
@@ -146,7 +141,7 @@ function workMessage(msg) {
         output += '</div>';
 
         //select messageboxes
-        var olderMessages = $(".conversationdisplay[data-id='" + msg['conversation']+"'] .message").filter(function(index) {
+        var olderMessages = $(".conversationdisplay[data-id='" + msg['conversation'] + "'] .message").filter(function(index) {
             return $(this).attr("data-date") > msg['date'];
         });
         if (olderMessages.length > 0) {
@@ -182,7 +177,7 @@ function updateDate(conversation, date) {
 
 function applyConversation() {
     $('.new_conv').click(function() {
-        
+
         //we loaded manually so dont auto scrollback
         $('.scroll').unbind('scroll');
         clickConversation($(this));
@@ -261,7 +256,7 @@ function setMessageSender() {
     $("#message_input").keyup(function(e) {
         e = e || event;
         if (e.keyCode === 13) {
-            if ($('#sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey) ) {
+            if ($('#sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
                 sendMessage();
             }
         }
