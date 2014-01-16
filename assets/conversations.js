@@ -2,7 +2,6 @@ var conversation_id = null;
 var username = '';
 var displayUsername = '';
 var fullheight = 420;
-var conversations = new Array();
 $(window).resize(recalcSize);
 function recalcSize() {
     $(".scroll").height($(window).height() - fullheight);
@@ -135,13 +134,13 @@ function workMessage(msg) {
         output += '</div>';
 
         //select messageboxes
-        var olderMessages = $(".conversationdisplay:visible .message").filter(function(index) {
+        var olderMessages = $(".conversationdisplay[data-id='" + msg['conversation']+"'] .message").filter(function(index) {
             return $(this).attr("data-date") > msg['date'];
         });
         if (olderMessages.length > 0) {
             olderMessages.first().before(output);
         } else {
-            $("div [data-id='" + msg['conversation'] + "']").append(output);
+            $("div.conversationdisplay[data-id='" + msg['conversation'] + "']").append(output);
         }
         updateDate(msg['conversation'], msg['date']);
     }
@@ -204,7 +203,6 @@ function clickConversation(obj) {
  * @returns boolean true if it is a new conversation, false if an old one
  */
 function startConversation() {
-    conversations[conversation_id] = new Conversation(conversation_id);
     $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
     if ($("div [data-id='" + conversation_id + "']").length <= 0) {
         $('#conversation').append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
