@@ -48,13 +48,13 @@ STUDIP.conversations = {
             e = e || event;
             if (e.keyCode === 13) {
                 if ($('#sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
-                    sendMessage();
+                    STUDIP.conversations.message.send();
                 }
             }
             return true;
         });
         $(".button[name='send']").click(function() {
-            sendMessage();
+            STUDIP.conversations.message.send();
         });
     },
     loadMessages: function(last) {
@@ -118,8 +118,23 @@ STUDIP.conversations.message = {
             }
             updateDate(msg['conversation'], msg['date']);
         }
+    },
+    send: function() {
+        var message = $('#message_input').val();
+        $('#message_input').val('');
+        $("#user_1").val('');
+        $.ajax({
+            type: "POST",
+            url: urlSend,
+            data: {conversation: conversation_id, message: message, username: username},
+            dataType: "json"
+        }).done(function(msg) {
+            scrollScreen(false);
+            workJSON(msg);
+            scrollScreen(true);
+        });
     }
-}
+};
 
 
 function workJSON(json) {
@@ -172,9 +187,9 @@ function workConversation(conv) {
 }
 
 function updateDateClass() {
-    currentConversation().find('.first').removeClass('first');
+    STUDIP.conversations.currentConversation().find('.first').removeClass('first');
     var oldDateString;
-    $.each(currentConversation().find('.date'), function() {
+    $.each(STUDIP.conversations.currentConversation().find('.date'), function() {
         if ($(this).html() !== oldDateString) {
             $(this).addClass('first');
             oldDateString = $(this).html();
@@ -205,13 +220,13 @@ function applyConversation() {
 
 function clickConversation(obj) {
 //save scroll top to div
-    currentConversation().attr('data-scroll', $('.scroll').scrollTop());
+    STUDIP.conversations.currentConversation().attr('data-scroll', $('.scroll').scrollTop());
     conversation_id = obj.attr('data-conversation_id');
     $('#username').html(obj.html());
     if (startConversation()) {
         STUDIP.conversations.loadMessages();
     } else {
-        $('.scroll').animate({scrollTop: currentConversation().attr('data-scroll')}, 100, function() {
+        $('.scroll').animate({scrollTop: STUDIP.conversations.currentConversation().attr('data-scroll')}, 100, function() {
             scrollOldMessages();
         });
     }
@@ -237,26 +252,6 @@ function startConversation() {
     return false;
 }
 
-function currentConversation() {
-    return $("div .conversationdisplay[data-id='" + conversation_id + "']");
-}
-
-function sendMessage() {
-    var message = $('#message_input').val();
-    $('#message_input').val('');
-    $("#user_1").val('');
-    $.ajax({
-        type: "POST",
-        url: urlSend,
-        data: {conversation: conversation_id, message: message, username: username},
-        dataType: "json"
-    }).done(function(msg) {
-        scrollScreen(false);
-        workJSON(msg);
-        scrollScreen(true);
-    });
-}
-
 /**
  * Function to call loading old messages if we reach the top
  * @returns {undefined}
@@ -265,7 +260,7 @@ function scrollOldMessages() {
     $('.scroll').scroll(function() {
         if ($(this).scrollTop() < 500) {
             $(this).unbind('scroll');
-            STUDIP.conversations.loadMessages(currentConversation().find('.message:first').attr('data-message_id'));
+            STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('.message:first').attr('data-message_id'));
         }
     });
 }
