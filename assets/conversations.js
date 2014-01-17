@@ -1,5 +1,5 @@
 STUDIP.conversations = {
-    fullheight: 420,
+    fullheight: 390,
     username: '',
     current_id: null,
     startup: function() {
