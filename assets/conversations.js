@@ -1,7 +1,6 @@
 var conversation_id = null;
 var username = '';
 var displayUsername = '';
-var fullheight = 420;
 
 function newConversation(paticipant, realname) {
     $("div .conversationdisplay").hide(200);
@@ -44,6 +43,7 @@ function loadMessages(last) {
 }
 
 STUDIP.conversations = {
+    fullheight: 420,
     startup: function() {
         $(window).resize(STUDIP.conversations.recalcSize);
         STUDIP.conversations.recalcSize();
@@ -66,7 +66,7 @@ STUDIP.conversations = {
         return STUDIP.conversations.conversation(conversation_id);
     },
     recalcSize: function() {
-        $(".scroll").height($(window).height() - fullheight);
+        $(".scroll").height($(window).height() - STUDIP.conversations.fullheight);
     },
     setMessageSender: function() {
         $("#message_input").keyup(function(e) {
