@@ -34,11 +34,11 @@ STUDIP.conversations = {
         workJSON(json);
         scrollScreen(true);
     },
-    conversation: function(id) {
+    getConversation: function(id) {
         return $("div.conversationdisplay[data-id='" + id + "']");
     },
     currentConversation: function() {
-        return STUDIP.conversations.conversation(conversation_id);
+        return STUDIP.conversations.getConversation(conversation_id);
     },
     recalcSize: function() {
         $(".scroll").height($(window).height() - STUDIP.conversations.fullheight);
@@ -136,6 +136,18 @@ STUDIP.conversations.message = {
     }
 };
 
+STUDIP.conversations.conversation = {
+    start: function() {
+        $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
+        if ($("div [data-id='" + conversation_id + "']").length <= 0) {
+            $('#conversation').append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
+            return true;
+        } else {
+            $("div [data-id='" + conversation_id + "']").show(200);
+        }
+        return false;
+    }
+};
 
 function workJSON(json) {
     if (json !== null) {
@@ -223,7 +235,7 @@ function clickConversation(obj) {
     STUDIP.conversations.currentConversation().attr('data-scroll', $('.scroll').scrollTop());
     conversation_id = obj.attr('data-conversation_id');
     $('#username').html(obj.html());
-    if (startConversation()) {
+    if (STUDIP.conversations.conversation.start()) {
         STUDIP.conversations.loadMessages();
     } else {
         $('.scroll').animate({scrollTop: STUDIP.conversations.currentConversation().attr('data-scroll')}, 100, function() {
