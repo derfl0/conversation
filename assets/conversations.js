@@ -155,7 +155,19 @@ STUDIP.conversations.conversation = {
         conversation_id = null;
         username = paticipant;
         $('#main').show();
+    },
+    work: function(conv) {
+    $('#no_talks').hide();
+    if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
+        $('#talks').prepend('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
+        STUDIP.conversations.conversation.apply();
+        if (!conversation_id) {
+            $("div [data-conversation_id='" + conv['id'] + "']").click();
+        }
     }
+    updateDate(conv['id'], conv['date']);
+}
+
 };
 
 function workJSON(json) {
@@ -164,7 +176,7 @@ function workJSON(json) {
         if (conversations) {
             $('#main').show();
             $.each(conversations, function() {
-                workConversation(this);
+                STUDIP.conversations.conversation.work(this);
             });
         }
         var messages = json['messages'];
@@ -193,18 +205,6 @@ function scrollScreen(action) {
     } else {
         scrolling = elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight() + 10;
     }
-}
-
-function workConversation(conv) {
-    $('#no_talks').hide();
-    if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
-        $('#talks').prepend('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
-        STUDIP.conversations.conversation.apply();
-        if (!conversation_id) {
-            $("div [data-conversation_id='" + conv['id'] + "']").click();
-        }
-    }
-    updateDate(conv['id'], conv['date']);
 }
 
 function updateDateClass() {
