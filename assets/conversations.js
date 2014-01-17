@@ -16,7 +16,7 @@ STUDIP.conversations = {
     },
     update: function(json) {
         scrollScreen(false);
-        workJSON(json);
+        STUDIP.conversations.work(json);
         scrollScreen(true);
     },
     getConversation: function(id) {
@@ -52,7 +52,7 @@ STUDIP.conversations = {
         }).done(function(msg) {
             var scrollTop = $('.scroll').scrollTop();
             var height = $('.scroll')[0].scrollHeight;
-            workJSON(msg);
+            STUDIP.conversations.work(msg);
             // adjust scrolling to get it back to the original position
             $('.scroll').animate({
                 scrollTop: ($('.scroll')[0].scrollHeight - height + scrollTop)
@@ -62,9 +62,33 @@ STUDIP.conversations = {
                 }
             });
         });
+    },
+    work: function(json) {
+        if (json !== null) {
+            var conversations = json['conversations'];
+            if (conversations) {
+                $('#main').show();
+                $.each(conversations, function() {
+                    STUDIP.conversations.conversation.work(this);
+                });
+            }
+            var messages = json['messages'];
+            if (messages) {
+                $.each(messages, function() {
+                    STUDIP.conversations.message.work(this);
+                });
+                updateDateClass();
+            }
+            var online = json['online'];
+            if (online) {
+                $('.conversation').removeClass('online');
+                $.each(online, function() {
+                    $('.conversation[data-conversation_id="' + this + '"]').addClass('online');
+                });
+            }
+        }
     }
-
-}
+};
 
 STUDIP.conversations.message = {
     exists: function(id) {
@@ -115,7 +139,7 @@ STUDIP.conversations.message = {
             dataType: "json"
         }).done(function(msg) {
             scrollScreen(false);
-            workJSON(msg);
+            STUDIP.conversations.work(msg);
             scrollScreen(true);
         });
     }
@@ -157,44 +181,18 @@ STUDIP.conversations.conversation = {
         $('#main').show();
     },
     work: function(conv) {
-    $('#no_talks').hide();
-    if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
-        $('#talks').prepend('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
-        STUDIP.conversations.conversation.apply();
-        if (!conversation_id) {
-            $("div [data-conversation_id='" + conv['id'] + "']").click();
+        $('#no_talks').hide();
+        if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
+            $('#talks').prepend('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
+            STUDIP.conversations.conversation.apply();
+            if (!conversation_id) {
+                $("div [data-conversation_id='" + conv['id'] + "']").click();
+            }
         }
+        updateDate(conv['id'], conv['date']);
     }
-    updateDate(conv['id'], conv['date']);
-}
 
 };
-
-function workJSON(json) {
-    if (json !== null) {
-        var conversations = json['conversations'];
-        if (conversations) {
-            $('#main').show();
-            $.each(conversations, function() {
-                STUDIP.conversations.conversation.work(this);
-            });
-        }
-        var messages = json['messages'];
-        if (messages) {
-            $.each(messages, function() {
-                STUDIP.conversations.message.work(this);
-            });
-            updateDateClass();
-        }
-        var online = json['online'];
-        if (online) {
-            $('.conversation').removeClass('online');
-            $.each(online, function() {
-                $('.conversation[data-conversation_id="' + this + '"]').addClass('online');
-            });
-        }
-    }
-}
 
 function scrollScreen(action) {
     var elem = $(".scroll");
