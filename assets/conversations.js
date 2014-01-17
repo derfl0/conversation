@@ -110,7 +110,7 @@ STUDIP.conversations = {
 
 STUDIP.conversations.message = {
     exists: function(id) {
-        return $("div[data-message_id='" + id + "']").length > 0;
+        return $("article#" + id).length > 0;
     },
     getAuthorType: function(author) {
         if (author === myId) {
@@ -118,30 +118,37 @@ STUDIP.conversations.message = {
         }
         return "other";
     },
+    getTime: function(msg) {
+        var date = new Date(msg['date'] * 1000);
+        return date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2);
+    },
     work: function(msg) {
         if (!STUDIP.conversations.message.exists(msg['id'])) {
-            var date = new Date(msg['date'] * 1000);
             var classtype = STUDIP.conversations.message.getAuthorType(msg['author']);
-            var output = '<div class="message ' + classtype + '" data-from="' + msg['author'] + '" data-message_id="' + msg['id'] + '" data-date="' + msg['date'] + '">';
-            output += '<div class="message_header date">' + date.toLocaleDateString() + '</div>';
-            //output += '<div class="message_header time">' + date.toLocaleTimeString() + '</div>';
-            output += '<div class="message_header time">' + date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2) + '</div>';
-            output += '<div class="text"><p>';
+
+            var output2 = '<article id="' + msg['id'] + '"  data-date="' + msg['date'] + '" class="message ' + classtype + '">';
+            output2 += '<header>' + msg['author'] + '</header>';
+            output2 += '<time>' + STUDIP.conversations.message.getTime(msg) + '</time>';
+            output2 += '<div class="content">';
             if (msg['file']) {
-                output += msg['file'];
+                output2 += msg['file'];
             } else {
-                output += msg['text'];
+                output2 += msg['text'];
             }
-            output += '</p></div>';
-            output += '</div>';
+            output2 += '</div>';
+            output2 += '</article>';
+
+            // get the right day
+            var day = STUDIP.conversations.message.getDay(msg['date']);
+
             //select messageboxes
-            var olderMessages = $(".conversationdisplay[data-id='" + msg['conversation'] + "'] .message").filter(function(index) {
+            var olderMessages = day.find("article.message").filter(function(index) {
                 return $(this).attr("data-date") > msg['date'];
             });
             if (olderMessages.length > 0) {
-                olderMessages.first().before(output);
+                olderMessages.first().before(output2);
             } else {
-                $("div.conversationdisplay[data-id='" + msg['conversation'] + "']").append(output);
+                day.append(output2);
             }
             STUDIP.conversations.updateDate(msg['conversation'], msg['date']);
         }
@@ -160,6 +167,29 @@ STUDIP.conversations.message = {
             STUDIP.conversations.work(msg);
             STUDIP.conversations.scroll.screen(true);
         });
+    },
+    getDay: function(stamp) {
+        var date = new Date(stamp * 1000);
+        var current = STUDIP.conversations.currentConversation();
+        var dateString = date.toLocaleDateString();
+        var dateSection = current.find('section:contains("' + dateString + '")');
+        if (dateSection.length > 0) {
+            return dateSection;
+        }
+
+        var newSection = '<section data-date="' + stamp + '"><header>' + dateString + '</header></section>';
+
+        //find older sections
+        var olderSections = current.find("section").filter(function(index) {
+            return $(this).attr("data-date") > stamp;
+        });
+        if (olderSections.length > 0) {
+            olderSections.first().before(newSection);
+        } else {
+            current.append(newSection);
+        }
+
+        return STUDIP.conversations.message.getDay(stamp);
     }
 };
 
@@ -242,7 +272,7 @@ STUDIP.conversations.scroll = {
         $('.scroll').scroll(function() {
             if ($(this).scrollTop() < 500) {
                 $(this).unbind('scroll');
-                STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('.message:first').attr('data-message_id'));
+                STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('article:first').attr('id'));
             }
         });
     }
