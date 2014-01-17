@@ -1,21 +1,6 @@
 var conversation_id = null;
 var username = '';
 var displayUsername = '';
-function newConversation(paticipant, realname) {
-    $("div .conversationdisplay").hide(200);
-    $('#username').html(realname);
-    $.ajax({
-        type: "POST",
-        url: urlLoadUsername,
-        data: {username: paticipant}
-    }).done(function(msg) {
-        $('#username').html(msg);
-        $('#user_1').val('');
-    });
-    conversation_id = null;
-    username = paticipant;
-    $('#main').show();
-}
 
 STUDIP.conversations = {
     fullheight: 420,
@@ -155,6 +140,21 @@ STUDIP.conversations.conversation = {
             clickConversation($(this));
         });
         $('.new_conv').removeClass('new_conv');
+    },
+    new : function(paticipant, realname) {
+        $("div .conversationdisplay").hide(200);
+        $('#username').html(realname);
+        $.ajax({
+            type: "POST",
+            url: urlLoadUsername,
+            data: {username: paticipant}
+        }).done(function(msg) {
+            $('#username').html(msg);
+            $('#user_1').val('');
+        });
+        conversation_id = null;
+        username = paticipant;
+        $('#main').show();
     }
 };
 
