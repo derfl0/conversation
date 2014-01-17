@@ -1,8 +1,8 @@
 var conversation_id = null;
-var username = '';
 
 STUDIP.conversations = {
     fullheight: 420,
+    username: '',
     startup: function() {
         $(window).resize(STUDIP.conversations.recalcSize);
         STUDIP.conversations.recalcSize();
@@ -154,7 +154,7 @@ STUDIP.conversations.message = {
         $.ajax({
             type: "POST",
             url: urlSend,
-            data: {conversation: conversation_id, message: message, username: username},
+            data: {conversation: conversation_id, message: message, username: STUDIP.conversations.username},
             dataType: "json"
         }).done(function(msg) {
             STUDIP.conversations.scroll.screen(false);
@@ -196,7 +196,7 @@ STUDIP.conversations.conversation = {
             $('#user_1').val('');
         });
         conversation_id = null;
-        username = paticipant;
+        STUDIP.conversations.username = paticipant;
         $('#main').show();
     },
     work: function(conv) {
