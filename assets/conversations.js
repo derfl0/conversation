@@ -246,22 +246,6 @@ function clickConversation(obj) {
 }
 
 /**
- * Starts a conversation with the global conversation_id
- * 
- * @returns boolean true if it is a new conversation, false if an old one
- */
-function startConversation() {
-    $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
-    if ($("div [data-id='" + conversation_id + "']").length <= 0) {
-        $('#conversation').append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
-        return true;
-    } else {
-        $("div [data-id='" + conversation_id + "']").show(200);
-    }
-    return false;
-}
-
-/**
  * Function to call loading old messages if we reach the top
  * @returns {undefined}
  */
