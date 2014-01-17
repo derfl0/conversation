@@ -161,7 +161,7 @@ STUDIP.conversations.conversation = {
 
 //we loaded manually so dont auto scrollback
             $('.scroll').unbind('scroll');
-            clickConversation($(this));
+            STUDIP.conversations.conversation.click($(this));
         });
         $('.new_conv').removeClass('new_conv');
     },
@@ -190,8 +190,24 @@ STUDIP.conversations.conversation = {
             }
         }
         updateDate(conv['id'], conv['date']);
+    },
+    click: function(obj) {
+//save scroll top to div
+    STUDIP.conversations.currentConversation().attr('data-scroll', $('.scroll').scrollTop());
+    conversation_id = obj.attr('data-conversation_id');
+    $('#username').html(obj.html());
+    if (STUDIP.conversations.conversation.start()) {
+        STUDIP.conversations.loadMessages();
+    } else {
+        $('.scroll').animate({scrollTop: STUDIP.conversations.currentConversation().attr('data-scroll')}, 100, function() {
+            scrollOldMessages();
+        });
     }
-
+    obj.removeClass('newMessage');
+    $('.conversation').removeClass('clicked');
+    obj.addClass('clicked');
+    updateDateClass();
+}
 };
 
 function scrollScreen(action) {
@@ -225,24 +241,6 @@ function updateDate(conversation, date) {
         }
         $('div.conversation').not(div).first().before(div);
     }
-}
-
-function clickConversation(obj) {
-//save scroll top to div
-    STUDIP.conversations.currentConversation().attr('data-scroll', $('.scroll').scrollTop());
-    conversation_id = obj.attr('data-conversation_id');
-    $('#username').html(obj.html());
-    if (STUDIP.conversations.conversation.start()) {
-        STUDIP.conversations.loadMessages();
-    } else {
-        $('.scroll').animate({scrollTop: STUDIP.conversations.currentConversation().attr('data-scroll')}, 100, function() {
-            scrollOldMessages();
-        });
-    }
-    obj.removeClass('newMessage');
-    $('.conversation').removeClass('clicked');
-    obj.addClass('clicked');
-    updateDateClass();
 }
 
 /**
