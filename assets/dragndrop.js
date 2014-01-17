@@ -29,7 +29,7 @@ function sendFileToServer(formData, status)
             status.setProgress(100);
             //status.hide();
             status.finish();
-            workJSON(data);
+            STUDIP.conversations.work(data);
             //$("#status1").append("File upload Done<br>");         
         }
     });
@@ -96,12 +96,12 @@ function handleFileUpload(files, obj)
     {
         var fd = new FormData();
         fd.append('file', files[i]);
-        scrollScreen(false);
+        STUDIP.conversations.scroll.screen(false);
         var status = new createStatusbar($(".conversationdisplay:visible")); //Using this we can set progress.
         status.setFileNameSize(files[i].name,files[i].size);
-        fd.append('conversation', conversation_id);
+        fd.append('conversation', STUDIP.conversations.current_id);
         fd.append('username', username);
-        scrollScreen(true);
+        STUDIP.conversations.scroll.screen(true);
         sendFileToServer(fd, status);
 
     }
