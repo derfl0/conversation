@@ -77,7 +77,7 @@ STUDIP.conversations = {
                 $.each(messages, function() {
                     STUDIP.conversations.message.work(this);
                 });
-                updateDateClass();
+                STUDIP.conversations.updateDateClass();
             }
             var online = json['online'];
             if (online) {
@@ -86,6 +86,26 @@ STUDIP.conversations = {
                     $('.conversation[data-conversation_id="' + this + '"]').addClass('online');
                 });
             }
+        }
+    },
+    updateDateClass: function() {
+        STUDIP.conversations.currentConversation().find('.first').removeClass('first');
+        var oldDateString;
+        $.each(STUDIP.conversations.currentConversation().find('.date'), function() {
+            if ($(this).html() !== oldDateString) {
+                $(this).addClass('first');
+                oldDateString = $(this).html();
+            }
+        });
+    },
+    updateDate: function(conversation, date) {
+        var div = $("div [data-conversation_id='" + conversation + "']");
+        if (div.attr('data-date') < date) {
+            div.attr('data-date', date);
+            if (conversation_id !== conversation) {
+                div.addClass('newMessage');
+            }
+            $('div.conversation').not(div).first().before(div);
         }
     }
 };
@@ -125,7 +145,7 @@ STUDIP.conversations.message = {
             } else {
                 $("div.conversationdisplay[data-id='" + msg['conversation'] + "']").append(output);
             }
-            updateDate(msg['conversation'], msg['date']);
+            STUDIP.conversations.updateDate(msg['conversation'], msg['date']);
         }
     },
     send: function() {
@@ -189,7 +209,7 @@ STUDIP.conversations.conversation = {
                 $("div [data-conversation_id='" + conv['id'] + "']").click();
             }
         }
-        updateDate(conv['id'], conv['date']);
+        STUDIP.conversations.updateDate(conv['id'], conv['date']);
     },
     click: function(obj) {
         STUDIP.conversations.currentConversation().attr('data-scroll', $('.scroll').scrollTop());
@@ -205,7 +225,7 @@ STUDIP.conversations.conversation = {
         obj.removeClass('newMessage');
         $('.conversation').removeClass('clicked');
         obj.addClass('clicked');
-        updateDateClass();
+        STUDIP.conversations.updateDateClass();
     }
 };
 
@@ -221,46 +241,15 @@ STUDIP.conversations.scroll = {
         }
     },
     oldMessages: function() {
-    $('.scroll').scroll(function() {
-        if ($(this).scrollTop() < 500) {
-            $(this).unbind('scroll');
-            STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('.message:first').attr('data-message_id'));
-        }
-    });
-}
+        $('.scroll').scroll(function() {
+            if ($(this).scrollTop() < 500) {
+                $(this).unbind('scroll');
+                STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('.message:first').attr('data-message_id'));
+            }
+        });
+    }
 };
 
-function updateDateClass() {
-    STUDIP.conversations.currentConversation().find('.first').removeClass('first');
-    var oldDateString;
-    $.each(STUDIP.conversations.currentConversation().find('.date'), function() {
-        if ($(this).html() !== oldDateString) {
-            $(this).addClass('first');
-            oldDateString = $(this).html();
-        }
-    });
-}
-
-function updateDate(conversation, date) {
-    var div = $("div [data-conversation_id='" + conversation + "']");
-    if (div.attr('data-date') < date) {
-        div.attr('data-date', date);
-        if (conversation_id !== conversation) {
-            div.addClass('newMessage');
-        }
-        $('div.conversation').not(div).first().before(div);
-    }
-}
-
-/**
- * Function to call loading old messages if we reach the top
- * @returns {undefined}
- */
-
-
-/**
- * Things we actually need to do after loading
- */
 $(document).ready(function() {
     STUDIP.conversations.startup();
 });
