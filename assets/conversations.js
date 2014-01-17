@@ -1,6 +1,5 @@
 var conversation_id = null;
 var username = '';
-var displayUsername = '';
 
 STUDIP.conversations = {
     fullheight: 420,
