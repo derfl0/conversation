@@ -1,8 +1,7 @@
-var conversation_id = null;
-
 STUDIP.conversations = {
     fullheight: 420,
     username: '',
+    current_id: null,
     startup: function() {
         $(window).resize(STUDIP.conversations.recalcSize);
         STUDIP.conversations.recalcSize();
@@ -22,7 +21,7 @@ STUDIP.conversations = {
         return $("div.conversationdisplay[data-id='" + id + "']");
     },
     currentConversation: function() {
-        return STUDIP.conversations.getConversation(conversation_id);
+        return STUDIP.conversations.getConversation(STUDIP.conversations.current_id);
     },
     recalcSize: function() {
         $(".scroll").height($(window).height() - STUDIP.conversations.fullheight);
@@ -45,7 +44,7 @@ STUDIP.conversations = {
         $.ajax({
             type: "POST",
             url: urlLoadMessages,
-            data: {conversation: conversation_id,
+            data: {conversation: STUDIP.conversations.current_id,
                 lastMessage: last},
             dataType: "json"
         }).done(function(msg) {
@@ -101,7 +100,7 @@ STUDIP.conversations = {
         var div = $("div [data-conversation_id='" + conversation + "']");
         if (div.attr('data-date') < date) {
             div.attr('data-date', date);
-            if (conversation_id !== conversation) {
+            if (STUDIP.conversations.current_id !== conversation) {
                 div.addClass('newMessage');
             }
             $('div.conversation').not(div).first().before(div);
@@ -154,7 +153,7 @@ STUDIP.conversations.message = {
         $.ajax({
             type: "POST",
             url: urlSend,
-            data: {conversation: conversation_id, message: message, username: STUDIP.conversations.username},
+            data: {conversation: STUDIP.conversations.current_id, message: message, username: STUDIP.conversations.username},
             dataType: "json"
         }).done(function(msg) {
             STUDIP.conversations.scroll.screen(false);
@@ -166,12 +165,12 @@ STUDIP.conversations.message = {
 
 STUDIP.conversations.conversation = {
     start: function() {
-        $("div .conversationdisplay:not([data-id='" + conversation_id + "'])").hide(200);
-        if ($("div [data-id='" + conversation_id + "']").length <= 0) {
-            $('#conversation').append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
+        $("div .conversationdisplay:not([data-id='" + STUDIP.conversations.current_id + "'])").hide(200);
+        if ($("div [data-id='" + STUDIP.conversations.current_id + "']").length <= 0) {
+            $('#conversation').append('<div class="conversationdisplay" data-id="' + STUDIP.conversations.current_id + '"></div>');
             return true;
         } else {
-            $("div [data-id='" + conversation_id + "']").show(200);
+            $("div [data-id='" + STUDIP.conversations.current_id + "']").show(200);
         }
         return false;
     },
@@ -195,7 +194,7 @@ STUDIP.conversations.conversation = {
             $('#username').html(msg);
             $('#user_1').val('');
         });
-        conversation_id = null;
+        STUDIP.conversations.current_id = null;
         STUDIP.conversations.username = paticipant;
         $('#main').show();
     },
@@ -204,7 +203,7 @@ STUDIP.conversations.conversation = {
         if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
             $('#talks').prepend('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
             STUDIP.conversations.conversation.apply();
-            if (!conversation_id) {
+            if (!STUDIP.conversations.current_id) {
                 $("div [data-conversation_id='" + conv['id'] + "']").click();
             }
         }
@@ -212,7 +211,7 @@ STUDIP.conversations.conversation = {
     },
     click: function(obj) {
         STUDIP.conversations.currentConversation().attr('data-scroll', $('.scroll').scrollTop());
-        conversation_id = obj.attr('data-conversation_id');
+        STUDIP.conversations.current_id = obj.attr('data-conversation_id');
         $('#username').html(obj.html());
         if (STUDIP.conversations.conversation.start()) {
             STUDIP.conversations.loadMessages();
