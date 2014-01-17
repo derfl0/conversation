@@ -58,7 +58,7 @@ STUDIP.conversations = {
                 scrollTop: ($('.scroll')[0].scrollHeight - height + scrollTop)
             }, 0, function() {
                 if (msg && msg['messages'] && msg['messages'].length > 1) {
-                    scrollOldMessages();
+                    STUDIP.conversations.scroll.oldMessages();
                 }
             });
         });
@@ -199,7 +199,7 @@ STUDIP.conversations.conversation = {
             STUDIP.conversations.loadMessages();
         } else {
             $('.scroll').animate({scrollTop: STUDIP.conversations.currentConversation().attr('data-scroll')}, 100, function() {
-                scrollOldMessages();
+                STUDIP.conversations.scroll.oldMessages();
             });
         }
         obj.removeClass('newMessage');
@@ -219,7 +219,15 @@ STUDIP.conversations.scroll = {
         } else {
             scrolling = elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight() + 10;
         }
-    }
+    },
+    oldMessages: function() {
+    $('.scroll').scroll(function() {
+        if ($(this).scrollTop() < 500) {
+            $(this).unbind('scroll');
+            STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('.message:first').attr('data-message_id'));
+        }
+    });
+}
 };
 
 function updateDateClass() {
@@ -248,14 +256,7 @@ function updateDate(conversation, date) {
  * Function to call loading old messages if we reach the top
  * @returns {undefined}
  */
-function scrollOldMessages() {
-    $('.scroll').scroll(function() {
-        if ($(this).scrollTop() < 500) {
-            $(this).unbind('scroll');
-            STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('.message:first').attr('data-message_id'));
-        }
-    });
-}
+
 
 /**
  * Things we actually need to do after loading
