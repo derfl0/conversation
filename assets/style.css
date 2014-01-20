@@ -193,6 +193,17 @@ article.message.other time {
     float: right;
 }
 
+/**
+Display time only on hover
+
+article.message time {
+    display: none;
+}
+
+article.message:hover time {
+    display: inherit;
+}**/
+
 .image_overlay {
     position: absolute;
     width: 100%;
