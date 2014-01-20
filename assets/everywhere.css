@@ -1,0 +1,9 @@
+#layout_footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+#layout_container {
+    margin-bottom: 20px;
+}

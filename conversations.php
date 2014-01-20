@@ -33,6 +33,11 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('conversations/index'));
             $navigation->addSubNavigation('conversations', $conversation_navi);
         }
+        
+        // if conversations is everywhere load it everywhere
+        if (Config::get()->CONVERSATIONS_EVERYWHERE) {
+            PageLayout::addStylesheet($this->getPluginURL() . "/assets/everywhere.css");
+        }
     }
 
     function perform($unconsumed_path) {
