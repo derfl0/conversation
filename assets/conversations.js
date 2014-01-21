@@ -194,21 +194,20 @@ STUDIP.conversations.message = {
         } else {
             current.append(newSection);
         }
-
         return STUDIP.conversations.message.getDay(stamp);
     }
 };
 
 STUDIP.conversations.conversation = {
     start: function() {
-        $("div.scroll:not([data-id='" + STUDIP.conversations.current_id + "'])").hide(200);
+        $("div.scroll:not([data-id='" + STUDIP.conversations.current_id + "'])").hide(0);
         if (STUDIP.conversations.currentConversation().length <= 0) {
             $('#conversation').append('<div class="scroll" data-id="' + STUDIP.conversations.current_id + '"><div class="conversationdisplay" data-id="' + STUDIP.conversations.current_id + '"></div></div>');
             STUDIP.conversations.recalcSize();
             STUDIP.conversations.instantScroll = true;
             STUDIP.conversations.loadMessages();
         } else {
-            $("div.scroll[data-id='" + STUDIP.conversations.current_id + "']").show(200);
+            $("div.scroll[data-id='" + STUDIP.conversations.current_id + "']").show(0);
         }
     },
     apply: function() {
