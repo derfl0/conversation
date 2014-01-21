@@ -39,6 +39,20 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/dragndrop.js");
+        
+        //chose style
+        $styles = glob(__DIR__ . "/styles/*");
+        if ($styles) {
+            if (count($styles) > 1) {
+                
+            } else {
+                PageLayout::addStylesheet($this->getPluginURL()."/styles/".basename($styles[0]));
+            }
+        } else {
+            throw new Exception("No style found");
+        }
+        
+        
         $this->setupAutoload();
         $dispatcher = new Trails_Dispatcher(
                 $this->getPluginPath(), rtrim(PluginEngine::getLink($this, array(), null), '/'), 'index'

@@ -19,7 +19,7 @@ class IndexController extends StudipController {
      * Actual interface
      */
     public function index_action() {
-        
+
         //clear session savings
         $_SESSION['conversations']['online'] = array();
         $_SESSION['conversations']['conversations'] = array();
