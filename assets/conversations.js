@@ -53,6 +53,7 @@ STUDIP.conversations = {
             url: urlLoadMessages,
             data: {conversation: STUDIP.conversations.current_id,
                 lastMessage: last},
+            async: true,
             dataType: "json"
         }).done(function(msg) {
             var scrollTop = STUDIP.conversations.currentScroll().scrollTop();
