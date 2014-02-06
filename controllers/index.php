@@ -90,7 +90,9 @@ class IndexController extends StudipController {
      * Parses an userid to a username (Important for a new conversation)
      */
     public function nameFromUsername_action() {
-        echo utf8_encode(User::findByUsername(utf8_decode(Request::get('username')))->getFullName());
+        $user = User::findByUsername(utf8_decode(Request::get('username')));
+        $avatar = Avatar::getAvatar($user->id)->getImageTag(Avatar::SMALL);
+        echo utf8_encode($avatar." ".$user->getFullName());
         $this->render_nothing();
     }
 
