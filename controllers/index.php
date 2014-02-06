@@ -27,12 +27,12 @@ class IndexController extends StudipController {
         $_SESSION['conversations']['last_onlinecheck'] = 0;
         $this->setInfoBox();
     }
-    
+
     /**
      * Ajaxaction to send a message
      */
     public function send_action() {
-        if ($_FILES['file'] || ($msg = Request::get('message')) && trim($msg) != "" ) {
+        if ($_FILES['file'] || ($msg = Request::get('message')) && trim($msg) != "") {
 
             // parse us some conversation id
             if (!$conversation_id = Request::get('conversation')) {
