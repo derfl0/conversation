@@ -74,19 +74,26 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     private function update() {
         if (stripos(Request::get("page"), "plugins.php/conversations") !== false) {
             $this->setupAutoload();
-            if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
+            
+            // Load parameters
+            $params = Request::getArray("page_info");
+            $lastUpdateTime = $params['conversations']['lastUpdate'];
+            
+            if ($updated = Conversation::updates($lastUpdateTime - 1)) {
                 foreach ($updated as $updatedConv) {
                     $updatedConv->activate();
                     $updatedConv->decode($result);
-                    $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
-                    $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
-                    $messages = SimpleORMapCollection::createFromArray($messages);
-                    foreach ($messages->orderBy('mkdate ASC') as $message) {
+                    $lastUpdate = min(array($lastUpdateTime, $updatedConv->update->chdate));
+                    
+                    // Decode our messages into the result
+                    $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $lastUpdate));
+                    foreach ($messages as $message) {
                         $message->decode($result);
                     }
                 }
                 // update the send of the last update
-                $_SESSION['conversations']['last_update'] = time();
+                //$_SESSION['conversations']['last_update'] = time();
+                $result['lastUpdate'] = time();
             }
             if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
                 $_SESSION['conversations']['last_onlinecheck'] = time();

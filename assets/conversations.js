@@ -1,6 +1,12 @@
 STUDIP.conversations = {
     fullheight: 430,
     username: '',
+    lastUpdate: 0,
+    periodicalPushData: function() {
+        return {
+            'lastUpdate': STUDIP.conversations.lastUpdate
+        };
+    },
     current_id: null,
     startup: function() {
         $(window).resize(STUDIP.conversations.recalcSize);
@@ -91,6 +97,11 @@ STUDIP.conversations = {
             }
             if (typeof (callback) === 'function') {
                 callback();
+            }
+            
+            // Update lastUpdate
+            if (json['lastUpdate']) {
+                STUDIP.conversations.lastUpdate = json['lastUpdate'];
             }
         }
     },

@@ -23,7 +23,6 @@ class IndexController extends StudipController {
         //clear session savings
         $_SESSION['conversations']['online'] = array();
         $_SESSION['conversations']['conversations'] = array();
-        $_SESSION['conversations']['last_update'] = time();
         $_SESSION['conversations']['last_onlinecheck'] = 0;
         $this->setInfoBox();
     }
