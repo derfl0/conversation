@@ -145,5 +145,8 @@
 
 #talks div.online img {
     opacity: 1;
-     
+}
+
+h1 img {
+    margin-top: -8px;
 }
