@@ -16,7 +16,13 @@ STUDIP.conversations = {
         });
         STUDIP.conversations.setMessageSender();
         STUDIP.conversations.conversation.apply();
-        $('.conversation:first').click();
+        
+        // If we were given a conversation to start with
+        if (STUDIP.conversations.startingPoint !== 0) {
+            $('.conversation[data-conversation_id='+STUDIP.conversations.startingPoint+']').click();
+        } else {
+            $('.conversation:first').click();
+        }
     },
     update: function(json) {
         STUDIP.conversations.work(json);
@@ -98,7 +104,7 @@ STUDIP.conversations = {
             if (typeof (callback) === 'function') {
                 callback();
             }
-            
+
             // Update lastUpdate
             if (json['lastUpdate']) {
                 STUDIP.conversations.lastUpdate = json['lastUpdate'];
@@ -222,8 +228,8 @@ STUDIP.conversations.conversation = {
         }
     },
     apply: function() {
-        $('.new_conv').click(function() {
-
+        $('.new_conv').click(function(e) {
+            e.preventDefault();
             //we loaded manually so dont auto scrollback
             STUDIP.conversations.conversation.click($(this));
         });

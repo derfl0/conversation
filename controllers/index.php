@@ -18,13 +18,16 @@ class IndexController extends StudipController {
     /**
      * Actual interface
      */
-    public function index_action() {
+    public function index_action($start = null) {
 
         //clear session savings
         $_SESSION['conversations']['online'] = array();
         $_SESSION['conversations']['conversations'] = array();
         $_SESSION['conversations']['last_onlinecheck'] = 0;
         $this->setInfoBox();
+        
+        // Set the starting point
+        $this->start = $start ? : 0;
     }
 
     /**
@@ -112,7 +115,7 @@ class IndexController extends StudipController {
             $this->hasConversations = true;
             foreach ($convs as $conv) {
                 $this->activateConversation($conv);
-                $conversations .= "<div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>$conv->name</div>";
+                $conversations .= "<a href='".$this->url_for('index/index/'.$conv->conversation_id)."'><div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>$conv->name</div></a>";
             }
         } else {
             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';

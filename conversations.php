@@ -92,7 +92,6 @@ class Conversations extends StudipPlugin implements SystemPlugin {
                     }
                 }
                 // update the send of the last update
-                //$_SESSION['conversations']['last_update'] = time();
                 $result['lastUpdate'] = time();
             }
             if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
