@@ -82,6 +82,13 @@ class Conversation extends SimpleORMap {
         }
         return $return;
     }
+    
+    public function getAvatar($size = Avatar::SMALL) {
+        $others = self::getOtherUser($this->conversation_id);
+        if (count($others) == 1) {
+            return Avatar::getAvatar($others[0])->getImageTag($size);
+        }
+    }
 
     public static function getOtherUser($conversation_id) {
         $others = DBManager::get()->prepare("SELECT user_id FROM conversations WHERE user_id != ? AND conversation_id = ?");

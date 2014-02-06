@@ -138,3 +138,12 @@
 #talks a {
     color: black;
 }
+
+#talks div img {
+    opacity: 0.4;
+}
+
+#talks div.online img {
+    opacity: 1;
+     
+}
