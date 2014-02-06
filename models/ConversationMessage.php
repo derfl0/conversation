@@ -42,7 +42,7 @@ class ConversationMessage extends SimpleORMap {
               <source src="'.GetDownloadLink($this->file, $doc->filename).'" type="'.$doc->description.'">
               </video>';
               } else */ if (strpos($doc->description, "image") !== false) {
-                $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0) . "'><img class='file image' src='" . GetDownloadLink($this->file, $doc->filename) . "' /></a>";
+                $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0) . "'><img class='file image new' src='" . GetDownloadLink($this->file, $doc->filename) . "' /></a>";
             } else {
                 $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'>" . $doc->filename . Assets::img('/images/icons/48/grey/file.png') . "</a>";
             }

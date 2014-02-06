@@ -285,10 +285,10 @@ STUDIP.conversations.scroll = {
 
 STUDIP.conversations.image = {
     apply: function() {
-        $('img.image').click(function(e) {
+        $('img.image.new').click(function(e) {
             e.preventDefault();
             STUDIP.conversations.image.show($(this));
-        });
+        }).removeClass('new');
     },
     show: function(img) {
         $('body').append('<div class="image_overlay"><img style="max-height: ' + ($(document).height() - 20) + 'px; max-width: ' + ($(document).width() - 20) + 'px" src="' + img.attr('src') + '" /></div>');
