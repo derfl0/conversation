@@ -1,6 +1,7 @@
 STUDIP.conversations = {
     username: '',
     lastUpdate: 0,
+    reservedHeight: 392,
     periodicalPushData: function() {
         return {
             'lastUpdate': STUDIP.conversations.lastUpdate
@@ -39,8 +40,7 @@ STUDIP.conversations = {
         return STUDIP.conversations.getConversation(STUDIP.conversations.current_id);
     },
     recalcSize: function() {
-        var height = $('#main').height() - $('#head').outerHeight() - $('.message_footer').outerHeight() - $('#layout_footer').outerHeight() - 2;
-        $(".scroll").height(height);
+        $(".scroll").height($(window).outerHeight(true) - STUDIP.conversations.reservedHeight);
     },
     setMessageSender: function() {
         $("#message_input").keyup(function(e) {
