@@ -16,6 +16,7 @@
 .scroll {
     overflow-y:auto;
     margin-bottom: 6px;
+    min-height: 200px;
 }
 
 .newMessage {
