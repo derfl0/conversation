@@ -88,7 +88,9 @@ STUDIP.conversations = {
                 $.each(messages, function() {
                     STUDIP.conversations.message.work(this);
                 });
-                STUDIP.conversations.image.apply();
+                
+                //Use Big Image Handler
+                //STUDIP.conversations.image.apply();
                 STUDIP.conversations.scroll.screen(true);
                 if (STUDIP.conversations.instantScroll) {
                     STUDIP.conversations.scroll.oldMessages();
