@@ -238,19 +238,21 @@ STUDIP.conversations.conversation = {
         $('.new_conv').removeClass('new_conv');
     },
     new : function(paticipant, realname) {
-        $("div .conversationdisplay").hide(200);
-        $('#username').html(realname);
-        $.ajax({
-            type: "POST",
-            url: urlLoadUsername,
-            data: {username: paticipant}
-        }).done(function(msg) {
-            $('#username').html(msg);
-            $('#user_1').val('');
-        });
-        STUDIP.conversations.current_id = null;
-        STUDIP.conversations.username = paticipant;
-        $('#main').show();
+        if (paticipant !== myId) {
+            $("div .conversationdisplay").hide(200);
+            $('#username').html(realname);
+            $.ajax({
+                type: "POST",
+                url: urlLoadUsername,
+                data: {username: paticipant}
+            }).done(function(msg) {
+                $('#username').html(msg);
+                $('#user_1').val('');
+            });
+            STUDIP.conversations.current_id = null;
+            STUDIP.conversations.username = paticipant;
+            $('#main').show();
+        }
     },
     work: function(conv) {
         $('#no_talks').hide();
