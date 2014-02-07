@@ -66,7 +66,7 @@ class Conversation extends SimpleORMap {
         $obj = array(
             'id' => $this->conversation_id,
             'date' => $this->update->chdate,
-            'name' => utf8_encode($this->name),
+            'name' => utf8_encode($this->getAvatar()." ".$this->name),
         );
         $into['conversations'][] = $obj;
     }
