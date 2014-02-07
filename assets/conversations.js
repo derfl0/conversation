@@ -165,7 +165,7 @@ STUDIP.conversations.message = {
             output2 += '</article>';
 
             // get the right day
-            var day = STUDIP.conversations.message.getDay(msg['date']);
+            var day = STUDIP.conversations.message.getDay(msg['date'], msg['conversation']);
 
             //select messageboxes
             var olderMessages = day.find("article.message").filter(function(index) {
@@ -192,9 +192,9 @@ STUDIP.conversations.message = {
             STUDIP.conversations.work(msg);
         });
     },
-    getDay: function(stamp) {
+    getDay: function(stamp, conversation) {
         var date = new Date(stamp * 1000);
-        var current = STUDIP.conversations.currentConversation();
+        var current = STUDIP.conversations.getConversation(conversation);
         var dateString = date.toLocaleDateString();
         var dateSection = current.find('section:contains("' + dateString + '")');
         if (dateSection.length > 0) {
@@ -212,7 +212,7 @@ STUDIP.conversations.message = {
         } else {
             current.append(newSection);
         }
-        return STUDIP.conversations.message.getDay(stamp);
+        return STUDIP.conversations.message.getDay(stamp, conversation);
     }
 };
 
