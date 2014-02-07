@@ -39,7 +39,7 @@ STUDIP.conversations = {
         return STUDIP.conversations.getConversation(STUDIP.conversations.current_id);
     },
     recalcSize: function() {
-        var height = $('#main').height() - $('#head').outerHeight() - $('.message_footer').outerHeight() - $('#layout_footer').outerHeight();
+        var height = $('#main').height() - $('#head').outerHeight() - $('.message_footer').outerHeight() - $('#layout_footer').outerHeight() - 2;
         $(".scroll").height(height);
     },
     setMessageSender: function() {
