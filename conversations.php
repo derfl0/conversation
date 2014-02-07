@@ -22,7 +22,7 @@ require_once 'bootstrap.php';
 class Conversations extends StudipPlugin implements SystemPlugin {
 
     //Delay between onlinechecks
-    const ONLINE_CHECK_DELAY = 20;
+    const ONLINE_CHECK_DELAY = 10;
 
     function __construct() {
         parent::__construct();
@@ -96,8 +96,10 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             }
             if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
                 $_SESSION['conversations']['last_onlinecheck'] = time();
-                $result['online'] = Conversation::getOnlineConversations();
+                $_SESSION['conversations']['last_online_cache'] = Conversation::getOnlineConversations();
+                
             }
+            $result['online'] = $_SESSION['conversations']['last_online_cache'];
             UpdateInformation::setInformation("conversations.update", $result);
         }
     }
