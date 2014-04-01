@@ -44,7 +44,7 @@ class ConversationMessage extends SimpleORMap {
               } else */ if (strpos($doc->description, "image") !== false) {
                 $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0) . "'><img class='file image new' src='" . GetDownloadLink($this->file, $doc->filename) . "' /></a>";
             } else {
-                $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'>" . $doc->filename . Assets::img('/images/icons/48/grey/file.png') . "</a>";
+                $filelink = "<a href='" . GetDownloadLink($this->file, $doc->filename, 0, "force_download") . "'>" . $doc->filename . Assets::img('/images/icons/16/grey/file.png') . "</a>";
             }
         }
         if (UpdateInformation::isCollecting()) {
