@@ -66,7 +66,7 @@ class Conversation extends SimpleORMap {
         $obj = array(
             'id' => $this->conversation_id,
             'date' => $this->update->chdate,
-            'name' => utf8_encode($this->getAvatar()." ".$this->name),
+            'name' => studip_utf8_encode($this->getAvatar() . " " . $this->name),
         );
         $into['conversations'][] = $obj;
     }
@@ -82,7 +82,7 @@ class Conversation extends SimpleORMap {
         }
         return $return;
     }
-    
+
     public function getAvatar($size = Avatar::SMALL) {
         $others = self::getOtherUser($this->conversation_id);
         if (count($others) == 1) {
@@ -132,16 +132,16 @@ class Conversation extends SimpleORMap {
     }
 
     public static function getOnlineConversations() {
-        
+
         $result = array();
-        
+
         //stop complexity if we have started a conversation we are allowed to see the user
         $sql = "SELECT user_id FROM user_online WHERE last_lifesign > ?";
         $stmt = DBManager::get()->prepare($sql);
         $stmt->execute(array(time() - 300));
-        
+
         while ($online = $stmt->fetch(PDO::FETCH_COLUMN)) {
-            
+
             //if we have a conversation with the user activate id!
             if ($_SESSION['conversations']['online'][$online]) {
                 $result[$_SESSION['conversations']['online'][$online]] = true;
