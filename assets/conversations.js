@@ -23,6 +23,9 @@ STUDIP.conversations = {
         } else {
             $('.conversation:first').click();
         }
+        
+        // Modify sidebar
+        $('#talks').closest('td').attr('colspan', 2).prev('td').remove();
     },
     update: function(json) {
         STUDIP.conversations.work(json);
