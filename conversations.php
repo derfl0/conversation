@@ -22,7 +22,7 @@ require_once 'bootstrap.php';
 class Conversations extends StudipPlugin implements SystemPlugin {
 
     //Delay between onlinechecks
-    const ONLINE_CHECK_DELAY = 20;
+    const ONLINE_CHECK_DELAY = 10;
 
     function __construct() {
         parent::__construct();
@@ -44,6 +44,20 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/dragndrop.js");
+        
+        //chose style
+        $styles = glob(__DIR__ . "/styles/*");
+        if ($styles) {
+            if (count($styles) > 1) {
+                
+            } else {
+                PageLayout::addStylesheet($this->getPluginURL()."/styles/".basename($styles[0]));
+            }
+        } else {
+            throw new Exception("No style found");
+        }
+        
+        
         $this->setupAutoload();
         $dispatcher = new Trails_Dispatcher(
                 $this->getPluginPath(), rtrim(PluginEngine::getLink($this, array(), null), '/'), 'index'
@@ -65,24 +79,32 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     private function update() {
         if (stripos(Request::get("page"), "plugins.php/conversations") !== false) {
             $this->setupAutoload();
-            if ($updated = Conversation::updates($_SESSION['conversations']['last_update'] - 3)) {
+            
+            // Load parameters
+            $params = Request::getArray("page_info");
+            $lastUpdateTime = $params['conversations']['lastUpdate'];
+            
+            if ($updated = Conversation::updates($lastUpdateTime - 1)) {
                 foreach ($updated as $updatedConv) {
                     $updatedConv->activate();
                     $updatedConv->decode($result);
-                    $lastUpdate = min(array($_SESSION['conversations']['last_update'], $updatedConv->update->chdate));
-                    $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $_SESSION['conversations']['last_update']));
-                    $messages = SimpleORMapCollection::createFromArray($messages);
-                    foreach ($messages->orderBy('mkdate ASC') as $message) {
+                    $lastUpdate = min(array($lastUpdateTime, $updatedConv->update->chdate));
+                    
+                    // Decode our messages into the result
+                    $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $lastUpdate));
+                    foreach ($messages as $message) {
                         $message->decode($result);
                     }
                 }
                 // update the send of the last update
-                $_SESSION['conversations']['last_update'] = time();
+                $result['lastUpdate'] = time();
             }
             if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
                 $_SESSION['conversations']['last_onlinecheck'] = time();
-                $result['online'] = Conversation::getOnlineConversations();
+                $_SESSION['conversations']['last_online_cache'] = Conversation::getOnlineConversations();
+                
             }
+            $result['online'] = $_SESSION['conversations']['last_online_cache'];
             UpdateInformation::setInformation("conversations.update", $result);
         }
     }

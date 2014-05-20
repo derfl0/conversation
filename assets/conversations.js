@@ -1,6 +1,12 @@
 STUDIP.conversations = {
-    fullheight: 430,
     username: '',
+    lastUpdate: 0,
+    reservedHeight: 392,
+    periodicalPushData: function() {
+        return {
+            'lastUpdate': STUDIP.conversations.lastUpdate
+        };
+    },
     current_id: null,
     startup: function() {
         $(window).resize(STUDIP.conversations.recalcSize);
@@ -10,12 +16,25 @@ STUDIP.conversations = {
         });
         STUDIP.conversations.setMessageSender();
         STUDIP.conversations.conversation.apply();
-        $('.conversation:first').click();
+        
+        // If we were given a conversation to start with
+        if (STUDIP.conversations.startingPoint !== 0) {
+            $('.conversation[data-conversation_id='+STUDIP.conversations.startingPoint+']').click();
+        } else {
+            $('.conversation:first').click();
+        }
+        
+        // Modify sidebar
+        $('#talks').closest('td').attr('colspan', 2).prev('td').remove();
     },
     update: function(json) {
-        STUDIP.conversations.scroll.screen(false);
         STUDIP.conversations.work(json);
-        STUDIP.conversations.scroll.screen(true);
+    },
+    getScroll: function(id) {
+        return $("div.scroll[data-id='" + id + "']");
+    },
+    currentScroll: function() {
+        return STUDIP.conversations.getScroll(STUDIP.conversations.current_id);
     },
     getConversation: function(id) {
         return $("div.conversationdisplay[data-id='" + id + "']");
@@ -24,7 +43,7 @@ STUDIP.conversations = {
         return STUDIP.conversations.getConversation(STUDIP.conversations.current_id);
     },
     recalcSize: function() {
-        $(".scroll").height($(window).height() - STUDIP.conversations.fullheight);
+        $(".scroll").height($(window).outerHeight(true) - STUDIP.conversations.reservedHeight);
     },
     setMessageSender: function() {
         $("#message_input").keyup(function(e) {
@@ -44,20 +63,15 @@ STUDIP.conversations = {
         $.ajax({
             type: "POST",
             url: urlLoadMessages,
-            data: {conversation: STUDIP.conversations.current_id,
-                lastMessage: last},
+            data: {
+                conversation: STUDIP.conversations.current_id,
+                lastMessage: last
+            },
+            async: false,
             dataType: "json"
         }).done(function(msg) {
-            var scrollTop = $('.scroll').scrollTop();
-            var height = $('.scroll')[0].scrollHeight;
-            STUDIP.conversations.work(msg);
-            // adjust scrolling to get it back to the original position
-            $('.scroll').animate({
-                scrollTop: ($('.scroll')[0].scrollHeight - height + scrollTop)
-            }, 0, function() {
-                if (msg && msg['messages'] && msg['messages'].length > 1) {
-                    STUDIP.conversations.scroll.oldMessages();
-                }
+            STUDIP.conversations.work(msg, function() {
+                STUDIP.conversations.scroll.oldMessages();
             });
         });
     },
@@ -72,11 +86,17 @@ STUDIP.conversations = {
             }
             var messages = json['messages'];
             if (messages) {
+                STUDIP.conversations.scroll.screen(false);
                 $.each(messages, function() {
                     STUDIP.conversations.message.work(this);
                 });
-                //STUDIP.conversations.updateDateClass();
-                STUDIP.conversations.image.apply();
+                
+                //Use Big Image Handler
+                //STUDIP.conversations.image.apply();
+                STUDIP.conversations.scroll.screen(true);
+                if (STUDIP.conversations.instantScroll) {
+                    STUDIP.conversations.scroll.oldMessages();
+                }
             }
             var online = json['online'];
             if (online) {
@@ -84,6 +104,14 @@ STUDIP.conversations = {
                 $.each(online, function() {
                     $('.conversation[data-conversation_id="' + this + '"]').addClass('online');
                 });
+            }
+            if (typeof (callback) === 'function') {
+                callback();
+            }
+
+            // Update lastUpdate
+            if (json['lastUpdate']) {
+                STUDIP.conversations.lastUpdate = json['lastUpdate'];
             }
         }
     },
@@ -106,7 +134,7 @@ STUDIP.conversations = {
             }
             $('div.conversation').not(div).first().before(div);
         }
-    }
+    },
 };
 
 STUDIP.conversations.message = {
@@ -140,7 +168,7 @@ STUDIP.conversations.message = {
             output2 += '</article>';
 
             // get the right day
-            var day = STUDIP.conversations.message.getDay(msg['date']);
+            var day = STUDIP.conversations.message.getDay(msg['date'], msg['conversation']);
 
             //select messageboxes
             var olderMessages = day.find("article.message").filter(function(index) {
@@ -164,14 +192,12 @@ STUDIP.conversations.message = {
             data: {conversation: STUDIP.conversations.current_id, message: message, username: STUDIP.conversations.username},
             dataType: "json"
         }).done(function(msg) {
-            STUDIP.conversations.scroll.screen(false);
             STUDIP.conversations.work(msg);
-            STUDIP.conversations.scroll.screen(true);
         });
     },
-    getDay: function(stamp) {
+    getDay: function(stamp, conversation) {
         var date = new Date(stamp * 1000);
-        var current = STUDIP.conversations.currentConversation();
+        var current = STUDIP.conversations.getConversation(conversation);
         var dateString = date.toLocaleDateString();
         var dateSection = current.find('section:contains("' + dateString + '")');
         if (dateSection.length > 0) {
@@ -189,45 +215,46 @@ STUDIP.conversations.message = {
         } else {
             current.append(newSection);
         }
-
-        return STUDIP.conversations.message.getDay(stamp);
+        return STUDIP.conversations.message.getDay(stamp, conversation);
     }
 };
 
 STUDIP.conversations.conversation = {
     start: function() {
-        $("div .conversationdisplay:not([data-id='" + STUDIP.conversations.current_id + "'])").hide(200);
-        if ($("div [data-id='" + STUDIP.conversations.current_id + "']").length <= 0) {
-            $('#conversation').append('<div class="conversationdisplay" data-id="' + STUDIP.conversations.current_id + '"></div>');
-            return true;
+        $("div.scroll:not([data-id='" + STUDIP.conversations.current_id + "'])").hide(0);
+        if (STUDIP.conversations.currentConversation().length <= 0) {
+            $('#conversation').append('<div class="scroll" data-id="' + STUDIP.conversations.current_id + '"><div class="conversationdisplay" data-id="' + STUDIP.conversations.current_id + '"></div></div>');
+            STUDIP.conversations.recalcSize();
+            STUDIP.conversations.instantScroll = true;
+            STUDIP.conversations.loadMessages();
         } else {
-            $("div [data-id='" + STUDIP.conversations.current_id + "']").show(200);
+            $("div.scroll[data-id='" + STUDIP.conversations.current_id + "']").show(0);
         }
-        return false;
     },
     apply: function() {
-        $('.new_conv').click(function() {
-
+        $('.new_conv').click(function(e) {
+            e.preventDefault();
             //we loaded manually so dont auto scrollback
-            $('.scroll').unbind('scroll');
             STUDIP.conversations.conversation.click($(this));
         });
         $('.new_conv').removeClass('new_conv');
     },
     new : function(paticipant, realname) {
-        $("div .conversationdisplay").hide(200);
-        $('#username').html(realname);
-        $.ajax({
-            type: "POST",
-            url: urlLoadUsername,
-            data: {username: paticipant}
-        }).done(function(msg) {
-            $('#username').html(msg);
-            $('#user_1').val('');
-        });
-        STUDIP.conversations.current_id = null;
-        STUDIP.conversations.username = paticipant;
-        $('#main').show();
+        if (paticipant !== myId) {
+            $("div .conversationdisplay").hide(200);
+            $('#username').html(realname);
+            $.ajax({
+                type: "POST",
+                url: urlLoadUsername,
+                data: {username: paticipant}
+            }).done(function(msg) {
+                $('#username').html(msg);
+                $('#user_1').val('');
+            });
+            STUDIP.conversations.current_id = null;
+            STUDIP.conversations.username = paticipant;
+            $('#main').show();
+        }
     },
     work: function(conv) {
         $('#no_talks').hide();
@@ -241,16 +268,9 @@ STUDIP.conversations.conversation = {
         STUDIP.conversations.updateDate(conv['id'], conv['date']);
     },
     click: function(obj) {
-        STUDIP.conversations.currentConversation().attr('data-scroll', $('.scroll').scrollTop());
         STUDIP.conversations.current_id = obj.attr('data-conversation_id');
         $('#username').html(obj.html());
-        if (STUDIP.conversations.conversation.start()) {
-            STUDIP.conversations.loadMessages();
-        } else {
-            $('.scroll').animate({scrollTop: STUDIP.conversations.currentConversation().attr('data-scroll')}, 100, function() {
-                STUDIP.conversations.scroll.oldMessages();
-            });
-        }
+        STUDIP.conversations.conversation.start();
         obj.removeClass('newMessage');
         $('.conversation').removeClass('clicked');
         obj.addClass('clicked');
@@ -260,19 +280,26 @@ STUDIP.conversations.conversation = {
 
 STUDIP.conversations.scroll = {
     screen: function(action) {
-        var elem = $(".scroll");
+        var elem = STUDIP.conversations.currentScroll();
         if (action) {
-            if (scrolling) {
-                elem.animate({scrollTop: elem[0].scrollHeight});
+            if (STUDIP.conversations.instantScroll) {
+                STUDIP.conversations.instantScroll = false;
+                elem.animate({scrollTop: elem[0].scrollHeight - STUDIP.conversations.scrollFrom}, 0, function() {
+                    STUDIP.conversations.scroll.oldMessages();
+                });
+            } else if (STUDIP.conversations.scrolling) {
+                elem.animate({scrollTop: elem[0].scrollHeight}, 500);
             }
         } else {
-            scrolling = elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight() + 10;
+            STUDIP.conversations.scrolling = elem[0].scrollHeight - elem.scrollTop() <= elem.outerHeight() + 10;
+            STUDIP.conversations.scrollFrom = elem[0].scrollHeight - elem.scrollTop();
         }
     },
     oldMessages: function() {
-        $('.scroll').scroll(function() {
+        STUDIP.conversations.currentScroll().scroll(function() {
             if ($(this).scrollTop() < 500) {
-                $(this).unbind('scroll');
+                $(this).unbind("scroll");
+                STUDIP.conversations.instantScroll = true;
                 STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('article:first').attr('id'));
             }
         });
@@ -281,14 +308,14 @@ STUDIP.conversations.scroll = {
 
 STUDIP.conversations.image = {
     apply: function() {
-        $('img.image').click(function(e){
+        $('img.image.new').click(function(e) {
             e.preventDefault();
             STUDIP.conversations.image.show($(this));
-        });
+        }).removeClass('new');
     },
     show: function(img) {
-        $('body').append('<div class="image_overlay"><img style="max-height: '+($( document ).height() - 20)+'px; max-width: '+($( document ).width() - 20)+'px" src="'+img.attr('src')+'" /></div>');
-        $('.image_overlay').click(function(){
+        $('body').append('<div class="image_overlay"><img style="max-height: ' + ($(document).height() - 20) + 'px; max-width: ' + ($(document).width() - 20) + 'px" src="' + img.attr('src') + '" /></div>');
+        $('.image_overlay').click(function() {
             $(this).remove();
         });
     }

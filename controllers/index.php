@@ -5,6 +5,7 @@ require_once 'app/controllers/studip_controller.php';
 class IndexController extends StudipController {
 
     const MESSAGES_LOAD = 50; //how many messages should be loaded on first open and on backscroll
+    const CONVERSATION_PURGE = 5184000; // After how many days of inactivity should a conversation disapear (initial 60 days)
 
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);
@@ -18,21 +19,25 @@ class IndexController extends StudipController {
     /**
      * Actual interface
      */
-    public function index_action() {
-        
+    public function index_action($start = null) {
+
+        Navigation::activateItem('/messaging/conversations');
+
         //clear session savings
         $_SESSION['conversations']['online'] = array();
         $_SESSION['conversations']['conversations'] = array();
-        $_SESSION['conversations']['last_update'] = time();
         $_SESSION['conversations']['last_onlinecheck'] = 0;
         $this->setInfoBox();
+
+        // Set the starting point
+        $this->start = $start ? : 0;
     }
-    
+
     /**
      * Ajaxaction to send a message
      */
     public function send_action() {
-        if ($_FILES['file'] || ($msg = Request::get('message')) && trim($msg) != "" ) {
+        if ($_FILES['file'] || ($msg = Request::get('message')) && trim($msg) != "") {
 
             // parse us some conversation id
             if (!$conversation_id = Request::get('conversation')) {
@@ -88,7 +93,9 @@ class IndexController extends StudipController {
      * Parses an userid to a username (Important for a new conversation)
      */
     public function nameFromUsername_action() {
-        echo utf8_encode(User::findByUsername(utf8_decode(Request::get('username')))->getFullName());
+        $user = User::findByUsername(utf8_decode(Request::get('username')));
+        $avatar = Avatar::getAvatar($user->id)->getImageTag(Avatar::SMALL);
+        echo utf8_encode($avatar . " " . $user->getFullName());
         $this->render_nothing();
     }
 
@@ -109,11 +116,11 @@ class IndexController extends StudipController {
     private function setInfoBox() {
         $this->setInfoBoxImage('infobox/studygroup.jpg');
         $this->addToInfobox(_('Suche'), $this->createQuickSearch(), 'icons/16/blue/search.png');
-        if ($convs = Conversation::updates()) {
+        if ($convs = Conversation::updates(time() - self::CONVERSATION_PURGE)) {
             $this->hasConversations = true;
             foreach ($convs as $conv) {
                 $this->activateConversation($conv);
-                $conversations .= "<div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>$conv->name</div>";
+                $conversations .= "<a href='" . $this->url_for('index/index/' . $conv->conversation_id) . "'><div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>" . $conv->getAvatar() . " $conv->name</div></a>";
             }
         } else {
             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
