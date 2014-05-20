@@ -149,7 +149,12 @@ class Conversation extends SimpleORMap {
         }
         return array_keys($result);
     }
+    
+    public static function getContacts($user = null) {
+        if (!$user) {
+            $user = $GLOBALS['user'];
+        }
+    }
 
 }
 
-?>

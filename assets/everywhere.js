@@ -322,13 +322,28 @@ STUDIP.conversations.image = {
 };
 
 STUDIP.conversations.contact = {
+    loadUrl: 'http://localhost/studip/public/plugins.php/conversations/everywhere/contacts',
     init: function() {
         $('#conversations_contact').click(function() {
             if ($('#contact_box').length > 0) {
-                $('#contact_box').remove();
+                $('#contact_box').toggle();
             } else {
                 $(this).append('<div id="contact_box"></div>');
+                $.ajax({
+                    type: "GET",
+                    url: STUDIP.conversations.contact.loadUrl,
+                    dataType: "json"
+                }).done(function(json) {
+                    console.log(json);
+                    STUDIP.conversations.contact.parseJson(json);
+                });
+                ;
             }
+        });
+    },
+    parseJson: function(json) {
+        $.each(json, function(name, value) {
+            $('#contact_box').append($('<p>'+value+'</p>'));
         });
     }
 };
