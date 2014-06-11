@@ -35,7 +35,7 @@ class EverywhereController extends StudipController {
 
     public function contacts_action() {
         foreach (Conversation::updates(time() - self::CONVERSATION_PURGE) as $conv) {
-            $conversations[$conv->id] = $conv->name;
+            $conversations[$conv->conversation_id] = $conv->name;
         }
         $this->render_json($conversations);
     }
