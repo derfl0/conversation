@@ -33,10 +33,11 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('conversations/index'));
             $navigation->addSubNavigation('conversations', $conversation_navi);
         }
-        
+
         // if conversations is everywhere load it everywhere
         if (Config::get()->CONVERSATIONS_EVERYWHERE) {
             PageLayout::addStylesheet($this->getPluginURL() . "/assets/everywhere.css");
+            PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
         }
     }
@@ -45,20 +46,20 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/dragndrop.js");
-        
+
         //chose style
         $styles = glob(__DIR__ . "/styles/*");
         if ($styles) {
             if (count($styles) > 1) {
                 
             } else {
-                PageLayout::addStylesheet($this->getPluginURL()."/styles/".basename($styles[0]));
+                PageLayout::addStylesheet($this->getPluginURL() . "/styles/" . basename($styles[0]));
             }
         } else {
             throw new Exception("No style found");
         }
-        
-        
+
+
         $this->setupAutoload();
         $dispatcher = new Trails_Dispatcher(
                 $this->getPluginPath(), rtrim(PluginEngine::getLink($this, array(), null), '/'), 'index'
@@ -80,17 +81,17 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     private function update() {
         if (stripos(Request::get("page"), "plugins.php/conversations") !== false) {
             $this->setupAutoload();
-            
+
             // Load parameters
             $params = Request::getArray("page_info");
             $lastUpdateTime = $params['conversations']['lastUpdate'];
-            
+
             if ($updated = Conversation::updates($lastUpdateTime - 1)) {
                 foreach ($updated as $updatedConv) {
                     $updatedConv->activate();
                     $updatedConv->decode($result);
                     $lastUpdate = min(array($lastUpdateTime, $updatedConv->update->chdate));
-                    
+
                     // Decode our messages into the result
                     $messages = ConversationMessage::findBySQL('conversation_id = ? AND mkdate >= ?', array($updatedConv->conversation_id, $lastUpdate));
                     foreach ($messages as $message) {
@@ -103,7 +104,6 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             if ($_SESSION['conversations']['last_onlinecheck'] < time() - self::ONLINE_CHECK_DELAY) {
                 $_SESSION['conversations']['last_onlinecheck'] = time();
                 $_SESSION['conversations']['last_online_cache'] = Conversation::getOnlineConversations();
-                
             }
             $result['online'] = $_SESSION['conversations']['last_online_cache'];
             UpdateInformation::setInformation("conversations.update", $result);

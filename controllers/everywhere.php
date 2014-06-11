@@ -5,7 +5,7 @@ require_once 'app/controllers/studip_controller.php';
 class EverywhereController extends StudipController {
 
     const MESSAGES_LOAD = 50; //how many messages should be loaded on first open and on backscroll
-    const CONVERSATION_PURGE = 5184000; // After how many days of inactivity should a conversation disapear (initial 60 days)
+    const CONVERSATION_PURGE = 51840000; // After how many days of inactivity should a conversation disapear (initial 60 days)
 
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);
@@ -39,7 +39,18 @@ class EverywhereController extends StudipController {
         }
         $this->render_json($conversations);
     }
-    
+
+    public function loadMessages_action() {
+        if ($last = Request::get('lastMessage')) {
+            $where = "AND message_id < '$last'";
+        }
+        $messages = ConversationMessage::findBySQL('conversation_id = ? ' . $where . ' ORDER BY message_id DESC LIMIT ?', array(Request::get('conversation'), self::MESSAGES_LOAD));
+        $messages = SimpleORMapCollection::createFromArray($messages);
+        foreach ($messages->orderBy('mkdate ASC') as $msg) {
+            $msg->decode($result);
+        }
+        $this->render_json($result);
+    }
 
     // customized #url_for for plugins
     public function url_for($to) {
