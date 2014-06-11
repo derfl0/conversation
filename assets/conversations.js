@@ -89,14 +89,12 @@ STUDIP.conversations = {
             }
             var messages = json['messages'];
             if (messages) {
-                STUDIP.conversations.scroll.screen(false);
+                //STUDIP.conversations.scroll.screen(false);
                 $.each(messages, function() {
                     STUDIP.conversations.message.work(this);
                 });
 
-                //Use Big Image Handler
-                //STUDIP.conversations.image.apply();
-                STUDIP.conversations.scroll.screen(true);
+                //STUDIP.conversations.scroll.screen(true);
                 if (STUDIP.conversations.instantScroll) {
                     STUDIP.conversations.scroll.oldMessages();
                 }
@@ -157,7 +155,7 @@ STUDIP.conversations.message = {
     work: function(msg) {
         if (!STUDIP.conversations.message.exists(msg['id'])) {
             var classtype = STUDIP.conversations.message.getAuthorType(msg['author']);
-
+            
             var output2 = '<article id="' + msg['id'] + '"  data-date="' + msg['date'] + '" class="message ' + classtype + '">';
             output2 += '<header>' + msg['author'] + '</header>';
             output2 += '<time>' + STUDIP.conversations.message.getTime(msg) + '</time>';
@@ -173,6 +171,7 @@ STUDIP.conversations.message = {
             // get the right day
             var day = STUDIP.conversations.message.getDay(msg['date'], msg['conversation']);
 
+            console.log("reached");
             //select messageboxes
             var olderMessages = day.find("article.message").filter(function(index) {
                 return $(this).attr("data-date") > msg['date'];
@@ -282,8 +281,8 @@ STUDIP.conversations.conversation = {
 };
 
 STUDIP.conversations.scroll = {
-    screen: function(action) {
-        var elem = STUDIP.conversations.currentScroll();
+    screen: function(action, conversation_id) {
+        var elem = typeof conversation_id !== 'undefined' ? STUDIP.conversations.getScroll(conversation_id) : STUDIP.conversations.currentScroll();
         if (action) {
             if (STUDIP.conversations.instantScroll) {
                 STUDIP.conversations.instantScroll = false;

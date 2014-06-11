@@ -5,7 +5,7 @@ require_once 'app/controllers/studip_controller.php';
 class IndexController extends StudipController {
 
     const MESSAGES_LOAD = 50; //how many messages should be loaded on first open and on backscroll
-    const CONVERSATION_PURGE = 5184000; // After how many days of inactivity should a conversation disapear (initial 60 days)
+    const CONVERSATION_PURGE = 51840000; // After how many days of inactivity should a conversation disapear (initial 60 days)
 
     public function before_filter(&$action, &$args) {
         parent::before_filter($action, $args);

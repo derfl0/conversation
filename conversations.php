@@ -39,6 +39,10 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             PageLayout::addStylesheet($this->getPluginURL() . "/assets/everywhere.css");
             PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
+            PageLayout::addHeadElement('script', array(), 'STUDIP.conversations.myId = "' . $GLOBALS['user']->username . '"');
+            
+            // This needs to be removed 
+            PageLayout::addHeadElement('script', array(), 'myId = "' . $GLOBALS['user']->username . '"');
         }
     }
 
