@@ -2,6 +2,9 @@ STUDIP.conversations = {
     username: '',
     lastUpdate: 0,
     reservedHeight: 392,
+    getUrl: function(link) {
+        return STUDIP.URLHelper.getURL("plugins.php/conversations/" + link);
+    },
     periodicalPushData: function() {
         return {
             'lastUpdate': STUDIP.conversations.lastUpdate
@@ -16,14 +19,14 @@ STUDIP.conversations = {
         });
         STUDIP.conversations.setMessageSender();
         STUDIP.conversations.conversation.apply();
-        
+
         // If we were given a conversation to start with
         if (STUDIP.conversations.startingPoint !== 0) {
-            $('.conversation[data-conversation_id='+STUDIP.conversations.startingPoint+']').click();
+            $('.conversation[data-conversation_id=' + STUDIP.conversations.startingPoint + ']').click();
         } else {
             $('.conversation:first').click();
         }
-        
+
         // Modify sidebar
         $('#talks').closest('td').attr('colspan', 2).prev('td').remove();
     },
@@ -90,7 +93,7 @@ STUDIP.conversations = {
                 $.each(messages, function() {
                     STUDIP.conversations.message.work(this);
                 });
-                
+
                 //Use Big Image Handler
                 //STUDIP.conversations.image.apply();
                 STUDIP.conversations.scroll.screen(true);
