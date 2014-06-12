@@ -40,7 +40,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
             PageLayout::addHeadElement('script', array(), 'STUDIP.conversations.myId = "' . $GLOBALS['user']->username . '"');
-            
+            $this->loadStyle();
             // This needs to be removed 
             PageLayout::addHeadElement('script', array(), 'myId = "' . $GLOBALS['user']->username . '"');
         }
@@ -50,19 +50,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/dragndrop.js");
-
-        //chose style
-        $styles = glob(__DIR__ . "/styles/*");
-        if ($styles) {
-            if (count($styles) > 1) {
-                
-            } else {
-                PageLayout::addStylesheet($this->getPluginURL() . "/styles/" . basename($styles[0]));
-            }
-        } else {
-            throw new Exception("No style found");
-        }
-
+        $this->loadStyle();
 
         $this->setupAutoload();
         $dispatcher = new Trails_Dispatcher(
@@ -79,6 +67,19 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             spl_autoload_register(function ($class) {
                 include_once __DIR__ . $class . '.php';
             });
+        }
+    }
+
+    private function loadStyle() {
+        $styles = glob(__DIR__ . "/styles/*");
+        if ($styles) {
+            if (count($styles) > 1) {
+                
+            } else {
+                PageLayout::addStylesheet($this->getPluginURL() . "/styles/" . basename($styles[0]));
+            }
+        } else {
+            throw new Exception("No style found");
         }
     }
 
@@ -115,5 +116,3 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     }
 
 }
-
-?>

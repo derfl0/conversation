@@ -32,7 +32,12 @@ STUDIP.conversations.everywhere = {
             data: {conversation: conversation_id},
             dataType: "json"
         }).done(function(json) {
-            $('#layout_footer ul').prepend($('<li class="conversation_contact"><a>' + name + '</a><div class="scroll" data-id="' + conversation_id + '"><div class="conversationdisplay" data-id="' + conversation_id + '"></div></div></li>'));
+            var contact = $('<li>').addClass('conversation_contact');
+            contact.append($('<a>').html(name));
+            var conversationWindow = $('<div>').addClass('conversation_window');
+            conversationWindow.append($('<div>').addClass('scroll').attr('data-id', conversation_id).append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>'));
+            contact.append(conversationWindow);
+            $('#layout_footer ul').prepend(contact);
             STUDIP.conversations.work(json);
         });
     }
@@ -41,5 +46,5 @@ $(document).ready(function() {
     // Captain Hook
     $('#layout_footer ul').prepend($('<li id="conversations_contact"><a>Kontakte</a></li>'));
     STUDIP.conversations.contact.init();
-    
+
 });
