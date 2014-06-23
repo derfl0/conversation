@@ -14,6 +14,7 @@ STUDIP.conversations.contact = {
                 });
             }
         });
+
     },
     parseJson: function(json) {
         $.each(json, function(id, value) {
@@ -35,10 +36,30 @@ STUDIP.conversations.everywhere = {
             var contact = $('<li>').addClass('conversation_contact');
             contact.append($('<a>').html(name));
             var conversationWindow = $('<div>').addClass('conversation_window');
-            conversationWindow.append($('<div>').addClass('scroll').attr('data-id', conversation_id).append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>'));
+            var inputContainer = $('<input type="text">').addClass('conversation_input').data('conversation_id', conversation_id);
+            var scroll = $('<div>').addClass('scroll').attr('data-id', conversation_id).append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
+            conversationWindow.append(scroll);
+            conversationWindow.append(inputContainer);
             contact.append(conversationWindow);
             $('#layout_footer ul').prepend(contact);
             STUDIP.conversations.work(json);
+
+            // Bind keypress event
+            inputContainer.keypress(function(e) {
+                e = e || event;
+                if (e.keyCode === 13) {
+                    var input = $(this).val();
+                    $.ajax({
+                        type: "POST",
+                        url: STUDIP.conversations.getUrl('index/send'),
+                        data: {conversation: conversation_id, message: input},
+                        dataType: "json"
+                    }).done(function(msg) {
+                        STUDIP.conversations.work(msg);
+                    });
+                    $(this).val('');
+                }
+            });
         });
     }
 },

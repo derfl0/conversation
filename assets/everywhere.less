@@ -41,16 +41,24 @@
     color: black;
     font-size: 0.85em;
     line-height: 15px;
-    text-align: left; 
-    padding: 4px;
-    section {
-        header {
-            display: none;
-        }
-        article.message {
-            header,time {
+    text-align: left;
+    .scroll {
+        height: 276px;
+        overflow-y: scroll;
+        section {
+            header {
                 display: none;
             }
-        }
+            article.message {
+                header,time {
+                    display: none;
+                }
+            }
+        } 
     } 
+    input {
+        width: 191px;
+        bottom: 0px;
+        position: absolute;
+    }
 }
