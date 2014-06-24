@@ -39,7 +39,7 @@
   text-align: left;
 }
 .conversation_window .scroll {
-  height: 276px;
+  height: 274px;
   overflow-y: scroll;
   overflow-x: hidden;
 }

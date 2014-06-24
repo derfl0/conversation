@@ -43,12 +43,13 @@ STUDIP.conversations = {
             STUDIP.conversations.message.send();
         });
     },
-    loadMessages: function(last) {
+    loadMessages: function(conversation_id) {
+        var last = STUDIP.conversations.getScroll(conversation_id).find('article:first').attr('id');
         $.ajax({
             type: "POST",
-            url: urlLoadMessages,
+            url: STUDIP.conversations.getUrl('index/loadMessages'),
             data: {
-                conversation: STUDIP.conversations.current_id,
+                conversation: conversation_id,
                 lastMessage: last
             },
             async: false,
@@ -76,14 +77,24 @@ STUDIP.conversations = {
                 if (STUDIP.conversations.getScroll(messages[0].conversation).is(':empty')) {
                     STUDIP.conversations.instantScroll = true;
                 }
+
+                // Prepare all included messages for scrolling
+                $.each(messages, function() {
+                    STUDIP.conversations.scroll.prepareScroll(this.conversation);
+                });
+
+                // Workout all messages
                 $.each(messages, function() {
                     STUDIP.conversations.message.work(this);
                 });
-                STUDIP.conversations.scroll.screen(true, messages[0].conversation);
 
-                if (STUDIP.conversations.instantScroll) {
-                    STUDIP.conversations.scroll.oldMessages();
-                }
+                STUDIP.conversations.scroll.doAllScroll();
+
+                /*STUDIP.conversations.scroll.screen(true, messages[0].conversation);
+                 
+                 if (STUDIP.conversations.instantScroll) {
+                 STUDIP.conversations.scroll.oldMessages(messages[0].conversation);
+                 }*/
             }
             var online = json['online'];
             if (online) {
@@ -267,7 +278,6 @@ STUDIP.conversations.conversation = {
 
 STUDIP.conversations.scroll = {
     screen: function(action, conversation_id) {
-        console.log(conversation_id);
         var elem = typeof conversation_id !== 'undefined' ? STUDIP.conversations.getScroll(conversation_id) : STUDIP.conversations.currentScroll();
         if (action) {
             if (STUDIP.conversations.instantScroll) {
@@ -283,12 +293,39 @@ STUDIP.conversations.scroll = {
             STUDIP.conversations.scrollFrom = elem[0].scrollHeight - elem.scrollTop();
         }
     },
-    oldMessages: function() {
-        STUDIP.conversations.currentScroll().scroll(function() {
+    prepareScroll: function(conversation_id) {
+        var scroll = STUDIP.conversations.getScroll(conversation_id);
+
+        // Check if field wasnt loaded before
+        if (scroll.find('section').length === 0) {
+            scroll.data('instantScroll', true);
+        } else {
+            scroll.data('scrolling', scroll[0].scrollHeight - scroll.scrollTop() <= scroll.outerHeight() + 10);
+        }
+        scroll.data('scrollFrom', scroll[0].scrollHeight - scroll.scrollTop());
+        scroll.addClass('needsScrolling');
+    },
+    doScroll: function(scroll) {
+        if (scroll.data('instantScroll')) {
+            scroll.data('instantScroll', false);
+            scroll.animate({scrollTop: scroll[0].scrollHeight - scroll.data('scrollFrom')}, 0, function() {
+                STUDIP.conversations.scroll.oldMessages(scroll);
+            });
+        } else if (scroll.data('scrolling')) {
+            scroll.animate({scrollTop: scroll[0].scrollHeight}, 500);
+        }
+    },
+    doAllScroll: function() {
+        $('.needsScrolling').each(function(index) {
+            STUDIP.conversations.scroll.doScroll($(this));
+        }).removeClass('needsScrolling');
+    },
+    oldMessages: function(scroll) {
+        scroll.scroll(function() {
             if ($(this).scrollTop() < 500) {
                 $(this).unbind("scroll");
-                STUDIP.conversations.instantScroll = true;
-                STUDIP.conversations.loadMessages(STUDIP.conversations.currentConversation().find('article:first').attr('id'));
+                scroll.data('instantScroll', true);
+                STUDIP.conversations.loadMessages(scroll.attr('data-id'));
             }
         });
     }
