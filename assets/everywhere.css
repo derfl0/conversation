@@ -41,6 +41,7 @@
 .conversation_window .scroll {
   height: 276px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .conversation_window .scroll section header {
   display: none;
