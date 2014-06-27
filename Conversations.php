@@ -35,7 +35,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         }
 
         // if conversations is everywhere load it everywhere
-        if (Config::get()->CONVERSATIONS_EVERYWHERE && !$conversation_navi->isActive()) {
+        if (Config::get()->CONVERSATIONS_EVERYWHERE && $conversation_navi && !$conversation_navi->isActive()) {
             PageLayout::addStylesheet($this->getPluginURL() . "/assets/everywhere.css");
             PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
@@ -43,6 +43,10 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             $this->loadStyle();
             // This needs to be removed 
             PageLayout::addHeadElement('script', array(), 'myId = "' . $GLOBALS['user']->username . '"');
+            
+            // Last online
+            $_SESSION['conversations']['last_onlinecheck'] = time();
+            PageLayout::addHeadElement('script', array(), 'STUDIP.conversations.lastUpdate = "' . time() . '"');
         }
     }
 
@@ -84,7 +88,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     }
 
     private function update() {
-        if (stripos(Request::get("page"), "plugins.php/conversations") !== false) {
+        if (Config::get()->CONVERSATIONS_EVERYWHERE || stripos(Request::get("page"), "plugins.php/conversations") !== false) {
             $this->setupAutoload();
 
             // Load parameters
