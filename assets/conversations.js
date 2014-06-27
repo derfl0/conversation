@@ -10,24 +10,14 @@ STUDIP.conversations = {
             'lastUpdate': STUDIP.conversations.lastUpdate
         };
     },
-    current_id: null,
     update: function(json) {
         STUDIP.conversations.work(json);
     },
     getScroll: function(id) {
         return $("div.scroll[data-id='" + id + "']");
     },
-    currentScroll: function() {
-        return STUDIP.conversations.getScroll(STUDIP.conversations.current_id);
-    },
     getConversation: function(id) {
         return $("div.conversationdisplay[data-id='" + id + "']");
-    },
-    currentConversation: function() {
-        return STUDIP.conversations.getConversation(STUDIP.conversations.current_id);
-    },
-    recalcSize: function() {
-        $(".scroll").height($(window).outerHeight(true) - STUDIP.conversations.reservedHeight);
     },
     setMessageSender: function() {
         $("#message_input").keyup(function(e) {
