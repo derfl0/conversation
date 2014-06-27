@@ -30,8 +30,8 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             $this->update();
         } else {
             $navigation = Navigation::getItem('/messaging');
-            $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('conversations/index'));
-            $navigation->addSubNavigation('conversations', $conversation_navi);
+            $conversation_navi = new AutoNavigation(_('Gespräche'), PluginEngine::getUrl('Conversations/index'));
+            $navigation->addSubNavigation('Conversations', $conversation_navi);
         }
 
         // if conversations is everywhere load it everywhere
