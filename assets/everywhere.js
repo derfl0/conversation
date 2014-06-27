@@ -18,7 +18,7 @@ STUDIP.conversations.contact = {
     },
     parseJson: function(json) {
         $.each(json, function(id, value) {
-            $('#contact_box').append($('<p>' + value + '</p>').click(function() {
+            $('#contact_box').append($('<p>' + value.name + '</p>').attr('data-update', value.update).attr('data-id', id).click(function() {
                 STUDIP.conversations.open(id, value);
             }));
         });
@@ -52,6 +52,7 @@ STUDIP.conversations.open = function(conversation_id, name) {
         inputContainer.keypress(function(e) {
             e = e || event;
             if (e.keyCode === 13) {
+                STUDIP.conversations.updateContact(conversation_id);
                 var input = $(this).val();
                 $.ajax({
                     type: "POST",

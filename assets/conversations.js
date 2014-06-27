@@ -60,6 +60,7 @@ STUDIP.conversations = {
                     
                     // Open conversation 
                     STUDIP.conversations.open(this.id, this.name);
+                    STUDIP.conversations.updateContact(this.id);
                     STUDIP.conversations.conversation.work(this);
                 });
             }
@@ -115,6 +116,9 @@ STUDIP.conversations = {
             }
             $('div.conversation').not(div).first().before(div);
         }
+    },
+    updateContact: function(conversation_id) {
+        $('#contact_box [data-id="'+conversation_id+'"]').prependTo($('#contact_box'));
     }
 };
 
