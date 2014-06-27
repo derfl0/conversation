@@ -25,6 +25,9 @@
 .conversation_contact {
   width: 200px;
 }
+.conversation_contact a img {
+  display: none;
+}
 .conversation_window {
   position: absolute;
   width: 200px;

@@ -67,6 +67,9 @@ STUDIP.conversations = {
             if (conversations) {
                 $('#main').show();
                 $.each(conversations, function() {
+                    
+                    // Open conversation 
+                    STUDIP.conversations.open(this.id, this.name);
                     STUDIP.conversations.conversation.work(this);
                 });
             }
@@ -75,12 +78,6 @@ STUDIP.conversations = {
 
                 // Prepare all included messages for scrolling
                 $.each(messages, function() {
-
-                    // Check if dialog is open
-                    if (STUDIP.conversations.getScroll(this.conversation).length < 1) {
-                        STUDIP.conversations.open(this.conversation, 'test');
-                    }
-
                     STUDIP.conversations.scroll.prepareScroll(this.conversation);
                 });
 
