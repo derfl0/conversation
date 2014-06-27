@@ -118,7 +118,12 @@ STUDIP.conversations = {
         }
     },
     updateContact: function(conversation_id) {
-        $('#contact_box [data-id="'+conversation_id+'"]').prependTo($('#contact_box'));
+        var contact = STUDIP.conversations.getContact(conversation_id);
+         contact.addClass('newMessage');
+         contact.prependTo($('#contact_box'));
+    },
+    getContact: function(conversation_id) {
+        return $('#contact_box [data-id="'+conversation_id+'"]');
     }
 };
 
