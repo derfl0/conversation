@@ -282,7 +282,9 @@ STUDIP.conversations.scroll = {
         } else {
             scroll.data('scrolling', scroll[0].scrollHeight - scroll.scrollTop() <= scroll.outerHeight() + 10);
         }
-        scroll.data('scrollFrom', scroll[0].scrollHeight - scroll.scrollTop());
+        if (scroll.length > 0) {
+            scroll.data('scrollFrom', scroll[0].scrollHeight - scroll.scrollTop());
+        }
         scroll.addClass('needsScrolling');
     },
     doScroll: function(scroll) {
