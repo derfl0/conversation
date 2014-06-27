@@ -10,7 +10,7 @@ STUDIP.conversations.contact = {
                     url: STUDIP.conversations.getUrl("everywhere/contacts"),
                     dataType: "json"
                 }).done(function(json) {
-                    STUDIP.conversations.contact.parseJson(json);
+                    STUDIP.conversations.contact.parseJson(json.conversations);
                 });
             }
         });
@@ -18,8 +18,9 @@ STUDIP.conversations.contact = {
     },
     parseJson: function(json) {
         $.each(json, function(id, value) {
-            $('#contact_box').append($('<p>' + value.name + '</p>').attr('data-update', value.update).attr('data-id', id).click(function() {
-                STUDIP.conversations.open(id, value.name);
+            console.log(value);
+            $('#contact_box').append($('<p>' + value.name + '</p>').attr('data-id', value.id).click(function() {
+                STUDIP.conversations.open(value.id, value.name);
             }));
         });
     }
