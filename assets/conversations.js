@@ -42,7 +42,6 @@ STUDIP.conversations = {
                 conversation: conversation_id,
                 lastMessage: last
             },
-            async: false,
             dataType: "json"
         }).done(function(msg) {
             STUDIP.conversations.work(msg, function() {
