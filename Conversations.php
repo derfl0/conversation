@@ -35,7 +35,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         }
 
         // if conversations is everywhere load it everywhere
-        if (Config::get()->CONVERSATIONS_EVERYWHERE) {
+        if (Config::get()->CONVERSATIONS_EVERYWHERE && !$conversation_navi->isActive()) {
             PageLayout::addStylesheet($this->getPluginURL() . "/assets/everywhere.css");
             PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
