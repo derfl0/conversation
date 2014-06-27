@@ -19,7 +19,7 @@ STUDIP.conversations.contact = {
     parseJson: function(json) {
         $.each(json, function(id, value) {
             $('#contact_box').append($('<p>' + value.name + '</p>').attr('data-update', value.update).attr('data-id', id).click(function() {
-                STUDIP.conversations.open(id, value);
+                STUDIP.conversations.open(id, value.name);
             }));
         });
     }
