@@ -8,12 +8,16 @@
     margin-bottom: 20px;
 }
 
+#conversations_contact {
+    cursor: pointer;
+}
+
 #contact_box {
     position: absolute;
-    width: 200px;
-    height: 300px;
+    width: 250px;
+    height: 400px;
     background-color: #FFFFFF;
-    margin-top: -326px;
+    margin-top: -426px;
     border: #28497c solid 1px;
     overflow-y:auto;
 
@@ -23,6 +27,10 @@
         color: black;
         text-align: left;
         padding: 2px;
+        &:hover{
+            background-color: #b8c2d5;
+            cursor: pointer;
+        }
     }
     p.newMessage {
         background-color: #e7ebf1;
@@ -35,6 +43,7 @@
 
 .conversation_contact {
     width: 200px;
+    cursor: pointer;
     &>a {
         img {
             //width: 12px;

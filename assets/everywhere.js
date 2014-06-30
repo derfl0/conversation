@@ -34,7 +34,7 @@ STUDIP.conversations.open = function(conversation_id, name) {
         var contact = $('<li>').addClass('conversation_contact').attr('data-contact', conversation_id);
 
         // Append the close icon
-        contact.append($('<a>').html('[X]').click(function(event) {
+        contact.append($('<img>').attr('src', STUDIP.ASSETS_URL+'images/icons/12/blue/decline.png').click(function(event) {
             $(this).parent('li').hide();
         }));
 
