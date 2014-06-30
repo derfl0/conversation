@@ -7,14 +7,14 @@ $(document).ready(function() {
     // Apply opening
     $('#contact_box a').click(function(event) {
         event.preventDefault();
-        
+
         $(this).removeClass('newMessage');
-        
+
         //hide all conversations
         $('.conversation_contact').hide();
         STUDIP.conversations.open($(this).attr('data-id'), $(this).html());
     });
-    
+
     // And open first chat
     $('#contact_box a:first').click();
 });
@@ -58,7 +58,7 @@ STUDIP.conversations.open = function(conversation_id, name) {
         STUDIP.conversations.scroll.recalcSize();
         STUDIP.conversations.loadMessages(conversation_id);
     }
-    
+
     // show the contact if nothing is visible
     if ($('.conversation_contact:visible').length === 0) {
         contact.show();
@@ -101,14 +101,14 @@ STUDIP.conversations.new = function(username) {
             if (e.keyCode === 13) {
                 if (inputContainer.find('.sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
                     STUDIP.conversations.message.send(null, $(this).val(), username);
-                    $(this).val('');
+                    $(this).parents('div.conversation_contact[data-contact="' + username + '"]').remove();
                 }
             }
         });
         inputContainer.find("button[name='send']").click(function() {
             var input = inputContainer.find('.message_input');
             STUDIP.conversations.message.send(null, input.val(), username);
-            input.val('');
+            $(this).parents('div.conversation_contact[data-contact="' + username + '"]').remove();
         });
 
         STUDIP.conversations.scroll.recalcSize();
