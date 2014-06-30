@@ -31,7 +31,7 @@
 .conversation_contact {
   width: 200px;
 }
-.conversation_contact a img {
+.conversation_contact > a img {
   display: none;
 }
 .conversation_window {
@@ -58,6 +58,10 @@
 .conversation_window .scroll section article.message header,
 .conversation_window .scroll section article.message time {
   display: none;
+}
+.conversation_window .scroll section article.message img {
+  max-height: 120px;
+  max-width: 120px;
 }
 .conversation_window input {
   width: 191px;

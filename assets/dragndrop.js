@@ -94,14 +94,15 @@ function handleFileUpload(files, obj)
 {
     for (var i = 0; i < files.length; i++)
     {
+        var conversation_id = $(".conversationdisplay:visible").attr('data-id');
         var fd = new FormData();
         fd.append('file', files[i]);
-        STUDIP.conversations.scroll.screen(false);
+        STUDIP.conversations.scroll.prepareScroll(conversation_id);
         var status = new createStatusbar($(".conversationdisplay:visible")); //Using this we can set progress.
         status.setFileNameSize(files[i].name,files[i].size);
-        fd.append('conversation', STUDIP.conversations.current_id);
-        fd.append('username', username);
-        STUDIP.conversations.scroll.screen(true);
+        fd.append('conversation', conversation_id);
+        fd.append('username', conversation_id);
+        STUDIP.conversations.scroll.doAllScroll();
         sendFileToServer(fd, status);
 
     }

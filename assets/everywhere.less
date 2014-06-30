@@ -35,7 +35,7 @@
 
 .conversation_contact {
     width: 200px;
-    a {
+    &>a {
         img {
             //width: 12px;
             //height: 12px;
@@ -67,6 +67,10 @@
             article.message {
                 header,time {
                     display: none;
+                }
+                img {
+                    max-height: 120px;
+                    max-width: 120px;
                 }
             }
         } 
