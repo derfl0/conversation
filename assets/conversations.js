@@ -1,7 +1,6 @@
 STUDIP.conversations = {
     username: '',
     lastUpdate: 0,
-    reservedHeight: 392,
     getUrl: function(link) {
         return STUDIP.URLHelper.getURL("plugins.php/conversations/" + link);
     },

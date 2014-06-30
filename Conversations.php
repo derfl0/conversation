@@ -35,7 +35,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         }
 
         // if conversations is everywhere load it everywhere
-        if (Config::get()->CONVERSATIONS_EVERYWHERE && $conversation_navi && !$conversation_navi->isActive()) {
+        if (Config::get()->CONVERSATIONS_EVERYWHERE && $conversation_navi) {
             PageLayout::addStylesheet($this->getPluginURL() . "/assets/everywhere.css");
             PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
@@ -53,7 +53,12 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     function perform($unconsumed_path) {
         PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
+        PageLayout::addScript($this->getPluginURL() . "/assets/full_conversation.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/dragndrop.js");
+        
+        // Remove everywhere
+        PageLayout::removeScript($this->getPluginURL() . "/assets/everywhere.js");
+        PageLayout::removeStylesheet($this->getPluginURL() . "/assets/everywhere.css");
         $this->loadStyle();
 
         $this->setupAutoload();
