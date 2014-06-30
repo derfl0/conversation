@@ -17,5 +17,3 @@ $(document).ready(function() {
     // Modify sidebar
     $('#talks').closest('td').attr('colspan', 2).prev('td').remove();
 });
-
-STUDIP

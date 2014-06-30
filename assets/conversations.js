@@ -81,9 +81,9 @@ STUDIP.conversations = {
             }
             var online = json['online'];
             if (online) {
-                $('.conversation').removeClass('online');
+                $('#contact_box *.contact').removeClass('online');
                 $.each(online, function() {
-                    $('.conversation[data-conversation_id="' + this + '"]').addClass('online');
+                    $('#contact_box *.contact[data-id="' + this + '"]').addClass('online');
                 });
             }
             if (typeof (callback) === 'function') {

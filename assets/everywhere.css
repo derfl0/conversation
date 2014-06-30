@@ -25,6 +25,9 @@
 #contact_box p.newMessage {
   background-color: #e7ebf1;
 }
+#contact_box p.online {
+  border-left: #74b962 solid 4px;
+}
 .conversation_contact {
   width: 200px;
 }
