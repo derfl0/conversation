@@ -156,11 +156,11 @@ STUDIP.conversations.message = {
             STUDIP.conversations.updateDate(msg['conversation'], msg['date']);
         }
     },
-    send: function(conversation_id, message) {
+    send: function(conversation_id, message, username) {
         $.ajax({
             type: "POST",
             url: STUDIP.conversations.getUrl('index/send'),
-            data: {conversation: conversation_id, message: message},
+            data: {conversation: conversation_id, message: message, username: username},
             dataType: "json"
         }).done(function(msg) {
             STUDIP.conversations.work(msg);
@@ -191,42 +191,6 @@ STUDIP.conversations.message = {
 };
 
 STUDIP.conversations.conversation = {
-    start: function() {
-        $("div.scroll:not([data-id='" + STUDIP.conversations.current_id + "'])").hide(0);
-        if (STUDIP.conversations.currentConversation().length <= 0) {
-            $('#conversation').append('<div class="scroll" data-id="' + STUDIP.conversations.current_id + '"><div class="conversationdisplay" data-id="' + STUDIP.conversations.current_id + '"></div></div>');
-            STUDIP.conversations.recalcSize();
-            STUDIP.conversations.instantScroll = true;
-            STUDIP.conversations.loadMessages();
-        } else {
-            $("div.scroll[data-id='" + STUDIP.conversations.current_id + "']").show(0);
-        }
-    },
-    apply: function() {
-        $('.new_conv').click(function(e) {
-            e.preventDefault();
-            //we loaded manually so dont auto scrollback
-            STUDIP.conversations.conversation.click($(this));
-        });
-        $('.new_conv').removeClass('new_conv');
-    },
-    new : function(paticipant, realname) {
-        if (paticipant !== myId) {
-            $("div .conversationdisplay").hide(200);
-            $('#username').html(realname);
-            $.ajax({
-                type: "POST",
-                url: urlLoadUsername,
-                data: {username: paticipant}
-            }).done(function(msg) {
-                $('#username').html(msg);
-                $('#user_1').val('');
-            });
-            STUDIP.conversations.current_id = null;
-            STUDIP.conversations.username = paticipant;
-            $('#main').show();
-        }
-    },
     work: function(conv) {
         $('#no_talks').hide();
         if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {

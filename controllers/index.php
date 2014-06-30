@@ -107,7 +107,7 @@ class IndexController extends StudipController {
     private function createQuickSearch() {
         $quicksearch = QuickSearch::get("user", new StandardSearch("username"))
                 ->setInputStyle("width: 200px");
-        $quicksearch->fireJSFunctionOnSelect('STUDIP.conversations.conversation.new');
+        $quicksearch->fireJSFunctionOnSelect('STUDIP.conversations.new');
         return $quicksearch->render();
     }
 

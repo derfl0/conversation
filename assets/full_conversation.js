@@ -27,7 +27,7 @@ STUDIP.conversations.open = function(conversation_id, name) {
         contact.append($('<h1>').addClass('head').html('Gespräch mit ' + name));
 
         var conversationWindow = $('<div>').addClass('conversation_window');
-        
+
         // Create footer
         var inputContainer = $('<div>').addClass('message_footer');
         inputContainer.append('<div class="message_footer"><div class="enterbutton"><label>Senden mit Enter <input class="sendWithEnter" checked="" type="checkbox"></label><br><button type="submit" class="button" name="send">Senden</button></div><div id="message">' +
@@ -56,6 +56,57 @@ STUDIP.conversations.open = function(conversation_id, name) {
         STUDIP.conversations.scroll.recalcSize();
         STUDIP.conversations.loadMessages(conversation_id);
     }
+};
+
+STUDIP.conversations.new = function(username) {
+
+    // load real name
+    var name = '';
+    $.ajax({
+        type: "POST",
+        url: STUDIP.conversations.getUrl('index/nameFromUsername'),
+        data: {username: username}
+    }).done(function(msg) {
+        name = msg;
+        $('input[name="user_parameter"]').val('');
+
+        //hide all conversations
+        $('.conversation_contact').hide();
+        var contact = $('<div>').addClass('conversation_contact').attr('data-contact', username);
+
+        // Append header
+        contact.append($('<h1>').addClass('head').html('Gespräch mit ' + name));
+
+        var conversationWindow = $('<div>').addClass('conversation_window');
+
+        // Create footer
+        var inputContainer = $('<div>').addClass('message_footer');
+        inputContainer.append('<div class="message_footer"><div class="enterbutton"><label>Senden mit Enter <input class="sendWithEnter" checked="" type="checkbox"></label><br><button type="submit" class="button" name="send">Senden</button></div><div id="message">' +
+                '<textarea class="message_input" placeholder="Neue Nachricht"></textarea></div>');
+        var scroll = $('<div>').addClass('scroll').attr('data-id', username).append('<div class="conversationdisplay" data-id="' + username + '"></div>');
+        conversationWindow.append(scroll);
+        conversationWindow.append(inputContainer);
+        contact.append(conversationWindow);
+        $('#main').append(contact);
+
+        inputContainer.find(".message_input").keyup(function(e) {
+            e = e || event;
+            if (e.keyCode === 13) {
+                if (inputContainer.find('.sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
+                    STUDIP.conversations.message.send(null, $(this).val(), username);
+                    $(this).val('');
+                }
+            }
+        });
+        inputContainer.find("button[name='send']").click(function() {
+            var input = inputContainer.find('.message_input');
+            STUDIP.conversations.message.send(null, input.val(), username);
+            input.val('');
+        });
+
+        STUDIP.conversations.scroll.recalcSize();
+
+    });
 };
 
 // Set reserved heigth;
