@@ -45,7 +45,6 @@ STUDIP.conversations = {
                     // Open conversation 
                     STUDIP.conversations.open(this.id, this.name);
                     STUDIP.conversations.updateContact(this.id);
-                    STUDIP.conversations.conversation.work(this);
                 });
             }
             var messages = json['messages'];
@@ -66,9 +65,9 @@ STUDIP.conversations = {
             }
             var online = json['online'];
             if (online) {
-                $('#contact_box *.contact').removeClass('online');
+                $('#contact_box *.online').removeClass('online');
                 $.each(online, function() {
-                    $('#contact_box *.contact[data-id="' + this + '"]').addClass('online');
+                    $('#contact_box *[data-id="' + this + '"]').addClass('online');
                 });
             }
             if (typeof (callback) === 'function') {
@@ -187,29 +186,6 @@ STUDIP.conversations.message = {
             current.append(newSection);
         }
         return STUDIP.conversations.message.getDay(stamp, conversation);
-    }
-};
-
-STUDIP.conversations.conversation = {
-    work: function(conv) {
-        $('#no_talks').hide();
-        if ($("div [data-conversation_id='" + conv['id'] + "']").length <= 0) {
-            $('#talks').prepend('<div class="new_conv conversation" data-conversation_id="' + conv['id'] + '" data-date="' + conv['date'] + '">' + conv['name'] + '</div>');
-            STUDIP.conversations.conversation.apply();
-            if (!STUDIP.conversations.current_id) {
-                $("div [data-conversation_id='" + conv['id'] + "']").click();
-            }
-        }
-        STUDIP.conversations.updateDate(conv['id'], conv['date']);
-    },
-    click: function(obj) {
-        STUDIP.conversations.current_id = obj.attr('data-conversation_id');
-        $('#username').html(obj.html());
-        STUDIP.conversations.conversation.start();
-        obj.removeClass('newMessage');
-        $('.conversation').removeClass('clicked');
-        obj.addClass('clicked');
-        STUDIP.conversations.updateDateClass();
     }
 };
 

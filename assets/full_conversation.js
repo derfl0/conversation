@@ -2,26 +2,23 @@ $(document).ready(function() {
     $(window).resize(STUDIP.conversations.scroll.recalcSize);
 
     // Modify sidebar
-    $('#talks').closest('td').attr('colspan', 2).prev('td').remove();
+    $('#contact_box').closest('td').attr('colspan', 2).prev('td').remove();
 
     // Apply opening
-    $('#talks a').click(function(event) {
+    $('#contact_box a').click(function(event) {
         event.preventDefault();
-        var contact = $(this).find('div');
-        STUDIP.conversations.open(contact.attr('data-conversation_id'), contact.html());
+        
+        //hide all conversations
+        $('.conversation_contact').hide();
+        STUDIP.conversations.open($(this).attr('data-id'), $(this).html());
     });
 });
 
 STUDIP.conversations.open = function(conversation_id, name) {
 
-    //hide all conversations
-    $('.conversation_contact').hide();
-
-    var conversation = $('.scroll[data-id="' + conversation_id + '"]');
-    if (conversation.length > 0) {
-        $('.conversation_contact[data-contact="' + conversation_id + '"]').show();
-    } else {
-        var contact = $('<div>').addClass('conversation_contact').attr('data-contact', conversation_id);
+    var contact = $('.conversation_contact[data-contact="' + conversation_id + '"]');
+    if (contact.length === 0) {
+        contact = $('<div>').addClass('conversation_contact').attr('data-contact', conversation_id);
 
         // Append header
         contact.append($('<h1>').addClass('head').html('Gespräch mit ' + name));
@@ -55,6 +52,11 @@ STUDIP.conversations.open = function(conversation_id, name) {
 
         STUDIP.conversations.scroll.recalcSize();
         STUDIP.conversations.loadMessages(conversation_id);
+    }
+    
+    // show the contact if nothing is visible
+    if ($('.conversation_contact:visible').length === 0) {
+        contact.show();
     }
 };
 

@@ -121,12 +121,12 @@ class IndexController extends StudipController {
             $this->hasConversations = true;
             foreach ($convs as $conv) {
                 $this->activateConversation($conv);
-                $conversations .= "<a href='" . $this->url_for('index/index/' . $conv->conversation_id) . "'><div class='new_conv conversation' data-date='$conv->date' data-conversation_id='$conv->conversation_id'>" . $conv->getAvatar() . " $conv->name</div></a>";
+                $conversations .= "<a data-date='$conv->date' data-id='$conv->conversation_id' href='" . $this->url_for('index/index/' . $conv->conversation_id) . "'>" . $conv->getAvatar() . " $conv->name</a>";
             }
         } else {
             $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
         }
-        $this->addToInfobox(_('Gespräche'), "<div id='talks'>$conversations</div>");
+        $this->addToInfobox(_('Gespräche'), "<div id='contact_box'>$conversations</div>");
     }
 
     /**

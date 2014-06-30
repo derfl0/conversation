@@ -23,12 +23,6 @@
     color: #ffbd33;
 }
 
-.online:after
-{ 
-    content:" (online)";
-    color: #74b962;
-}
-
 .conversation:hover {
     cursor:pointer;
     background-color: #a9b6cb;
@@ -144,14 +138,17 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
-}
-
-#contact_box div img {
-    opacity: 0.4;
-}
-
-#contact_box div.online img {
-    opacity: 1;
+    img {
+        opacity: 0.4;
+    }
+    .online img {
+        opacity: 1;
+    }
+    .online:after
+        { 
+        content:" (online)";
+        color: #74b962;
+    }
 }
 
 h1 img {
