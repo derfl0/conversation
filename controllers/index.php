@@ -145,24 +145,4 @@ class IndexController extends StudipController {
             $_SESSION['conversations']['online'][$user] = $conversation->conversation_id;
         }
     }
-
-    // customized #url_for for plugins
-    public function url_for($to) {
-        $args = func_get_args();
-
-        # find params
-        $params = array();
-        if (is_array(end($args))) {
-            $params = array_pop($args);
-        }
-
-        # urlencode all but the first argument
-        $args = array_map("urlencode", $args);
-        $args[0] = $to;
-
-        return PluginEngine::getURL($this->dispatcher->plugin, $params, join("/", $args));
-    }
-
 }
-
-?>
