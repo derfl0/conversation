@@ -18,6 +18,14 @@
   border: #28497c solid 1px;
   overflow-y: auto;
 }
+#contact_box header {
+  color: white;
+  background-color: #28497c;
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 2px;
+  text-align: left;
+}
 #contact_box p {
   margin: 0px;
   border-bottom: #536d96 solid 1px;

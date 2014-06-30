@@ -4,7 +4,7 @@ STUDIP.conversations.contact = {
             if ($('#contact_box').length > 0) {
                 $('#contact_box').toggle();
             } else {
-                $(this).parent().append('<div id="contact_box"></div>');
+                $(this).parent().append($('<div>').attr('id', 'contact_box').append($('<header>').append($('<a>').attr('href', STUDIP.conversations.getUrl('')).html('Gespräche'))));
                 $.ajax({
                     type: "GET",
                     url: STUDIP.conversations.getUrl("everywhere/contacts"),
