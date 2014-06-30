@@ -18,20 +18,6 @@ STUDIP.conversations = {
     getConversation: function(id) {
         return $("div.conversationdisplay[data-id='" + id + "']");
     },
-    setMessageSender: function() {
-        $("#message_input").keyup(function(e) {
-            e = e || event;
-            if (e.keyCode === 13) {
-                if ($('#sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
-                    STUDIP.conversations.message.send();
-                }
-            }
-            return true;
-        });
-        $(".button[name='send']").click(function() {
-            STUDIP.conversations.message.send();
-        });
-    },
     loadMessages: function(conversation_id) {
         var last = STUDIP.conversations.getScroll(conversation_id).find('article:first').attr('id');
         $.ajax({
@@ -55,7 +41,7 @@ STUDIP.conversations = {
             if (conversations) {
                 $('#main').show();
                 $.each(conversations, function() {
-                    
+
                     // Open conversation 
                     STUDIP.conversations.open(this.id, this.name);
                     STUDIP.conversations.updateContact(this.id);
@@ -117,11 +103,11 @@ STUDIP.conversations = {
     },
     updateContact: function(conversation_id) {
         var contact = STUDIP.conversations.getContact(conversation_id);
-         contact.addClass('newMessage');
-         contact.prependTo($('#contact_box'));
+        contact.addClass('newMessage');
+        contact.prependTo($('#contact_box'));
     },
     getContact: function(conversation_id) {
-        return $('#contact_box [data-id="'+conversation_id+'"]');
+        return $('#contact_box [data-id="' + conversation_id + '"]');
     }
 };
 
@@ -170,14 +156,11 @@ STUDIP.conversations.message = {
             STUDIP.conversations.updateDate(msg['conversation'], msg['date']);
         }
     },
-    send: function() {
-        var message = $('#message_input').val();
-        $('#message_input').val('');
-        $("#user_1").val('');
+    send: function(conversation_id, message) {
         $.ajax({
             type: "POST",
-            url: urlSend,
-            data: {conversation: STUDIP.conversations.current_id, message: message, username: STUDIP.conversations.username},
+            url: STUDIP.conversations.getUrl('index/send'),
+            data: {conversation: conversation_id, message: message},
             dataType: "json"
         }).done(function(msg) {
             STUDIP.conversations.work(msg);

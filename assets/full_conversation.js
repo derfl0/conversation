@@ -27,30 +27,29 @@ STUDIP.conversations.open = function(conversation_id, name) {
         contact.append($('<h1>').addClass('head').html('Gespräch mit ' + name));
 
         var conversationWindow = $('<div>').addClass('conversation_window');
-        var inputContainer = '<div class="message_footer"><div class="enterbutton"><label>Senden mit Enter <input id="sendWithEnter" checked="" type="checkbox"></label><br><button type="submit" class="button" name="send">Senden</button></div><div id="message">' +
-                '<textarea id="message_input" placeholder="Neue Nachricht"></textarea></div></div>';
+        
+        // Create footer
+        var inputContainer = $('<div>').addClass('message_footer');
+        inputContainer.append('<div class="message_footer"><div class="enterbutton"><label>Senden mit Enter <input class="sendWithEnter" checked="" type="checkbox"></label><br><button type="submit" class="button" name="send">Senden</button></div><div id="message">' +
+                '<textarea class="message_input" placeholder="Neue Nachricht"></textarea></div>');
         var scroll = $('<div>').addClass('scroll').attr('data-id', conversation_id).append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
         conversationWindow.append(scroll);
         conversationWindow.append(inputContainer);
         contact.append(conversationWindow);
         $('#main').append(contact);
 
-        /*inputContainer.keypress(function(e) {
-         e = e || event;
-         if (e.keyCode === 13) {
-         STUDIP.conversations.updateContact(conversation_id);
-         var input = $(this).val();
-         $.ajax({
-         type: "POST",
-         url: STUDIP.conversations.getUrl('index/send'),
-         data: {conversation: conversation_id, message: input},
-         dataType: "json"
-         }).done(function(msg) {
-         STUDIP.conversations.work(msg);
-         });
-         $(this).val('');
-         }
-         });*/
+        inputContainer.find(".message_input").keyup(function(e) {
+            e = e || event;
+            if (e.keyCode === 13) {
+                if ($(this).closest('.sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
+                    STUDIP.conversations.message.send(conversation_id, $(this).val());
+                    $(this).val('');
+                }
+            }
+        });
+        $(".button[name='send']").click(function() {
+            STUDIP.conversations.message.send();
+        });
 
         STUDIP.conversations.scroll.recalcSize();
         STUDIP.conversations.loadMessages(conversation_id);
