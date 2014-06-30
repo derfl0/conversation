@@ -1,159 +1,138 @@
 #main {
-    height: 100%;
+  height: 100%;
 }
-
 .message_footer {
-    width: 100%;
+  width: 100%;
 }
 .conversationdisplay {
-    max-width: 700px;
-    margin: 0 auto;
+  max-width: 700px;
+  margin: 0 auto;
 }
-
 .conversation {
-    padding-left: 4px;
+  padding-left: 4px;
 }
 .scroll {
-    overflow-y:auto;
-    margin-bottom: 6px;
-    min-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 6px;
+  min-height: 200px;
 }
-
-.newMessage {
-    color: #ffbd33;
-}
-
-.online:after
-{ 
-    content:" (online)";
-    color: #74b962;
-}
-
 .conversation:hover {
-    cursor:pointer;
-    background-color: #a9b6cb;
+  cursor: pointer;
+  background-color: #a9b6cb;
 }
-
 #message {
-    padding-right: 150px;
+  padding-right: 150px;
 }
-
-.message_input{
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 100%;
-    resize: none; 
-    height: 60px;
+.message_input {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  resize: none;
+  height: 60px;
 }
-
 .message_header {
-    font-size: smaller;
+  font-size: smaller;
 }
-
 /* FILEUPLOAD */
 .progressBar {
-    width: 200px;
-    height: 22px;
-    border: 1px solid #ddd;
-    border-radius: 5px; 
-    overflow: hidden;
-    display:inline-block;
-    margin:0px 10px 5px 5px;
-    vertical-align:top;
+  width: 200px;
+  height: 22px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  display: inline-block;
+  margin: 0px 10px 5px 5px;
+  vertical-align: top;
 }
-
 .progressBar div {
-    height: 100%;
-    color: #fff;
-    text-align: right;
-    line-height: 22px; /* same as #progressBar height if we want text middle aligned */
-    width: 0;
-    background-color: #0ba1b5; border-radius: 3px; 
-}
-.statusbar
-{
-    border-top:1px solid #A9CCD1;
-    min-height:25px;
-    width:700px;
-    padding:10px 10px 0px 10px;
-    vertical-align:top;
-}
-.statusbar:nth-child(odd){
-    background:#EBEFF0;
-}
-.filename
-{
-    display:inline-block;
-    vertical-align:top;
-    width:250px;
-}
-.filesize
-{
-    display:inline-block;
-    vertical-align:top;
-    color:#30693D;
-    width:100px;
-    margin-left:10px;
-    margin-right:5px;
-}
-.abort{
-    background-color:#A8352F;
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;display:inline-block;
-    color:#fff;
-    font-family:arial;font-size:13px;font-weight:normal;
-    padding:4px 15px;
-    cursor:pointer;
-    vertical-align:top
-}
+  height: 100%;
+  color: #fff;
+  text-align: right;
+  line-height: 22px;
+  /* same as #progressBar height if we want text middle aligned */
 
+  width: 0;
+  background-color: #0ba1b5;
+  border-radius: 3px;
+}
+.statusbar {
+  border-top: 1px solid #A9CCD1;
+  min-height: 25px;
+  width: 700px;
+  padding: 10px 10px 0px 10px;
+  vertical-align: top;
+}
+.statusbar:nth-child(odd) {
+  background: #EBEFF0;
+}
+.filename {
+  display: inline-block;
+  vertical-align: top;
+  width: 250px;
+}
+.filesize {
+  display: inline-block;
+  vertical-align: top;
+  color: #30693D;
+  width: 100px;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+.abort {
+  background-color: #A8352F;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  display: inline-block;
+  color: #fff;
+  font-family: arial;
+  font-size: 13px;
+  font-weight: normal;
+  padding: 4px 15px;
+  cursor: pointer;
+  vertical-align: top;
+}
 .enterbutton {
-    float:right;
+  float: right;
 }
-
 .clicked {
-    border-left-style: solid;
-    border-left-width: 2px;
-    padding-left: 2px;
-    border-color: #536d96;
+  border-left-style: solid;
+  border-left-width: 2px;
+  padding-left: 2px;
+  border-color: #536d96;
 }
-
 .image_overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    top: 0px;
-    left: 0px;
-    z-index: 9999;
-    color: white;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+  color: white;
 }
-
-.image_overlay img {
-    position: absolute;
-    top: 0; bottom:0; left: 0; right:0;
-    margin: auto;
-}
-
 #contact_box a {
-    color: black;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
+  color: black;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
-
-#contact_box div img {
-    opacity: 0.4;
+#contact_box a img {
+  opacity: 0.4;
 }
-
-#contact_box div.online img {
-    opacity: 1;
+#contact_box a.online img {
+  opacity: 1;
 }
-
+#contact_box a.online:after {
+  content: " (online)";
+  color: #74b962;
+}
+#contact_box a.newMessage {
+  color: #ffbd33;
+}
 h1 img {
-    margin-top: -8px;
+  margin-top: -8px;
 }

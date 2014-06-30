@@ -8,10 +8,15 @@ $(document).ready(function() {
     $('#contact_box a').click(function(event) {
         event.preventDefault();
         
+        $(this).removeClass('newMessage');
+        
         //hide all conversations
         $('.conversation_contact').hide();
         STUDIP.conversations.open($(this).attr('data-id'), $(this).html());
     });
+    
+    // And open first chat
+    $('#contact_box a:first').click();
 });
 
 STUDIP.conversations.open = function(conversation_id, name) {

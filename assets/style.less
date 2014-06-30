@@ -19,10 +19,6 @@
     min-height: 200px;
 }
 
-.newMessage {
-    color: #ffbd33;
-}
-
 .conversation:hover {
     cursor:pointer;
     background-color: #a9b6cb;
@@ -125,12 +121,6 @@
     color: white;
 }
 
-.image_overlay img {
-    position: absolute;
-    top: 0; bottom:0; left: 0; right:0;
-    margin: auto;
-}
-
 #contact_box a {
     color: black;
     display: block;
@@ -141,13 +131,16 @@
     img {
         opacity: 0.4;
     }
-    .online img {
+    &.online img {
         opacity: 1;
     }
-    .online:after
+    &.online:after
         { 
         content:" (online)";
         color: #74b962;
+    }
+    &.newMessage {
+        color: #ffbd33;
     }
 }
 

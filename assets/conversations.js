@@ -102,8 +102,12 @@ STUDIP.conversations = {
     },
     updateContact: function(conversation_id) {
         var contact = STUDIP.conversations.getContact(conversation_id);
-        contact.addClass('newMessage');
         contact.prependTo($('#contact_box'));
+
+        // check if we need to apply the newMessage thingy
+        if ($('.scroll[data-id="' + conversation_id + '"]:visible').length === 0) {
+            contact.addClass('newMessage');
+        }
     },
     getContact: function(conversation_id) {
         return $('#contact_box [data-id="' + conversation_id + '"]');
