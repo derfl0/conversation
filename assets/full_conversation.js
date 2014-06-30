@@ -41,14 +41,16 @@ STUDIP.conversations.open = function(conversation_id, name) {
         inputContainer.find(".message_input").keyup(function(e) {
             e = e || event;
             if (e.keyCode === 13) {
-                if ($(this).closest('.sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
+                if (inputContainer.find('.sendWithEnter').prop('checked') !== (e.ctrlKey || e.shiftKey)) {
                     STUDIP.conversations.message.send(conversation_id, $(this).val());
                     $(this).val('');
                 }
             }
         });
-        $(".button[name='send']").click(function() {
-            STUDIP.conversations.message.send();
+        inputContainer.find("button[name='send']").click(function() {
+            var input = inputContainer.find('.message_input');
+            STUDIP.conversations.message.send(conversation_id, input.val());
+            input.val('');
         });
 
         STUDIP.conversations.scroll.recalcSize();
