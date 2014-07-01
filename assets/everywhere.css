@@ -26,21 +26,22 @@
   padding: 2px;
   text-align: left;
 }
-#contact_box p {
+#contact_box > a {
   margin: 0px;
   border-bottom: #536d96 solid 1px;
   color: black;
   text-align: left;
   padding: 2px;
+  display: block;
 }
-#contact_box p:hover {
+#contact_box > a:hover {
   background-color: #b8c2d5;
   cursor: pointer;
 }
-#contact_box p.newMessage {
+#contact_box > a.newMessage {
   background-color: #e7ebf1;
 }
-#contact_box p.online {
+#contact_box > a.online {
   border-left: #74b962 solid 4px;
 }
 .conversation_contact {

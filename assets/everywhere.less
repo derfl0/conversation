@@ -20,7 +20,7 @@
     margin-top: -426px;
     border: #28497c solid 1px;
     overflow-y:auto;
-    
+
     header {
         color: white;
         background-color: #28497c;
@@ -30,23 +30,24 @@
         text-align: left;
     }
 
-    p {
+    & > a {
         margin: 0px;
         border-bottom: #536d96 solid 1px;
         color: black;
         text-align: left;
         padding: 2px;
+        display: block;
         &:hover{
             background-color: #b8c2d5;
             cursor: pointer;
         }
-    }
-    p.newMessage {
-        background-color: #e7ebf1;
-    }
-    p.online
+        &.newMessage {
+            background-color: #e7ebf1;
+        }
+        &.online
         { 
-        border-left: #74b962 solid 4px;
+            border-left: #74b962 solid 4px;
+        }
     }
 }
 

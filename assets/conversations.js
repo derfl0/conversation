@@ -112,7 +112,7 @@ STUDIP.conversations = {
                 STUDIP.conversations.open(conversation_id, name);
             });
         }
-        contact.prependTo($('#contact_box'));
+        contact.insertAfter($('#contact_box header'));
 
 
         // check if we need to apply the newMessage thingy
