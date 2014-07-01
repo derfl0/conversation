@@ -33,6 +33,9 @@
   text-align: left;
   padding: 2px;
   display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #contact_box > a:hover {
   background-color: #b8c2d5;
@@ -46,6 +49,12 @@
 }
 .conversation_contact {
   width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.conversation_contact .conversationdisplay {
+  white-space: initial;
 }
 .conversation_contact > a,
 .conversation_contact img {
