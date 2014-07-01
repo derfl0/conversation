@@ -39,7 +39,6 @@ STUDIP.conversations = {
 
             var conversations = json['conversations'];
             if (conversations) {
-                $('#main').show();
                 $.each(conversations, function() {
 
                     // Open conversation 

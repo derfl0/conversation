@@ -37,7 +37,7 @@ STUDIP.conversations.open = function(conversation_id, name) {
         conversationWindow.append(scroll);
         conversationWindow.append(inputContainer);
         contact.append(conversationWindow);
-        $('#main').append(contact);
+        $('#chatwindow').append(contact);
 
         inputContainer.find(".message_input").keyup(function(e) {
             e = e || event;
@@ -114,7 +114,7 @@ STUDIP.conversations.new = function(username) {
         conversationWindow.append(scroll);
         conversationWindow.append(inputContainer);
         contact.append(conversationWindow);
-        $('#main').append(contact);
+        $('#chatwindow').append(contact);
 
         inputContainer.find(".message_input").keyup(function(e) {
             e = e || event;
