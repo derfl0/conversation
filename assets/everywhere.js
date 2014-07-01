@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Captain Hook
-    $('#layout_footer ul').prepend($('<li id="conversations_contact"><a>Kontakte</a></li>'));
+    $('#layout_footer ul').prepend($('<li id="conversations_contact"><a id="conversation">Kontakte</a></li>'));
 
     // Apply click to all loaded contacts
     $('#conversations_contact a').click(function() {

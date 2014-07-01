@@ -16,7 +16,11 @@ $(document).ready(function() {
     });
 
     // And open first chat
-    $('#contact_box a:first').click();
+    if (STUDIP.conversations.openConversation) {
+        $('#contact_box a[data-id="' + STUDIP.conversations.openConversation + '"]').click();
+    } else {
+        $('#contact_box a:first').click();
+    }
 });
 
 STUDIP.conversations.open = function(conversation_id, name) {

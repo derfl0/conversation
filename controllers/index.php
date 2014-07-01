@@ -31,7 +31,9 @@ class IndexController extends StudipController {
         $this->setInfoBox();
 
         // Set the starting point
-        $this->start = $start ? : 0;
+        if ($start) {
+            PageLayout::addHeadElement('script', array(), 'STUDIP.conversations.openConversation = ' . $start);
+        }
     }
 
     /**

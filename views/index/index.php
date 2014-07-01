@@ -5,5 +5,5 @@
     var urlLoadMessages = '<?= $controller->url_for('index/loadMessages') ?>';
     var urlLoadUsername = '<?= $controller->url_for('index/nameFromUsername') ?>';
     STUDIP.conversations.lastUpdate = <?= time() ?>;
-    STUDIP.conversations.startingPoint = <?= $start ?>;
+    STUDIP.conversations.startingPoint = 0;
 </script>
