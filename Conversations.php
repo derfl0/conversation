@@ -80,7 +80,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     }
 
     private function loadStyle() {
-        $styles = glob(__DIR__ . "/styles/*");
+        $styles = glob(__DIR__ . "/styles/*.css");
         if ($styles) {
             if (count($styles) > 1) {
                 
