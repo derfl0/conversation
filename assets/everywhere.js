@@ -27,7 +27,10 @@ $(document).ready(function() {
 STUDIP.conversations.open = function(conversation_id, name) {
     var conversation = $('.conversation_contact[data-contact="' + conversation_id + '"]');
     if (conversation.length > 0) {
-        conversation.show();
+        if (!conversation.is(":visible")) {
+            conversation.parent().prepend(conversation);
+            conversation.show();
+        }
     } else {
         var contact = $('<li>').addClass('conversation_contact').attr('data-contact', conversation_id);
 
