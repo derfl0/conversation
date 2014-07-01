@@ -20,10 +20,9 @@ $(document).ready(function() {
 });
 
 STUDIP.conversations.open = function(conversation_id, name) {
-
     var contact = $('.conversation_contact[data-contact="' + conversation_id + '"]');
     if (contact.length === 0) {
-        contact = $('<div>').addClass('conversation_contact').attr('data-contact', conversation_id);
+        contact = $('<div>').hide().addClass('conversation_contact').attr('data-contact', conversation_id);
 
         // Append header
         contact.append($('<h1>').addClass('head').html('Gespräch mit ' + name));
@@ -62,6 +61,27 @@ STUDIP.conversations.open = function(conversation_id, name) {
     // show the contact if nothing is visible
     if ($('.conversation_contact:visible').length === 0) {
         contact.show();
+    }
+};
+
+STUDIP.conversations.updateContact = function(conversation_id, name) {
+    var contact = STUDIP.conversations.getContact(conversation_id);
+
+    // Create contact if not existing
+    if (contact.length === 0) {
+        contact = $('<a>').attr('data-id', conversation_id).html(name).attr('href', STUDIP.conversations.getUrl('index/index/' + conversation_id)).click(function(event) {
+            event.preventDefault();
+            $(this).removeClass('newMessage');
+            $('.conversation_contact').hide();
+            STUDIP.conversations.open(conversation_id, name);
+        });
+    }
+    contact.prependTo($('#contact_box'));
+
+
+    // check if we need to apply the newMessage thingy
+    if ($('.scroll[data-id="' + conversation_id + '"]:visible').length === 0) {
+        contact.addClass('newMessage');
     }
 };
 

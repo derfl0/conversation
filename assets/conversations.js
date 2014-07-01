@@ -44,7 +44,7 @@ STUDIP.conversations = {
 
                     // Open conversation 
                     STUDIP.conversations.open(this.id, this.name);
-                    STUDIP.conversations.updateContact(this.id);
+                    STUDIP.conversations.updateContact(this.id, this.name);
                 });
             }
             var messages = json['messages'];
@@ -100,9 +100,20 @@ STUDIP.conversations = {
             $('div.conversation').not(div).first().before(div);
         }
     },
-    updateContact: function(conversation_id) {
+    open: function() {
+    },
+    updateContact: function(conversation_id, name) {
         var contact = STUDIP.conversations.getContact(conversation_id);
+
+        // Create contact if not existing
+        if (contact.length === 0) {
+            contact = $('<a>').attr('data-id', conversation_id).html(name).attr('href', STUDIP.conversations.getUrl('index/index/' + conversation_id)).click(function(event) {
+                event.preventDefault();
+                STUDIP.conversations.open(conversation_id, name);
+            });
+        }
         contact.prependTo($('#contact_box'));
+
 
         // check if we need to apply the newMessage thingy
         if ($('.scroll[data-id="' + conversation_id + '"]:visible').length === 0) {
