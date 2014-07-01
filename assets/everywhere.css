@@ -46,9 +46,13 @@
 }
 .conversation_contact {
   width: 200px;
+}
+.conversation_contact > a,
+.conversation_contact img {
   cursor: pointer;
 }
-.conversation_contact > a img {
+.conversation_contact > a img,
+.conversation_contact img img {
   display: none;
 }
 .conversation_window {
