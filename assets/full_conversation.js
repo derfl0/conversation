@@ -65,7 +65,20 @@ STUDIP.conversations.open = function(conversation_id, name) {
     // show the contact if nothing is visible
     if ($('.conversation_contact:visible').length === 0) {
         contact.show();
+        STUDIP.conversations.loadAvatar(conversation_id);
     }
+};
+
+STUDIP.conversations.loadAvatar = function(conversation_id) {
+    $.ajax({
+        type: "GET",
+        url: STUDIP.conversations.getUrl("index/avatar"),
+        data: {conversation_id: conversation_id},
+        dataType: "html"
+    }).done(function(html) {
+        $('.sidebar-image').remove('.sidebar-context');
+        $('.sidebar-image').append(html);
+    });
 };
 
 STUDIP.conversations.updateContact = function(conversation_id, name) {

@@ -101,6 +101,11 @@ class IndexController extends StudipController {
         echo utf8_encode($avatar . " " . $user->getFullName());
         $this->render_nothing();
     }
+    
+    public function avatar_action() {
+        $conversation = Conversation::find(array(Request::get('conversation_id'), $GLOBALS['user']->id));
+        $this->avatar = $conversation->getAvatar(Avatar::MEDIUM);
+    }
 
     /**
      * Quicksearch for new user
