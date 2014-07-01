@@ -112,13 +112,7 @@ STUDIP.conversations = {
                 STUDIP.conversations.open(conversation_id, name);
             });
         }
-        contact.insertAfter($('#contact_box header'));
-
-
-        // check if we need to apply the newMessage thingy
-        if ($('.scroll[data-id="' + conversation_id + '"]:visible').length === 0) {
-            contact.addClass('newMessage');
-        }
+        STUDIP.conversations.contact.moveToTop(conversation_id);
     },
     getContact: function(conversation_id) {
         return $('#contact_box [data-id="' + conversation_id + '"]');
@@ -129,21 +123,14 @@ STUDIP.conversations.message = {
     exists: function(id) {
         return $("article#" + id).length > 0;
     },
-    getAuthorType: function(author) {
-        if (author === myId) {
-            return "mine";
-        }
-        return "other";
-    },
     getTime: function(msg) {
         var date = new Date(msg['date'] * 1000);
         return date.getHours() + ":" + ("0" + date.getMinutes()).slice(-2);
     },
     work: function(msg) {
         if (!STUDIP.conversations.message.exists(msg['id'])) {
-            var classtype = STUDIP.conversations.message.getAuthorType(msg['author']);
 
-            var output2 = '<article id="' + msg['id'] + '"  data-date="' + msg['date'] + '" class="message ' + classtype + '">';
+            var output2 = '<article id="' + msg['id'] + '"  data-date="' + msg['date'] + '" class="message ' + msg['class'] + '">';
             output2 += '<header>' + msg['author'] + '</header>';
             output2 += '<time>' + STUDIP.conversations.message.getTime(msg) + '</time>';
             output2 += '<div class="content">';
@@ -168,6 +155,11 @@ STUDIP.conversations.message = {
                 day.append(output2);
             }
             STUDIP.conversations.updateDate(msg['conversation'], msg['date']);
+
+            // Update contact with new message if the message came from the other
+            if (msg['class'] !== 'mine') {
+                STUDIP.conversations.contact.newMessage(msg['conversation']);
+            }
         }
     },
     send: function(conversation_id, message, username) {
@@ -204,10 +196,19 @@ STUDIP.conversations.message = {
     }
 };
 
+STUDIP.conversations.contact = {
+    newMessage: function(conversation_id) {
+        if ($('.scroll[data-id="' + conversation_id + '"]:visible').length === 0) {
+            STUDIP.conversations.getContact(conversation_id).addClass('newMessage');
+        }
+    },
+    moveToTop: function(conversation_id) {
+        STUDIP.conversations.getContact(conversation_id).prependTo($('#contact_box')); 
+    }
+};
 STUDIP.conversations.scroll = {
     prepareScroll: function(conversation_id) {
         var scroll = STUDIP.conversations.getScroll(conversation_id);
-
         // Check if field wasnt loaded before
         if (scroll.find('section').length === 0) {
             scroll.data('instantScroll', true);

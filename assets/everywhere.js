@@ -1,30 +1,28 @@
-STUDIP.conversations.contact = {
-    init: function() {
-        $('#conversations_contact a').click(function() {
-            if ($('#contact_box').length > 0) {
-                $('#contact_box').toggle();
-            } else {
-                $(this).parent().append($('<div>').attr('id', 'contact_box').append($('<header>').append($('<a>').attr('href', STUDIP.conversations.getUrl('')).html('Gespräche'))));
-                $.ajax({
-                    type: "GET",
-                    url: STUDIP.conversations.getUrl("everywhere/contacts"),
-                    dataType: "json"
-                }).done(function(json) {
-                    STUDIP.conversations.contact.parseJson(json.conversations);
-                });
-            }
-        });
+$(document).ready(function() {
+    // Captain Hook
+    $('#layout_footer ul').prepend($('<li id="conversations_contact"><a>Kontakte</a></li>'));
 
-    },
-    parseJson: function(json) {
-        $.each(json, function(id, value) {
-            console.log(value);
-            $('#contact_box').append($('<a>' + value.name + '</a>').addClass('contact').attr('data-id', value.id).click(function() {
-                STUDIP.conversations.open(value.id, value.name);
-            }));
-        });
-    }
-};
+    // Apply click to all loaded contacts
+    $('#conversations_contact a').click(function() {
+        if ($('#contact_box').length > 0) {
+            $('#contact_box').toggle();
+        } else {
+            $(this).parent().append($('<div>').attr('id', 'contact_box').append($('<header>').append($('<a>').attr('href', STUDIP.conversations.getUrl('')).html('Gespräche'))));
+            $.ajax({
+                type: "GET",
+                url: STUDIP.conversations.getUrl("everywhere/contacts"),
+                dataType: "json"
+            }).done(function(json) {
+                $.each(json.conversations, function(id, value) {
+                    $('#contact_box').append($('<a>' + value.name + '</a>').addClass('contact').attr('data-id', value.id).click(function() {
+                        STUDIP.conversations.open(value.id, value.name);
+                    }));
+                });
+            });
+        }
+    });
+
+});
 
 STUDIP.conversations.open = function(conversation_id, name) {
     var conversation = $('.conversation_contact[data-contact="' + conversation_id + '"]');
@@ -34,7 +32,7 @@ STUDIP.conversations.open = function(conversation_id, name) {
         var contact = $('<li>').addClass('conversation_contact').attr('data-contact', conversation_id);
 
         // Append the close icon
-        contact.append($('<img>').attr('src', STUDIP.ASSETS_URL+'images/icons/12/blue/decline.png').click(function(event) {
+        contact.append($('<img>').attr('src', STUDIP.ASSETS_URL + 'images/icons/12/blue/decline.png').click(function(event) {
             $(this).parent('li').hide();
         }));
 
@@ -66,14 +64,11 @@ STUDIP.conversations.open = function(conversation_id, name) {
                 $(this).val('');
             }
         });
-        
+
         STUDIP.conversations.loadMessages(conversation_id);
     }
 };
 
-$(document).ready(function() {
-    // Captain Hook
-    $('#layout_footer ul').prepend($('<li id="conversations_contact"><a>Kontakte</a></li>'));
-    STUDIP.conversations.contact.init();
-
-});
+STUDIP.conversations.contact.moveToTop = function(conversation_id) {
+    STUDIP.conversations.getContact(conversation_id).insertAfter($('#contact_box header'));
+};

@@ -54,7 +54,8 @@ class ConversationMessage extends SimpleORMap {
                 'author' => $user->username,
                 'text' => nl2br(formatReady($this->text)),
                 'file' => $filelink,
-                'date' => $this->mkdate
+                'date' => $this->mkdate,
+                'class' => $this->author_id == $GLOBALS['user']->id ? "mine" : "other"
             );
         } else {
             $obj = array(
@@ -63,7 +64,8 @@ class ConversationMessage extends SimpleORMap {
                 'author' => utf8_encode($user->username),
                 'text' => utf8_encode(nl2br(formatReady($this->text))),
                 'file' => $filelink,
-                'date' => $this->mkdate
+                'date' => $this->mkdate,
+                'class' => $this->author_id == $GLOBALS['user']->id ? "mine" : "other"
             );
         }
         $into['messages'][] = $obj;
