@@ -36,7 +36,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
 
         // if conversations is everywhere load it everywhere
         if (Config::get()->CONVERSATIONS_EVERYWHERE && $conversation_navi) {
-            PageLayout::addStylesheet($this->getPluginURL() . "/assets/everywhere.css");
+            $this->addStylesheet('assets/everywhere.less');
             PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
             PageLayout::addHeadElement('script', array(), 'STUDIP.conversations.myId = "' . $GLOBALS['user']->username . '"');
@@ -51,7 +51,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     }
 
     function perform($unconsumed_path) {
-        PageLayout::addStylesheet($this->getPluginURL() . "/assets/style.css");
+        $this->addStylesheet('assets/style.less');
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/full_conversation.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/dragndrop.js");
@@ -80,15 +80,12 @@ class Conversations extends StudipPlugin implements SystemPlugin {
     }
 
     private function loadStyle() {
-        $styles = glob(__DIR__ . "/styles/*.css");
-        if ($styles) {
-            if (count($styles) > 1) {
-                
-            } else {
-                PageLayout::addStylesheet($this->getPluginURL() . "/styles/" . basename($styles[0]));
-            }
-        } else {
+        $styles = glob(__DIR__ . '/styles/*.less');
+        if (!$styles) {
             throw new Exception("No style found");
+        }
+        foreach ($styles as $style) {
+            $this->addStylesheet('styles/' . basename($style));
         }
     }
 
