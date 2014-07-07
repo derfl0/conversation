@@ -25,7 +25,7 @@ $(document).ready(function() {
     STUDIP.conversations.cookie.load();
     $.each(STUDIP.conversations.persistent, function(id, value) {
         if (id !== null) {
-            STUDIP.conversations.open(id, value.name);
+            STUDIP.conversations.open(id, value.name, value.visible);
         }
     });
 
@@ -33,11 +33,21 @@ $(document).ready(function() {
 
 STUDIP.conversations.cookie = {
     add: function(conversation_id, name, position) {
-        STUDIP.conversations.persistent[conversation_id] = {name: name, position: position};
+        STUDIP.conversations.persistent[conversation_id] = {name: name, position: position, visible: true};
         STUDIP.conversations.cookie.store();
     },
     remove: function(conversation_id) {
         delete STUDIP.conversations.persistent[conversation_id];
+        STUDIP.conversations.cookie.store();
+    },
+    toggle: function (conversation_id, visible) {
+        if (!STUDIP.conversations.persistent.hasOwnProperty(conversation_id)) {
+            return;
+        }
+        if (arguments.length === 1) {
+            visible = !STUDIP.conversations.persistent[conversation_id].visible;
+        }
+        STUDIP.conversations.persistent[conversation_id].visible = visible;
         STUDIP.conversations.cookie.store();
     },
     load: function() {
@@ -55,7 +65,7 @@ STUDIP.conversations.cookie = {
     }
 };
 
-STUDIP.conversations.open = function(conversation_id, name) {
+STUDIP.conversations.open = function(conversation_id, name, visible) {
 
     STUDIP.conversations.cookie.add(conversation_id, name);
 
@@ -76,9 +86,10 @@ STUDIP.conversations.open = function(conversation_id, name) {
 
         // Append the name
         contact.append($('<a>').html(name).click(function(event) {
-            $(this).next('.conversation_window').toggle();
+            var visible = $(this).next('.conversation_window').toggle().is(':visible');
+            STUDIP.conversations.cookie.toggle(conversation_id, visible);
         }));
-        var conversationWindow = $('<div>').addClass('conversation_window');
+        var conversationWindow = $('<div>').addClass('conversation_window').toggle(visible);
         var inputContainer = $('<input type="text">').addClass('conversation_input').data('conversation_id', conversation_id);
         var scroll = $('<div>').addClass('scroll').attr('data-id', conversation_id).append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
         conversationWindow.append(scroll);
