@@ -1,4 +1,4 @@
-<div id="chatwindow">
+<div id="main">
 </div>
 <script>
     var urlSend = '<?= $controller->url_for('index/send') ?>';

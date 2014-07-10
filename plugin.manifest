@@ -1,7 +1,7 @@
 pluginname=Gespräche
 pluginclassname=Conversations
 origin=intelec
-version=1.3.1
+version=1.2
 description=Additional conversation feature
 studipMinVersion=2.0
 dbscheme=db/install.sql

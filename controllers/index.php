@@ -122,27 +122,18 @@ class IndexController extends StudipController {
      * Sets up the infobox
      */
     private function setInfoBox() {
-        
-        $sidebar = Sidebar::get();
-        $sidebar->setImage(Assets::image_path("sidebar/smiley-sidebar.png"));
-
-        // Add the Search
-        $search = new SidebarWidget;
-        $search->addElement(new WidgetElement($this->createQuickSearch()));
-        $search->setTitle(_('Suche'));
-
-        // Add the contactlist
-        $contacts = new SidebarWidget;
-        $contacts->setTitle(_('Gespräche'));
-        $contacts->addElement(new WidgetElement("<div id='contact_box'>"));
-        foreach (Conversation::updates(time() - self::CONVERSATION_PURGE) as $conv) {
-            $this->activateConversation($conv);
-            $contacts->addElement(new WidgetElement("<a data-date='$conv->date' data-id='$conv->conversation_id' href='" . $this->url_for('index/index/' . $conv->conversation_id) . "'>" . $conv->getAvatar() . " $conv->name</a>"));
+        $this->setInfoBoxImage('infobox/studygroup.jpg');
+        $this->addToInfobox(_('Suche'), $this->createQuickSearch(), 'icons/16/blue/search.png');
+        if ($convs = Conversation::updates(time() - self::CONVERSATION_PURGE)) {
+            $this->hasConversations = true;
+            foreach ($convs as $conv) {
+                $this->activateConversation($conv);
+                $conversations .= "<a data-date='$conv->date' data-id='$conv->conversation_id' href='" . $this->url_for('index/index/' . $conv->conversation_id) . "'>" . $conv->getAvatar() . " $conv->name</a>";
+            }
+        } else {
+            $conversations = '<div id="no_talks">' . _('Keine Gespräche') . '</div>';
         }
-        $contacts->addElement(new WidgetElement("</div>"));
-
-        $sidebar->addWidget($search, 'search');
-        $sidebar->addWidget($contacts, 'contacts');
+        $this->addToInfobox(_('Gespräche'), "<div id='contact_box'>$conversations</div>");
     }
 
     /**
@@ -161,5 +152,4 @@ class IndexController extends StudipController {
             $_SESSION['conversations']['online'][$user] = $conversation->conversation_id;
         }
     }
-
 }
