@@ -1,5 +1,11 @@
-#main {
+#chatwindow {
   height: 100%;
+}
+#chatwindow h1 img {
+  display: none;
+}
+#conversations_contact {
+  display: none;
 }
 .message_footer {
   width: 100%;
@@ -113,6 +119,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+}
+#contact_box a:hover {
+  background-color: #a9b6cb;
 }
 #contact_box a img {
   opacity: 0.4;

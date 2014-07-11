@@ -11,7 +11,7 @@ class ConversationMessage extends SimpleORMap {
         $this->db_table = 'conversation_messages';
         parent::__construct($id);
     }
-
+    
     public static function insert($conv, $message, $file = null, $author = null) {
         if (!$author) {
             $author = $GLOBALS['user']->id;
@@ -72,5 +72,3 @@ class ConversationMessage extends SimpleORMap {
     }
 
 }
-
-?>

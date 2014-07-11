@@ -39,7 +39,6 @@ STUDIP.conversations = {
 
             var conversations = json['conversations'];
             if (conversations) {
-                $('#main').show();
                 $.each(conversations, function() {
 
                     // Open conversation 
@@ -116,6 +115,13 @@ STUDIP.conversations = {
     },
     getContact: function(conversation_id) {
         return $('#contact_box [data-id="' + conversation_id + '"]');
+    },
+    markRead: function(conversation_id) {
+        $.ajax(STUDIP.conversations.getUrl('index/markRead/' + conversation_id));
+        STUDIP.conversations.getContact(conversation_id).removeClass('newMessage');
+        if ($('div#contact_box a.newMessage').length === 0) {
+            $('a#conversation').removeClass('new');
+        }
     }
 };
 

@@ -1,27 +1,18 @@
 $(document).ready(function() {
     // Captain Hook
-    $('#layout_footer ul').prepend($('<li id="conversations_contact"><a id="conversation">Kontakte</a></li>'));
+    $('#barBottomright ul').prepend($('li#conversations_contact').show());
 
     // Apply click to all loaded contacts
     $('#conversations_contact a').click(function() {
-        if ($('#contact_box').length > 0) {
-            $('#contact_box').toggle();
-        } else {
-            $(this).parent().append($('<div>').attr('id', 'contact_box').append($('<header>').append($('<a>').attr('href', STUDIP.conversations.getUrl('')).html('Gespräche'))));
-            $.ajax({
-                type: "GET",
-                url: STUDIP.conversations.getUrl("everywhere/contacts"),
-                dataType: "json"
-            }).done(function(json) {
-                $.each(json.conversations, function(id, value) {
-                    $('#contact_box').append($('<a>' + value.name + '</a>').addClass('contact').attr('data-id', value.id).click(function() {
-                        STUDIP.conversations.open(value.id, value.name);
-                    }));
-                });
-            });
-        }
+        $('#conversation_box').toggle();
+        $('#conversation').toggleClass('clicked');
     });
-    
+
+    // Open conversations on click
+    $('div#contact_box a').click(function() {
+        STUDIP.conversations.open($(this).attr('data-id'), $(this).html());
+    });
+
     STUDIP.conversations.cookie.load();
     $.each(STUDIP.conversations.persistent, function(id, value) {
         if (id !== null) {
@@ -69,33 +60,32 @@ STUDIP.conversations.open = function(conversation_id, name, visible) {
 
     STUDIP.conversations.cookie.add(conversation_id, name);
 
-    var conversation = $('.conversation_contact[data-contact="' + conversation_id + '"]');
+    var conversation = $('.conversation_window[data-contact="' + conversation_id + '"]');
     if (conversation.length > 0) {
         if (!conversation.is(":visible")) {
             conversation.parent().prepend(conversation);
             conversation.show();
         }
     } else {
-        var contact = $('<li>').addClass('conversation_contact').attr('data-contact', conversation_id);
+        var contact = $('<header>').addClass('conversation_contact').attr('data-contact', conversation_id).click(STUDIP.conversations.markRead(conversation_id));
 
         // Append the close icon
         contact.append($('<img>').attr('src', STUDIP.ASSETS_URL + 'images/icons/12/blue/decline.png').click(function(event) {
-            $(this).parent('li').hide();
+            $(this).parents('.conversation_window').hide();
             STUDIP.conversations.cookie.remove(conversation_id, name, $('.conversation_contact').length);
         }));
 
         // Append the name
         contact.append($('<a>').html(name).click(function(event) {
-            var visible = $(this).next('.conversation_window').toggle().is(':visible');
-            STUDIP.conversations.cookie.toggle(conversation_id, visible);
+            $(this).parent().nextAll().toggle();
         }));
-        var conversationWindow = $('<div>').addClass('conversation_window').toggle(visible);
+        var conversationWindow = $('<div>').addClass('conversation_window').attr('data-contact', conversation_id);
         var inputContainer = $('<input type="text">').addClass('conversation_input').data('conversation_id', conversation_id);
         var scroll = $('<div>').addClass('scroll').attr('data-id', conversation_id).append('<div class="conversationdisplay" data-id="' + conversation_id + '"></div>');
+        conversationWindow.append(contact);
         conversationWindow.append(scroll);
         conversationWindow.append(inputContainer);
-        contact.append(conversationWindow);
-        $('#layout_footer ul').prepend(contact);
+        $('#conversations_container').prepend(conversationWindow);
 
         inputContainer.keypress(function(e) {
             e = e || event;

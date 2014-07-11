@@ -1,56 +1,77 @@
-#layout_footer {
+div#conversations_container {
     position: fixed;
-    width: 100%;
     bottom: 0;
-    z-index: 2;
-}
-
-#layout_container {
-    margin-bottom: 20px;
+    right: 0;
+    z-index: 9999;
 }
 
 #conversations_contact {
     cursor: pointer;
 }
 
-#contact_box {
+a#conversation {
+    background-image: url('chat.png');
+    width: 20px;
+    height: 20px;
+    display: block;
+    background-repeat: no-repeat;
+    &.clicked {
+        background-image: url('chat2.png');
+    }
+    &.new {
+        background-image: url('chat_new.png');
+        &.clicked {
+            background-image: url('chat2_new.png');
+        }
+    }
+}
+
+#conversation_box {
     position: absolute;
     width: 250px;
-    height: 400px;
+    margin-left: -108px;
     background-color: #FFFFFF;
-    margin-top: -426px;
     border: #28497c solid 1px;
-    overflow-y:auto;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 6px;
+    display: none;
+    z-index: 9999;
 
-    header {
-        color: white;
-        background-color: #28497c;
-        font-size: 1.2em;
-        font-weight: bold;
-        padding: 2px;
-        text-align: left;
+    footer {
+        background-color: #a9b6cb;
+        text-align: center;
+        a {
+            color: #24437C;
+            &:hover {
+                color: #ff3333;
+            }
+        }
     }
-
-    & > a {
-        margin: 0px;
-        border-bottom: #536d96 solid 1px;
-        color: black;
-        text-align: left;
-        padding: 2px;
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        &:hover{
-            background-color: #b8c2d5;
-            cursor: pointer;
-        }
-        &.newMessage {
-            background-color: #e7ebf1;
-        }
-        &.online
-        { 
-            border-left: #74b962 solid 4px;
+    #contact_box {
+        max-height: 316px;
+        overflow-y:auto;
+        & > a {
+            margin: 0px;
+            border-bottom: #536d96 solid 1px;
+            color: black;
+            text-align: left;
+            padding: 2px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            &:hover{
+                background-color: #b8c2d5!important;
+                cursor: pointer;
+            }
+            &.newMessage {
+                background-color: #e7ebf1;
+            }
+            &.online
+            { 
+                border-left: #74b962 solid 4px;
+            }
         }
     }
 }
@@ -68,23 +89,29 @@
         img {
             //width: 12px;
             //height: 12px;
+
             display: none;
         }
     }
 }
 
 .conversation_window {
-    position: absolute;
     width: 200px;
-    height: 300px;
     background-color: white;
-    margin-top: -326px;
+    float: left;
     border: #28497c solid 1px;
     overflow-y:auto;
     color: black;
     font-size: 0.85em;
     line-height: 15px;
     text-align: left;
+    margin-right: 3px;
+    header {
+        padding: 4px;
+        background-color: #e7ebf1;
+        box-sizing: border-box; 
+        border-bottom: #28497c solid 1px;
+    }
     .scroll {
         height: 274px;
         overflow-y: scroll;
@@ -105,8 +132,7 @@
         } 
     } 
     input {
-        width: 191px;
-        bottom: 0px;
-        position: absolute;
+        width: 100%;
+        box-sizing: border-box; 
     }
 }

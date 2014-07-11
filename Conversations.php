@@ -40,13 +40,25 @@ class Conversations extends StudipPlugin implements SystemPlugin {
             PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
             PageLayout::addScript($this->getPluginURL() . "/assets/everywhere.js");
             PageLayout::addHeadElement('script', array(), 'STUDIP.conversations.myId = "' . $GLOBALS['user']->username . '"');
+            $this->setupAutoload();
             $this->loadStyle();
             // This needs to be removed 
             PageLayout::addHeadElement('script', array(), 'myId = "' . $GLOBALS['user']->username . '"');
-            
+
             // Last online
             $_SESSION['conversations']['last_onlinecheck'] = time();
             PageLayout::addHeadElement('script', array(), 'STUDIP.conversations.lastUpdate = "' . time() . '"');
+
+            // Load contacts
+            $template_factory = new Flexi_TemplateFactory($this->getPluginPath() . '/templates');
+            $template = $template_factory->open('contacts');
+            $template->set_attribute('newMessages', Conversation::hasUnread($GLOBALS['user']->id));
+            $template->set_attribute('conversations', Conversation::updates());
+            $template->set_attribute('url', PluginEngine::getLink($this, array(), null), '/');
+            PageLayout::addBodyElements($template->render());
+            
+            // Add conversations container
+            PageLayout::addBodyElements('<div id="conversations_container"></div>');
         }
     }
 
@@ -55,7 +67,7 @@ class Conversations extends StudipPlugin implements SystemPlugin {
         PageLayout::addScript($this->getPluginURL() . "/assets/conversations.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/full_conversation.js");
         PageLayout::addScript($this->getPluginURL() . "/assets/dragndrop.js");
-        
+
         // Remove everywhere
         PageLayout::removeScript($this->getPluginURL() . "/assets/everywhere.js");
         PageLayout::removeStylesheet($this->getPluginURL() . "/assets/everywhere.css");
