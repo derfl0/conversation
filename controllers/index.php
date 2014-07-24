@@ -144,7 +144,7 @@ class IndexController extends StudipController {
         $contacts->addElement(new WidgetElement("<div id='contact_box'>"));
         foreach (Conversation::updates(time() - self::CONVERSATION_PURGE) as $conv) {
             $this->activateConversation($conv);
-            $contacts->addElement(new WidgetElement("<a data-date='$conv->date' data-id='$conv->conversation_id' href='" . $this->url_for('index/index/' . $conv->conversation_id) . "'>" . $conv->getAvatar() . " $conv->name</a>"));
+            $contacts->addElement(new WidgetElement("<a data-date='$conv->date' data-id='$conv->conversation_id' class='".($conv->readdate < $conv->update->chdate ? 'newMessage' : '')."' href='" . $this->url_for('index/index/' . $conv->conversation_id) . "'>" . $conv->getAvatar() . " $conv->name</a>"));
         }
         $contacts->addElement(new WidgetElement("</div>"));
 
