@@ -72,6 +72,8 @@ class Conversation extends SimpleORMap {
     }
 
     public static function updates($since = 0) {
+        $result = array();
+
         $sql = "SELECT c.*, u.chdate as date FROM conversations c JOIN conversations_update u USING (conversation_id) WHERE user_id = ? and chdate > ? ORDER BY chdate DESC";
         $stmt = DBManager::get()->prepare($sql);
         $stmt->execute(array($GLOBALS['user']->id, $since));
