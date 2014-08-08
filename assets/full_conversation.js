@@ -70,15 +70,21 @@ STUDIP.conversations.open = function(conversation_id, name) {
 };
 
 STUDIP.conversations.loadAvatar = function(conversation_id) {
-    $.ajax({
-        type: "GET",
-        url: STUDIP.conversations.getUrl("index/avatar"),
-        data: {conversation_id: conversation_id},
-        dataType: "html"
-    }).done(function(html) {
-        $('.sidebar-image').remove('.sidebar-context');
-        $('.sidebar-image').append(html);
-    });
+    $('.sidebar-image .sidebar-context').hide();
+    var avatar = $('.sidebar-image .sidebar-context[data-id="' + conversation_id + '"]');
+    if (avatar.length > 0) {
+        avatar.show();
+    } else {
+        $.ajax({
+            type: "GET",
+            url: STUDIP.conversations.getUrl("index/avatar"),
+            data: {conversation_id: conversation_id},
+            dataType: "html"
+        }).done(function(html) {
+            $('.sidebar-image').append(html);
+            $('.sidebar-image .sidebar-context:visible').attr('data-id', conversation_id);
+        });
+    }
 };
 
 STUDIP.conversations.updateContact = function(conversation_id, name) {
