@@ -9,6 +9,7 @@ $(document).ready(function() {
         event.preventDefault();
 
         $(this).removeClass('newMessage');
+        STUDIP.conversations.markRead($(this).attr('data-id'));
 
         //hide all conversations
         $('.conversation_contact').hide();
