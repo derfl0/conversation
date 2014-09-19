@@ -129,7 +129,7 @@ class IndexController extends StudipController {
      * Sets up the infobox
      */
     private function setInfoBox() {
-        if (version_compare($GLOBALS['SOFTWARE_VERSION'], "3.1") >= 0) {
+        if (version_compare($GLOBALS['SOFTWARE_VERSION'], "3.0") > 0) {
             $sidebar = Sidebar::get();
             $sidebar->setImage(Assets::image_path("sidebar/smiley-sidebar.png"));
 
