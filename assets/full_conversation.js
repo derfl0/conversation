@@ -1,5 +1,8 @@
 $(document).ready(function() {
     $(window).resize(STUDIP.conversations.scroll.recalcSize);
+    
+    // Remove everywhere
+    $('#layout_wrapper #conversations_contact').remove();
 
     // Modify sidebar
     $('#contact_box').closest('td').attr('colspan', 2).prev('td').remove();
