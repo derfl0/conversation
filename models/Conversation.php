@@ -134,7 +134,7 @@ class Conversation extends SimpleORMap {
     }
     
     public static function hasUnread($user_id) {
-        return DBManager::get()->fetchColumn('SELECT 1 FROM conversations JOIN conversations_update USING (conversation_id) WHERE user_id = ? AND readdate < chdate LIMIT 1', array($user_id),0);
+        return DBManager::get()->fetchColumn('SELECT 1 FROM conversations JOIN conversations_update USING (conversation_id) WHERE user_id = ? AND readdate <= chdate LIMIT 1', array($user_id),0);
     }
 
     public static function getOnlineConversations() {
