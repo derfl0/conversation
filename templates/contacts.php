@@ -1,4 +1,4 @@
-<li id="conversations_contact">
+<li style="display:none" id="conversations_contact">
     <a id="conversation" class="<?= $newMessages ? 'new' : '' ?>">
     </a>
     <div id="conversation_box">
